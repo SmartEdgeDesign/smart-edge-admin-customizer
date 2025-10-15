@@ -1,0 +1,281 @@
+/* Screen Meta Tab*/
+#screen-meta-links .show-settings{
+        border-radius: 0 0 15px 15px !important;
+		display: inline-block;
+}
+
+/* WP Core elements */ 
+
+.wp-core-ui .button{
+	border-radius: 15px !important;
+	padding: 0 12px !important;
+}
+.wp-core-ui select{
+	border-radius: 15px !important;
+    padding: 0 24px 0 12px !important;
+}
+input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea {
+	border-radius: 15px !important;
+	padding: 0 12px !important;
+	border-color: #dfdfdf !important;
+}
+.wp-list-table{
+	 border-radius: 15px !important;
+	 overflow:hidden !important;
+	 border-color: #dfdfdf !important;
+	 box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+}
+.page-title-action{
+	 border-radius: 15px !important;
+	 padding: 0 12px !important;
+	 margin-top: 16px;
+}
+.page-title-action:hover{
+	 background-color: #2271b1 !important;
+}
+
+/* Elementor Fixes */
+
+.e-admin-top-bar__main-area-buttons .page-title-action{
+	 border-radius: 15px !important;
+	 padding: 8px 16px !important;
+	 margin-top: 0;
+}
+
+#e-image-ai-media-library{
+	display: none !important;
+}
+
+.e-ai-button {
+    display: none !important;
+}
+
+.e-notice{
+	display: none !important;
+}
+
+/* WP Admin Menu */ 
+
+@media only screen and (min-width: 782px) {
+    #wpadminbar{
+    display: none;
+    }
+    html.wp-toolbar{
+    padding-top: 0px !important;
+    }
+    }
+    @media only screen and (max-width: 960px){
+        #adminmenuwrap::before{
+    display: none !important;
+    }
+    }
+    
+    #toplevel_page_edit-post_type-elementor_library{
+    display:none;
+    }
+    
+    #adminmenu li.wp-menu-separator{
+        height: 0;
+        padding: 0;
+        margin: 0;
+        cursor: inherit;
+        background-color: #333;
+    }
+    a.DividerAbove{
+        border-top: solid 1px #333 !important;
+    }
+    a.DividerBoth{
+        border-top: solid 1px #333 !important;
+        border-bottom: solid 1px #333 !important;
+    }
+    
+    .fixed{
+    	top: 0 !important;
+    }
+    
+    #collapse-menu{
+        display:none;
+    }
+    
+    /* seperate large icons */ 
+    #adminmenu #toplevel_page_elementor div.wp-menu-image:before{
+        font-size: 14px !important;
+    }
+    #adminmenu #menu-posts-elementor_library .wp-menu-image:before{
+        font-size: 14px !important;
+    }
+    #adminmenu #toplevel_page_e_addons div.wp-menu-image::before{
+        font-size: 14px !important;
+    }
+
+    .wp-menu-image:before {
+       padding: 10px 0 !important;
+    }
+    
+    .dashicons-before:before {
+        font-size: 15px !important;
+    }
+    
+    #adminmenu li a:focus div.wp-menu-image:before{
+        color:#ffffff !important;
+    }
+    
+    #dashboard-widgets .postbox-container .empty-container{
+    	display: none;
+    }
+    
+    
+    #contextual-help-link-wrap{
+        display: none;
+    }
+    .wrap h1{
+        display:none !important;
+    }
+    
+    #adminmenu .wp-menu-name{
+        font-weight:100 !important;
+    }
+   	#adminmenu .wp-submenu li {
+    font-weight: 100;
+	}
+
+
+	@media only screen and (max-width: 782px) {
+	#adminmenu .wp-menu-name{
+        font-weight:100 !important;
+    }
+   	#adminmenu .wp-submenu li {
+    	font-weight: 100 !important;
+	}
+	}
+
+    #adminmenu li.menu-top>a:focus a{
+        color:#ffffff !important;
+    }
+    
+    .ab-icon:before{
+        color: #ffffff !important;
+    }
+    
+    #first > a > div.wp-menu-image.dashicons-before.dashicons-desktop:before{
+        color: #fff !important;
+    }
+    
+    #wpbody-content > div.wrap > div.notice.dce-generic-notice.notice-error{
+        display:none;
+    }
+    .welcome-panel {
+   		display: block;
+    }
+    
+    .dce-generic-notice{
+        display:none;
+    }
+    
+    @media only screen and (max-width: 960px){
+        #adminmenu{
+        top: 0px !important;
+        margin: 0;
+        height: calc(200vh);
+    }
+    }
+    @media screen and (max-width: 600px){
+        #adminmenu {
+        top: 34px !important;
+        margin: 12px 0;
+    }
+    }
+    
+    #adminmenu:hover{
+        overflow:auto;
+    }
+    #adminmenu::-webkit-scrollbar {
+        width: 0;
+    }
+    #adminmenu li{
+        pointer-events:all;
+    }
+    @media screen and (max-width: 600px){
+    #wpwrap.wp-responsive-open::-webkit-scrollbar {
+        width:0
+    }
+    }
+	#wpfooter{
+	display:none;
+	}
+	
+	/* Beehine analytics page*/
+	.sui-box{
+	-webkit-box-shadow: none !important;
+    box-shadow: none !important;
+	border-radius: 25px !important;
+	}
+	.beehive-tab {
+    border-radius: 25px !important;
+	}
+	.beehive-active{
+	background-color: rgba(23,168,227,.10) !important;
+    -webkit-box-shadow: inset 0 0 0 0 #17a8e3 !important;
+    box-shadow: inset 0 0 0 0 #17a8e3 !important;
+	border
+	border-radius: 25px !important;
+	}
+	.beehive-tab:hover{
+	background-color: rgba(23,168,227,.05) !important;
+    -webkit-box-shadow: inset 0 0 0 0 #17a8e3 !important;
+    box-shadow: inset 0 0 0 0 #17a8e3 !important;
+	border
+	border-radius: 25px !important;
+	}
+	.sui-2-12-23 .sui-wrap .sui-tooltip:after {
+    visibility: hidden;
+	}
+	.sui-2-12-23 .sui-wrap .sui-tooltip:before {
+    visibility: hidden;
+	}
+	.sui-footer{
+	display: none !important;
+	}
+	.sui-footer-nav{
+	display :none !important; 
+	}
+	.sui-footer-social{
+	display: none !important;
+	}
+	/* hide elementor itesm in header */ 
+	#e-admin-top-bar-root .e-admin-top-bar__secondary-area{
+	display:none !important;
+	}
+	.e-logo-wrapper {
+	display: none !important;
+	}
+
+	/* Custom for main admin CSS */ 
+    #adminmenuwrap::before {
+        content: "";
+        display: inline-block;
+        /* logo loaded inline in functions*/ 
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-color:#000;
+        width: 160px !important;
+        height: 80px !important;
+        margin: 0 0 -16px 0 !important;
+        border-bottom: solid 1px #333 !important;
+   }
+
+    #adminmenu{
+        position: fixed;
+        top: 69px;
+        overflow-y: hidden;
+        height: calc(100vh - 115px);
+        padding-bottom: 33px;
+        padding-right:170px;
+        pointer-events: none;
+        background:transparent;
+    }
+
+.welcome-panel {
+    margin: 20px 0 0 0 !important;
+}
