@@ -1,4 +1,71 @@
-/* Using the variable means you never have to edit this file to change colors again */
-#adminmenu, #adminmenuback, #adminmenuwrap {
+/* ==========================================================================
+   1. VARIABLES & RESET
+   ========================================================================== */
+:root {
+    --seac-text-color: #ffffff;
+    --seac-hover-color: rgba(255, 255, 255, 0.15);
+    --seac-active-color: rgba(0, 0, 0, 0.2);
+    --seac-radius: 12px;
+}
+
+/* ==========================================================================
+   2. SIDEBAR STYLING
+   ========================================================================== */
+/* Set the background using your Setting's variable */
+#adminmenu, #adminmenuwrap, #adminmenuback {
     background-color: var(--seac-accent-color) !important;
+    width: 180px !important;
+}
+
+/* Menu Links */
+#adminmenu a {
+    color: var(--seac-text-color) !important;
+    font-weight: 500;
+}
+
+/* Icons */
+#adminmenu div.wp-menu-image:before {
+    color: var(--seac-text-color) !important;
+    opacity: 0.8;
+}
+
+/* Hover & Active States */
+#adminmenu li.menu-top:hover,
+#adminmenu li.opensub > a.menu-top,
+#adminmenu li > a.menu-top:focus {
+    background-color: var(--seac-hover-color) !important;
+    color: #fff !important;
+}
+
+#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+#adminmenu li.current a.menu-top {
+    background-color: var(--seac-active-color) !important;
+    font-weight: 700;
+    border-left: 4px solid rgba(255,255,255,0.8);
+}
+
+/* ==========================================================================
+   3. CONTENT AREA (THE "CARD" LOOK)
+   ========================================================================== */
+/* Fix the margin since we changed sidebar width */
+#wpcontent, #wpfooter {
+    margin-left: 180px !important;
+    background-color: #f6f7f9; /* Modern light grey background */
+}
+
+/* Turn standard WP pages into "Cards" */
+.wrap {
+    background: #ffffff;
+    border-radius: var(--seac-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft modern shadow */
+    padding: 25px 30px;
+    margin: 20px 20px 0 0;
+    border: 1px solid #eaeaea;
+}
+
+/* Clean up the title area */
+.wrap h1 {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
 }
