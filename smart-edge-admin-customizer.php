@@ -43,3 +43,20 @@ $myUpdateChecker->setBranch('main'); // <-- IMPORTANT: Change if your branch is 
 // (Optional) If your repository is private, you'll need a GitHub Personal Access Token.
 // $myUpdateChecker->setAuthentication('your_github_personal_access_token'); // <-- IMPORTANT: Add your token here
 
+
+
+
+/**
+ * TEST 1: Change Admin Menu to Black and show a Success Message
+ */
+add_action('admin_head', function() {
+    echo '<style>
+        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap { background-color: #00ffda !important; }
+    </style>';
+});
+
+add_action('admin_notices', function() {
+    echo '<div class="notice notice-success is-dismissible">
+             <p><strong>Success!</strong> Your GitHub-to-WordPress sync is alive and well.</p>
+          </div>';
+});
