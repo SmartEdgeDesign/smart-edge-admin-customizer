@@ -1,30 +1,41 @@
-/* assets/css/admin-settings.css */
-/* These styles ONLY load on your plugin settings page */
+/* assets/css/plugin.css */
 
+/* 1. Header Styling */
 .wrap h1 {
     color: var(--seac-accent-color);
-    font-size: 2.5em;
     font-weight: 300;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
 }
 
-/* Style the form containers */
+/* 2. Form Styling */
 .form-table th {
     font-weight: 600;
     color: #444;
 }
 
-/* Make the Save button match your brand */
+/* 3. The "Save Settings" Button */
 p.submit input.button-primary {
+    /* This variable comes from admin-main.css */
     background: var(--seac-accent-color) !important;
     border-color: var(--seac-accent-color) !important;
-    border-radius: 4px;
-    padding: 5px 20px;
-    font-size: 14px;
+    text-shadow: none;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    padding: 5px 25px;
+    font-weight: 600;
     transition: all 0.2s ease;
 }
 
+/* Hover Effect */
 p.submit input.button-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    filter: brightness(110%); /* Makes it slightly lighter */
+    transform: translateY(-2px); /* Moves it up slightly */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Active/Click Effect */
+p.submit input.button-primary:active {
+    transform: translateY(0);
+    box-shadow: none;
 }
