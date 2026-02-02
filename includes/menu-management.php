@@ -5,17 +5,6 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
- * Test: Turn the Admin Menu Black for EVERYONE (including Admins)
- */
-add_action('admin_head', function() {
-    echo '<style>
-        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap { 
-            background-color: #00ffda !important; 
-        }
-    </style>';
-});
-
-/**
  * Modifies the admin menu based on saved settings.
  */
 function seac_modify_admin_menu() {
