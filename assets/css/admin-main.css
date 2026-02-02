@@ -14,7 +14,7 @@
 /* Set the background using your Setting's variable */
 #adminmenu, #adminmenuwrap, #adminmenuback {
     background-color: var(--seac-accent-color) !important;
-    width: 180px !important;
+    
 }
 
 /* Menu Links */
