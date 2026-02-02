@@ -50,20 +50,15 @@ function seac_modify_admin_menu() {
 // Run with a high priority (late) to affect all menu items.
 add_action( 'admin_menu', 'seac_modify_admin_menu', 999 );
       
-
 /**
- * TEST 1: Change Admin Menu to Black and show a Success Message
+ * Test: Turn the Admin Menu Black
  */
 add_action('admin_head', function() {
     echo '<style>
-        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap { background-color: #00ffda !important; }
+        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap { 
+            background-color: #000000 !important; 
+        }
     </style>';
-});
-
-add_action('admin_notices', function() {
-    echo '<div class="notice notice-success is-dismissible">
-             <p><strong>Success!</strong> Your GitHub-to-WordPress sync is alive and well.</p>
-          </div>';
 });
 
 ?>
