@@ -1,0 +1,30 @@
+/* assets/css/admin-settings.css */
+/* These styles ONLY load on your plugin settings page */
+
+.wrap h1 {
+    color: var(--seac-accent-color);
+    font-size: 2.5em;
+    font-weight: 300;
+}
+
+/* Style the form containers */
+.form-table th {
+    font-weight: 600;
+    color: #444;
+}
+
+/* Make the Save button match your brand */
+p.submit input.button-primary {
+    background: var(--seac-accent-color) !important;
+    border-color: var(--seac-accent-color) !important;
+    border-radius: 4px;
+    padding: 5px 20px;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+p.submit input.button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
