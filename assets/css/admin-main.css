@@ -1,4 +1,4 @@
-/* css for admin menu */
-.admin-menu {
-    background-color: #444444;
+/* Stability Test: Turns the admin sidebar background red */
+#adminmenu, #adminmenuback, #adminmenuwrap {
+    background-color: #ff0000 !important;
 }
