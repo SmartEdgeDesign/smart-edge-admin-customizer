@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Smart Edge Admin Customizer
  * Description:       A stable base for admin customization.
- * Version:           1.0.8
+ * Version:           1.0.
  * Author:            Ben Moreton
  * Author URI:        https://smartedgedesign.com
  * Text Domain:       smart-edge-admin-customizer

@@ -1,4 +1,4 @@
 /* Stability Test: Turns the admin sidebar background red */
 #adminmenu, #adminmenuback, #adminmenuwrap {
-    background-color: #ff0000 !important;
+    background-color: #0000ff !important;
 }
