@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Smart Edge Admin Customizer
  * Description:       A plugin to completely restyle the WordPress admin area, manage menu items by role, and apply custom branding.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Ben Moreton
  * Author URI:        https://smartedgedesign.com
  * Text Domain:       se-admin-customizer
