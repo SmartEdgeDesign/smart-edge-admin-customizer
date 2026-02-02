@@ -26,18 +26,3 @@ require_once SEAC_PLUGIN_PATH . 'includes/settings-page.php';
 require_once SEAC_PLUGIN_PATH . 'includes/menu-management.php';
 require_once SEAC_PLUGIN_PATH . 'includes/utility-functions.php';
 
-// =========================================================================
-// INITIALIZE UPDATES
-// =========================================================================
-require_once SEAC_PLUGIN_PATH . 'plugin-update-checker/plugin-update-checker.php';
-
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-$myUpdateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/SmartEdgeDesign/smart-edge-admin-customizer/', 
-    __FILE__, 
-    'smart-edge-admin-customizer'
-);
-
-// Set the branch to check for updates.
-$myUpdateChecker->setBranch('main');
