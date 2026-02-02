@@ -39,3 +39,24 @@ p.submit input.button-primary:active {
     transform: translateY(0);
     box-shadow: none;
 }
+
+#wpcontent, #wpfooter {
+    background-color: #f6f7f9; /* Modern light grey background */
+}
+
+/* Turn standard WP pages into "Cards" */
+.wrap {
+    background: #ffffff;
+    border-radius: var(--seac-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft modern shadow */
+    padding: 25px 30px;
+    margin: 20px 20px 0 0;
+    border: 1px solid #eaeaea;
+}
+
+/* Clean up the title area */
+.wrap h1 {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}

@@ -1,80 +1,45 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - DARK MINIMAL THEME
+   1. VARIABLES & RESET
    ========================================================================== */
-
-/* 1. THE DEEP DARK BACKGROUND (Default Width) */
-/* We rely on WordPress default width to prevent layout breaks */
-#adminmenu, #adminmenuback, #adminmenuwrap {
-    background-color: #0c0c0c !important;
+:root {
+    --seac-text-color: #ffffff;
+    --seac-hover-color: rgba(255, 255, 255, 0.15);
+    --seac-active-color: rgba(0, 0, 0, 0.2);
+    --seac-radius: 12px;
 }
 
-/* 2. RESET LINK COLORS (Muted Grey by default) */
+/* ==========================================================================
+   2. SIDEBAR STYLING
+   ========================================================================== */
+/* Set the background using your Setting's variable */
+#adminmenu, #adminmenuwrap, #adminmenuback {
+    background-color: var(--seac-accent-color) !important;
+    
+}
+
+/* Menu Links */
 #adminmenu a {
-    color: #888888 !important;
-    font-weight: 400;
-    transition: all 0.2s ease;
+    color: var(--seac-text-color) !important;
+    font-weight: 500;
 }
 
-/* 3. ICON STYLING (Smaller & Subtle) */
+/* Icons */
 #adminmenu div.wp-menu-image:before {
-    font-size: 16px !important; /* Resized smaller as requested */
-    color: #666666 !important;  /* Darker grey for icons initially */
-    padding-top: 3px;           /* Re-aligns the smaller icon */
-    transition: color 0.2s ease;
+    color: var(--seac-text-color) !important;
+    opacity: 0.8;
 }
 
-
-/* ==========================================================================
-   INTERACTION STATES (The Accent Color Logic)
-   ========================================================================== */
-
-/* 4. HOVER STATE */
-/* Text turns white, Icon turns Accent Color */
-#adminmenu li.menu-top:hover > a {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.03) !important; /* Extremely subtle highlight */
+/* Hover & Active States */
+#adminmenu li.menu-top:hover,
+#adminmenu li.opensub > a.menu-top,
+#adminmenu li > a.menu-top:focus {
+    background-color: var(--seac-hover-color) !important;
+    color: #fff !important;
 }
 
-#adminmenu li.menu-top:hover div.wp-menu-image:before {
-    color: var(--seac-accent-color) !important; /* The Accent Pop */
-}
-
-/* 5. ACTIVE / SELECTED STATE */
-/* Text turns bright white, Icon turns Accent Color */
-#adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current > a {
-    background-color: #151515 !important; /* Very slightly lighter than bg */
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-#adminmenu li.wp-has-current-submenu div.wp-menu-image:before,
-#adminmenu li.current div.wp-menu-image:before {
-    color: var(--seac-accent-color) !important; /* The Accent Pop */
-}
-
-/* Remove the default WordPress active arrow marker for a cleaner look */
-#adminmenu li.wp-has-current-submenu > a:after,
-#adminmenu li.current > a:after {
-    display: none;
-}
-
-
-/* ==========================================================================
-   SUBMENU STYLING
-   ========================================================================== */
-#adminmenu .wp-submenu, 
-#adminmenu .wp-has-current-submenu .wp-submenu, 
-#adminmenu .wp-submenu.sub-open {
-    background-color: #0c0c0c !important;
-}
-
-#adminmenu .wp-submenu a {
-    font-size: 13px;
-    padding-left: 15px; /* Indent sub-items slightly more */
-}
-
-#adminmenu .wp-submenu a:hover,
-#adminmenu .wp-submenu li.current a {
-    color: var(--seac-accent-color) !important;
+#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+#adminmenu li.current a.menu-top {
+    background-color: var(--seac-active-color) !important;
+    font-weight: 700;
+    border-left: 4px solid rgba(255,255,255,0.8);
 }
