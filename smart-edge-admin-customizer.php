@@ -16,7 +16,7 @@ if ( ! defined( 'WPINC' ) ) {
 // Define plugin constants for easy access to paths and URLs.
 define( 'SEAC_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SEAC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'SEAC_VERSION', '1.0.0' );
+define( 'SEAC_VERSION', '1.0.1' );
 
 // Include the necessary files.
 require_once SEAC_PLUGIN_PATH . 'includes/enqueue-scripts.php';
