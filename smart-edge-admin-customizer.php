@@ -3,8 +3,8 @@
  * Plugin Name:       Smart Edge Admin Customizer
  * Description:       A plugin to completely restyle the WordPress admin area, manage menu items by role, and apply custom branding.
  * Version:           1.0.0
- * Author:            Your Name
- * Author URI:        https://yourwebsite.com
+ * Author:            Ben Moreton
+ * Author URI:        https://smartedgedesign.com
  * Text Domain:       se-admin-customizer
  */
 
@@ -25,38 +25,17 @@ require_once SEAC_PLUGIN_PATH . 'includes/menu-management.php';
 require_once SEAC_PLUGIN_PATH . 'includes/utility-functions.php'; // <-- ADDED THIS LINE
 
 // =========================================================================
-// INITIALIZE SELF-HOSTED UPDATES
+// INITIALIZE UPDATES
 // =========================================================================
 require_once SEAC_PLUGIN_PATH . 'plugin-update-checker/plugin-update-checker.php';
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 $myUpdateChecker = PucFactory::buildUpdateChecker(
-	'https://github.com/YourGitHubUsername/your-private-repo-name/', // <-- IMPORTANT: Change this
-	__FILE__, // The main plugin file
-	'se-admin-customizer' // A unique slug for your plugin
+    'https://github.com/SmartEdgeDesign/smart-edge-admin-customizer/', 
+    __FILE__, 
+    'se-admin-customizer'
 );
 
-// Set the branch to check for updates. 'main' or 'master' is typical.
-$myUpdateChecker->setBranch('main'); // <-- IMPORTANT: Change if your branch is different
-
-// (Optional) If your repository is private, you'll need a GitHub Personal Access Token.
-// $myUpdateChecker->setAuthentication('your_github_personal_access_token'); // <-- IMPORTANT: Add your token here
-
-
-
-
-/**
- * TEST 1: Change Admin Menu to Black and show a Success Message
- */
-add_action('admin_head', function() {
-    echo '<style>
-        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap { background-color: #00ffda !important; }
-    </style>';
-});
-
-add_action('admin_notices', function() {
-    echo '<div class="notice notice-success is-dismissible">
-             <p><strong>Success!</strong> Your GitHub-to-WordPress sync is alive and well.</p>
-          </div>';
-});
+// Set the branch to check for updates.
+$myUpdateChecker->setBranch('main');
