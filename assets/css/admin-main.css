@@ -1,4 +1,4 @@
-/* Stability Test: Turns the admin sidebar background red */
+/* Using the variable means you never have to edit this file to change colors again */
 #adminmenu, #adminmenuback, #adminmenuwrap {
-    background-color: #00ffda !important;
+    background-color: var(--seac-accent-color) !important;
 }
