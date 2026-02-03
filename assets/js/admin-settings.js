@@ -240,13 +240,9 @@ jQuery(document).ready(function($){
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
             // 1. Reset Data
-            if ( activeRole === 'administrator' ) {
-                // For Admin, we revert to the master capture (all items)
-                currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
-            } else {
-                // For others, we CLEAR the config so the native WP menu loads
-                currentConfig[activeRole] = [];
-            }
+            // Always copy the master menu (Admin view) to the current role.
+            // This gives the user a full list of items to manage (hide/show/rename).
+            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             
             // 2. Re-render the list from the reset data.
             // This ensures that when the form is submitted, saveCurrentTabState() reads the correct (reset) state.
