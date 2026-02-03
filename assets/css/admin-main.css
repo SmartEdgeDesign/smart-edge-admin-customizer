@@ -1,23 +1,25 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - FORCE OVERRIDES
+   SMART EDGE ADMIN - FINAL SNIPER FIX
    ========================================================================== */
 
 /* 1. ADMIN BAR REMOVAL */
-#wpadminbar { display: none !important; }
+body #wpadminbar { display: none !important; }
 html.wp-toolbar { padding-top: 0px !important; }
 
 /* 2. BACKGROUNDS (Deep Dark) */
-#adminmenu, #adminmenuback, #adminmenuwrap, 
-#adminmenu .wp-submenu, 
-#adminmenu .wp-has-current-submenu .wp-submenu {
+body #adminmenu, 
+body #adminmenuback, 
+body #adminmenuwrap, 
+body #adminmenu .wp-submenu, 
+body #adminmenu .wp-has-current-submenu .wp-submenu {
     background-color: #0c0c0c !important;
 }
 
 /* Logo Area */
-#adminmenuwrap::before {
+body #adminmenuwrap::before {
     content: "";
     display: block;
-    background-color: #000000;
+    background-color: #0c0c0c;
     width: 100%;
     height: 80px;
     background-size: contain;
@@ -27,99 +29,110 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* ==========================================================================
-   3. TEXT COLORS (The "White Text" Fix)
+   3. TEXT COLORS
    ========================================================================== */
 /* Default State: Grey */
-#adminmenu li a, 
-#adminmenu .wp-submenu a {
+body #adminmenu li a, 
+body #adminmenu .wp-submenu a,
+body #adminmenu .wp-menu-name {
     color: #888888 !important;
     font-weight: 100 !important;
 }
 
-/* HOVER STATE: Text MUST be White */
-#adminmenu li.menu-top:hover > a,
-#adminmenu li.menu-top > a:hover,
-#adminmenu li.menu-top > a:focus,
-#adminmenu .wp-submenu a:hover,
-#adminmenu .wp-submenu a:focus {
-    color: #ffffff !important; /* Force White */
+/* HOVER & FOCUS: Force White */
+body #adminmenu li.menu-top:hover > a,
+body #adminmenu li.menu-top > a:focus,
+body #adminmenu .wp-submenu a:hover {
+    color: #ffffff !important;
     background-color: transparent !important;
 }
 
-/* ACTIVE STATE: Text MUST be White */
-#adminmenu li.current > a,
-#adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current .wp-submenu li.current a {
+/* ACTIVE: Force White */
+body #adminmenu li.current > a,
+body #adminmenu li.wp-has-current-submenu > a {
     color: #ffffff !important;
     font-weight: 400 !important;
     background: #151515 !important;
 }
 
 /* ==========================================================================
-   4. ICON COLORS (The "Accent" Fix)
+   4. UNIVERSAL ICON FIX (Standard + 3rd Party)
    ========================================================================== */
-/* Default State: Grey */
-#adminmenu .wp-menu-image:before,
-#adminmenu .wp-menu-image svg,
-#adminmenu .wp-menu-image img {
+/* We target the image tag specifically for Elementor/Bricks 
+   and force the width to 15px to match the others.
+*/
+
+/* Standard Icons (Dashicons) */
+body #adminmenu .wp-menu-image:before {
     color: #666666 !important;
-    fill: #666666 !important;
-    opacity: 0.7 !important;
-    font-size: 15px !important; /* Force Size */
+    font-size: 15px !important;
     width: 15px !important;
+    padding: 10px 0 !important;
+    opacity: 0.7 !important;
 }
 
-/* HOVER & ACTIVE: Icon turns Accent Color */
-#adminmenu li:hover .wp-menu-image:before,
-#adminmenu li.current .wp-menu-image:before,
-#adminmenu li.wp-has-current-submenu .wp-menu-image:before,
-#adminmenu li:hover .wp-menu-image svg,
-#adminmenu li:hover .wp-menu-image img {
+/* 3rd Party Icons (Images/SVG) - The "Big Icon" Fix */
+body #adminmenu .wp-menu-image img,
+body #adminmenu .wp-menu-image svg {
+    width: 15px !important;       /* Crush the size */
+    height: auto !important;      /* Maintain aspect ratio */
+    max-width: 15px !important;   /* Double safety */
+    padding: 10px 0 !important;   /* Align with text */
+    opacity: 0.7 !important;
+    fill: #666666 !important;     /* Color SVGs grey */
+}
+
+/* HOVER & ACTIVE: Accent Color */
+body #adminmenu li:hover .wp-menu-image:before,
+body #adminmenu li:hover .wp-menu-image svg,
+body #adminmenu li.current .wp-menu-image:before,
+body #adminmenu li.current .wp-menu-image svg {
     color: var(--seac-accent-color) !important;
     fill: var(--seac-accent-color) !important;
     opacity: 1 !important;
 }
 
 /* ==========================================================================
-   5. COLLAPSE BUTTON (The "Blue" Fix)
+   5. THE COLLAPSE BUTTON FIX
    ========================================================================== */
 /* We target the ID explicitly to kill the blue background */
-#adminmenu #collapse-button,
-#adminmenu #collapse-menu {
+body #adminmenu #collapse-button,
+body #adminmenu #collapse-menu {
     background: transparent !important;
     border-top: 1px solid #333 !important;
     color: #888888 !important;
 }
 
-#adminmenu #collapse-button:hover,
-#adminmenu #collapse-menu:hover {
-    color: #ffffff !important; /* Text/Icon white on hover */
+/* Hover State */
+body #adminmenu #collapse-button:hover,
+body #adminmenu #collapse-menu:hover {
+    color: #ffffff !important;
     background-color: rgba(255,255,255,0.05) !important;
 }
 
-/* Target the icon inside the button */
-#adminmenu #collapse-button .collapse-button-icon:before,
-#adminmenu #collapse-menu .collapse-button-icon:before {
+/* Fix the icon size inside the button */
+body #adminmenu #collapse-button .collapse-button-icon:before,
+body #adminmenu #collapse-menu .collapse-button-icon:before {
     font-size: 15px !important;
     color: #666666 !important;
     padding-top: 2px !important;
 }
 
-/* Icon hover state */
-#adminmenu #collapse-button:hover .collapse-button-icon:before {
+/* Icon Accent on Hover */
+body #adminmenu #collapse-button:hover .collapse-button-icon:before {
     color: var(--seac-accent-color) !important;
 }
 
 /* ==========================================================================
    6. MOBILE & DIVIDERS
    ========================================================================== */
-#adminmenu li.wp-menu-separator {
+body #adminmenu li.wp-menu-separator {
     background: #333 !important;
     height: 1px !important;
     margin: 10px 0 !important;
 }
 
 @media screen and (max-width: 782px) {
-    #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
-    #wpcontent { margin-left: 0 !important; }
+    body #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
+    body #wpcontent { margin-left: 0 !important; }
 }
