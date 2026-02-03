@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
     
-    // --- 1. MEDIA UPLOADER ---
+    // 1. MEDIA UPLOADER
     var mediaUploader;
     $('#seac_upload_logo_btn').click(function(e) {
         e.preventDefault();
@@ -23,20 +23,31 @@ jQuery(document).ready(function($){
         $('#seac_logo_preview').css('background-image', 'none');
     });
 
-    // --- 2. MENU MANAGER ---
+    // 2. MENU MANAGER
     if ( typeof seacData === 'undefined' ) return;
 
     var roles = seacData.roles;
     var masterMenu = seacData.menu;
     var savedSettings = seacData.saved_settings || {};
     var activeRole = 'administrator';
-    
     var currentConfig = {};
 
-    // Initialize Config
+    // --- INITIALIZATION ---
     $.each(roles, function(roleKey, roleData){
         if( savedSettings[roleKey] ) {
-            currentConfig[roleKey] = savedSettings[roleKey];
+            var config = savedSettings[roleKey];
+            
+            // ORPHAN LOGIC: Add new plugins, but SKIP separators
+            var savedSlugs = config.map(function(item){ return item.slug; });
+            var orphans = masterMenu.filter(function(item){
+                if ( item.type === 'separator' ) return false;
+                return savedSlugs.indexOf(item.slug) === -1;
+            });
+            
+            if ( orphans.length > 0 ) {
+                config = config.concat(orphans);
+            }
+            currentConfig[roleKey] = config;
         } else {
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
@@ -72,61 +83,7 @@ jQuery(document).ready(function($){
         }
 
         $.each(menuItems, function(index, item){
-            
-            var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
-            var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
-
-            // --- SEPARATOR LOGIC ---
-            if ( item.type === 'separator' ) {
-                var liHtml = `
-                    <li class="seac-menu-item seac-is-separator ${hiddenClass}" data-slug="${item.slug}" data-type="separator">
-                         <div class="seac-item-handle" style="width:100%; text-align:center; padding:5px 0; color:#ccc;">
-                            <span class="dashicons dashicons-menu"></span> —————— Divider ——————
-                        </div>
-                        <div class="seac-item-actions">
-                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
-                                <span class="dashicons ${hiddenIcon}"></span>
-                            </button>
-                        </div>
-                        <input type="hidden" class="seac-rename-input" value="">
-                        <input type="hidden" class="seac-icon-input" value="">
-                    </li>
-                `;
-                $list.append(liHtml);
-            } 
-            // --- STANDARD ITEM LOGIC ---
-            else {
-                var iconHtml = '';
-                if( item.icon.indexOf('dashicons-') !== -1 ) {
-                    iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
-                } else if ( item.icon.indexOf('http') !== -1 || item.icon.indexOf('data:') !== -1 ) {
-                     iconHtml = '<img src="' + item.icon + '" style="max-width:20px; max-height:20px;" />';
-                } else {
-                    iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
-                }
-
-                var liHtml = `
-                    <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item">
-                        <div class="seac-item-handle">
-                            <span class="dashicons dashicons-menu"></span>
-                        </div>
-                        <div class="seac-item-icon">
-                            ${iconHtml}
-                        </div>
-                        <div class="seac-item-details">
-                            <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
-                            <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
-                            <span class="seac-original-label">Original: ${item.original_name}</span>
-                        </div>
-                        <div class="seac-item-actions">
-                            <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
-                                <span class="dashicons ${hiddenIcon}"></span>
-                            </button>
-                        </div>
-                    </li>
-                `;
-                $list.append(liHtml);
-            }
+            appendMenuItem(item);
         });
 
         if ($.fn.sortable) {
@@ -135,6 +92,61 @@ jQuery(document).ready(function($){
                 placeholder: 'seac-sortable-placeholder',
                 forcePlaceholderSize: true
             });
+        }
+    }
+
+    function appendMenuItem( item ) {
+        var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
+        var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
+        var $list = $('#seac_menu_list');
+
+        if ( item.type === 'separator' ) {
+            var liHtml = `
+                <li class="seac-menu-item seac-is-separator ${hiddenClass}" data-slug="${item.slug}" data-type="separator">
+                     <div class="seac-item-handle" style="width:100%; text-align:center; padding:5px 0; color:#ccc;">
+                        <span class="dashicons dashicons-menu"></span> —————— Divider ——————
+                    </div>
+                    <div class="seac-item-actions">
+                         <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
+                            <span class="dashicons ${hiddenIcon}"></span>
+                        </button>
+                    </div>
+                    <input type="hidden" class="seac-rename-input" value="">
+                    <input type="hidden" class="seac-icon-input" value="">
+                </li>
+            `;
+            $list.append(liHtml);
+        } else {
+            var iconHtml = '';
+            if( item.icon.indexOf('dashicons-') !== -1 ) {
+                iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
+            } else if ( item.icon.indexOf('http') !== -1 || item.icon.indexOf('data:') !== -1 ) {
+                 iconHtml = '<img src="' + item.icon + '" style="max-width:20px; max-height:20px;" />';
+            } else {
+                iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
+            }
+
+            var liHtml = `
+                <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item">
+                    <div class="seac-item-handle">
+                        <span class="dashicons dashicons-menu"></span>
+                    </div>
+                    <div class="seac-item-icon">
+                        ${iconHtml}
+                    </div>
+                    <div class="seac-item-details">
+                        <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
+                        <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
+                        <span class="seac-original-label">Original: ${item.original_name}</span>
+                    </div>
+                    <div class="seac-item-actions">
+                        <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
+                            <span class="dashicons ${hiddenIcon}"></span>
+                        </button>
+                    </div>
+                </li>
+            `;
+            $list.append(liHtml);
         }
     }
 
@@ -178,24 +190,34 @@ jQuery(document).ready(function($){
         }
     });
 
-    // --- RESET BUTTON LOGIC (UPDATED: INSTANT SAVE) ---
+    // --- ADD DIVIDER BUTTON ---
+    $('#seac_add_divider_btn').click(function(e){
+        e.preventDefault();
+        var uniqueID = 'sep_' + Date.now();
+        var newItem = { slug: uniqueID, type: 'separator', hidden: false };
+        appendMenuItem(newItem);
+        var $list = $('#seac_menu_list');
+        $list.scrollTop($list[0].scrollHeight);
+    });
+
+    // --- RESET BUTTON (THE CRITICAL FIX) ---
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
-        
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
             
-            // 1. Reset Data
+            // 1. Restore clean menu
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
-            
-            // 2. Prepare Form Data
             var jsonString = JSON.stringify(currentConfig);
+            
+            // 2. Load into Input
             $('#seac_menu_config_input').val(jsonString);
             
-            // 3. AUTO SUBMIT
-            $('.seac-settings-wrap form').submit();
+            // 3. FORCE NATIVE SUBMIT (Bypass jQuery Save Handler)
+            $('.seac-settings-wrap form')[0].submit();
         }
     });
 
+    // Normal Save
     $('.seac-settings-wrap form').submit(function(e){
         saveCurrentTabState();
         var jsonString = JSON.stringify(currentConfig);
