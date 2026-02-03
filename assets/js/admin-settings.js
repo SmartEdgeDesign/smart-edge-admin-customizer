@@ -238,16 +238,15 @@ jQuery(document).ready(function($){
         }
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            // 1. Delete the configuration for this role entirely.
-            delete currentConfig[activeRole];
+            // 1. Reset Data: Copy the Master Menu (Admin view) to the current role.
+            // This gives you a fresh start with all items visible.
+            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             
-            // 2. Update the hidden input field with the modified config object.
-            var jsonString = JSON.stringify(currentConfig);
-            $('#seac_menu_config_input').val(jsonString);
+            // 2. Update the UI immediately.
+            renderMenuList(activeRole);
             
-            // 3. Submit the form natively to bypass the jQuery submit handler.
-            // This prevents saveCurrentTabState() from running and re-adding the role data from the DOM.
-            $('.seac-settings-wrap form')[0].submit();
+            // 3. Trigger standard submit. This runs saveCurrentTabState() and saves the new list.
+            $('.seac-settings-wrap form').submit();
         }
     });
 });
