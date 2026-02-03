@@ -4,45 +4,43 @@ if ( ! defined( 'WPINC' ) ) { die; }
 class SEAC_Menu_Manager {
 
     public function __construct() {
-        // 1. CAPTURE: Run at the absolute last second (Max Integer - 1)
-        // This ensures we catch plugins like Bricks that load late.
-        add_action( 'admin_menu', array( $this, 'capture_original_menu' ), PHP_INT_MAX - 1 ); 
+        // COMBINED HOOK: Run everything at the absolute last possible moment (PHP_INT_MAX).
+        // This ensures every other plugin (including Bricks) has finished adding their items.
+        add_action( 'admin_menu', array( $this, 'manage_menu_ordering' ), PHP_INT_MAX );
         
-        // 2. MODIFY: Run at the absolute Max Integer
-        // This runs immediately after the capture to apply your custom order.
-        add_action( 'admin_menu', array( $this, 'apply_custom_menu' ), PHP_INT_MAX );
-        
-        // 3. SECURITY: Block access to hidden pages
+        // SECURITY: Block access to hidden pages
         add_action( 'admin_init', array( $this, 'block_hidden_pages' ) );
     }
 
-    public function capture_original_menu() {
-        global $menu;
-        // Capture the menu state exactly as it is right before we mess with it.
-        // We do NOT check isset() here anymore, because we want the latest version 
-        // if this hook fires multiple times for some reason.
-        $GLOBALS['seac_original_menu'] = $menu;
-    }
-
-    public function apply_custom_menu() {
+    public function manage_menu_ordering() {
         global $menu;
 
+        // 1. CAPTURE THE ORIGINAL MENU
+        // We capture it right here, right now. No earlier, no later.
+        // This ensures $menu contains exactly what WordPress built before we touch it.
+        if ( ! isset( $GLOBALS['seac_original_menu'] ) ) {
+            $GLOBALS['seac_original_menu'] = $menu;
+        }
+
+        // 2. CHECK PERMISSIONS
         $role = $this->get_current_role();
         if ( ! $role ) return;
 
         $saved_settings = get_option( 'seac_menu_settings', array() );
         
-        // If no settings for this role, we stop.
-        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) return;
+        // If no settings for this role, STOP. Do not modify $menu.
+        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
+            return;
+        }
 
+        // 3. APPLY CUSTOM ORDER
         $role_config = $saved_settings[$role];
         $new_menu = array();
         
-        // Use the captured menu as our 'Source of Truth'
-        // If capture didn't run (rare), fall back to current $menu
-        $source_menu = isset($GLOBALS['seac_original_menu']) ? $GLOBALS['seac_original_menu'] : $menu;
+        // We use the Captured Menu as the source of truth
+        $source_menu = $GLOBALS['seac_original_menu'];
         
-        // Create a map for easy lookup
+        // Map original menu for lookup
         $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
             $key = isset($item[2]) ? $item[2] : "index_$index";
@@ -56,14 +54,14 @@ class SEAC_Menu_Manager {
 
             if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // Handle Separators
+            // Separators
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
                 $new_menu[ $menu_order_index ] = array( '', 'read', "separator_{$menu_order_index}", '', 'wp-menu-separator' );
                 $menu_order_index++;
                 continue;
             }
 
-            // Handle Standard Items
+            // Standard Items
             if ( isset( $original_menu_map[$slug] ) ) {
                 $menu_item = $original_menu_map[$slug];
 
@@ -76,7 +74,11 @@ class SEAC_Menu_Manager {
             }
         }
 
-        // APPEND ORPHANS (Items that exist in source but not in config)
+        // 4. APPEND ORPHANS
+        // Any item in the Source Map that wasn't used in the Config gets added here.
+        // If Bricks was captured correctly, it will be in $original_menu_map (unless you saved it in the config).
+        // NOTE: If you previously Saved a config where Bricks was at the bottom, it will stay there 
+        // until you click "Reset" to refresh the config.
         if ( ! empty( $original_menu_map ) ) {
             foreach ( $original_menu_map as $orphan ) {
                 $new_menu[ $menu_order_index ] = $orphan;
@@ -84,7 +86,6 @@ class SEAC_Menu_Manager {
             }
         }
 
-        // Apply to Global
         $menu = $new_menu;
     }
 
