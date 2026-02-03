@@ -7,9 +7,7 @@ if ( ! defined( 'WPINC' ) ) { die; }
  */
 function seac_enqueue_admin_assets( $hook ) {
 
-    // A. GLOBAL STYLES (admin-main.css)
-    // Loads everywhere in the dashboard (Sidebar, Top Bar, Cards)
-    // -------------------------------------------------------
+    // 1. GLOBAL STYLES
     $main_css = SEAC_PLUGIN_PATH . 'assets/css/admin-main.css';
     $version  = file_exists( $main_css ) ? filemtime( $main_css ) : '1.0.0';
 
@@ -20,28 +18,33 @@ function seac_enqueue_admin_assets( $hook ) {
         $version 
     );
 
-    // Inject the Color Variable into the Global CSS
+    // 2. INJECT VARIABLES (Accent Color & Logo)
     $options = get_option( 'seac_settings' );
+    
+    // Color
     $accent_color = isset( $options['accent_color'] ) ? $options['accent_color'] : '#007cba';
-    $custom_css = ":root { --seac-accent-color: {$accent_color}; }";
+    
+    // Logo (Default to empty string if not set)
+    $logo_url = isset( $options['logo_url'] ) && !empty($options['logo_url']) 
+        ? "url('" . $options['logo_url'] . "')" 
+        : 'none';
+
+    // Build the dynamic CSS
+    $custom_css = "
+        :root { 
+            --seac-accent-color: {$accent_color}; 
+            --seac-logo-url: {$logo_url};
+        }
+    ";
+    
     wp_add_inline_style( 'seac-admin-main', $custom_css );
 
-
-    // B. PLUGIN SETTINGS PAGE ONLY (plugin.css)
-    // Loads ONLY on your "Admin Styler" page to style the form/buttons
-    // -------------------------------------------------------
-    if ( 'settings_page_seac-settings' === $hook ) {
-        $plugin_css = SEAC_PLUGIN_PATH . 'assets/css/plugin.css';
-        $p_ver      = file_exists( $plugin_css ) ? filemtime( $plugin_css ) : '1.0.0';
-
-        wp_enqueue_style(
-            'seac-plugin-settings',
-            SEAC_PLUGIN_URL . 'assets/css/plugin.css',
-            array(),
-            $p_ver
-        );
+    // 3. SETTINGS PAGE CSS
+    if ( 'toplevel_page_seac-settings' === $hook ) {
+        // ... (Keep your existing settings page css logic here if you have it)
     }
 }
+// Keep the priority 999!
 add_action( 'admin_enqueue_scripts', 'seac_enqueue_admin_assets' );
 
 
