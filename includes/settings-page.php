@@ -8,9 +8,8 @@ class SEAC_Settings_Page {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
-        // Prepare menu data late, just before the menu manager runs, to ensure all items are included.
-        // This is crucial for capturing menu items added by other plugins on 'admin_init'.
-        add_action( 'admin_init', array( $this, 'prepare_menu_data' ), 99 );
+        // This runs AFTER the menu manager has captured the original menu, ensuring we use the exact same source.
+        add_action( 'admin_init', array( $this, 'prepare_menu_data' ), 101 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_filter( 'upload_mimes', array( $this, 'allow_svg_uploads' ) );
     }
@@ -40,8 +39,17 @@ class SEAC_Settings_Page {
             return;
         }
 
-        global $menu;
-        $source_menu = $menu;
+        // Use the definitive original menu captured by the Menu Manager at priority 100.
+        // This ensures the UI sees the exact same menu state as the reordering logic,
+        // solving tricky timing issues where other plugins add items late.
+        if ( ! isset( $GLOBALS['seac_original_menu'] ) ) {
+            // This can happen if the menu manager didn't run, or on a different admin page.
+            // Fallback to the live menu for safety.
+            global $menu;
+            $source_menu = $menu;
+        } else {
+            $source_menu = $GLOBALS['seac_original_menu'];
+        }
         
         if ( !empty($source_menu) && is_array($source_menu) ) {
             foreach ( $source_menu as $index => $item ) {
