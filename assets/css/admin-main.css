@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - ARROW FIX (PERFECT BLEND)
+   SMART EDGE ADMIN - ARROW & PADDING FIXED
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -119,20 +119,23 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   5. SUBMENUS & THE ARROW FIX
+   5. SUBMENUS (PADDING & ARROW)
    -------------------------------------------------------------------------- */
-/* Submenu Box */
+/* Submenu Box - PADDING REMOVED */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
     background-color: #222222 !important;
+    padding: 0 !important; /* REMOVED PADDING */
 }
 
-/* THE ARROW FIX: 
-   This colors the little triangle that points from the sidebar 
-   to the submenu. It matches the submenu background (#222222).
+/* THE NUCLEAR ARROW FIX: 
+   Target the arrow on EVERY state (Hover, OpenSub, Active) 
+   and force it to match the submenu background (#222222).
 */
-#adminmenu .wp-submenu:before {
+#adminmenu li.wp-has-current-submenu .wp-submenu:before,
+#adminmenu li.opensub .wp-submenu:before,
+#adminmenu li.menu-top:hover .wp-submenu:before {
     border-right-color: #222222 !important;
 }
 
