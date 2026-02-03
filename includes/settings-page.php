@@ -3,9 +3,14 @@ if ( ! defined( 'WPINC' ) ) { die; }
 
 class SEAC_Settings_Page {
 
+    private $formatted_menu = array();
+
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
+        // Prepare menu data late, just before the menu manager runs, to ensure all items are included.
+        // This is crucial for capturing menu items added by other plugins on 'admin_init'.
+        add_action( 'admin_init', array( $this, 'prepare_menu_data' ), 99 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_filter( 'upload_mimes', array( $this, 'allow_svg_uploads' ) );
     }
@@ -29,26 +34,17 @@ class SEAC_Settings_Page {
         add_menu_page( 'Smart Edge Admin', 'Smart Admin', 'manage_options', 'seac-settings', array( $this, 'create_admin_page' ), 'dashicons-admin-appearance', 110 );
     }
 
-    public function create_admin_page() {
-        // --- DATA PREPARATION ---
-        
-        // THE FIX: Use the backup 'original' menu if it exists, otherwise fall back to global $menu
-        // This ensures the "Reset" button gets the Clean WordPress Menu, not the reordered one.
-        if ( isset( $GLOBALS['seac_original_menu'] ) ) {
-            $source_menu = $GLOBALS['seac_original_menu'];
-        } else {
-            global $menu;
-            $source_menu = $menu;
+    public function prepare_menu_data() {
+        // Only build the menu list when on our settings page to save resources.
+        if ( ! isset($_GET['page']) || $_GET['page'] !== 'seac-settings' ) {
+            return;
         }
 
-        $formatted_menu = array();
+        global $menu;
+        $source_menu = $menu;
         
         if ( !empty($source_menu) && is_array($source_menu) ) {
-            // We need the index to create unique slugs for items that don't have one.
             foreach ( $source_menu as $index => $item ) {
-                // This check was hiding malformed menu items (like separators without a slug)
-                // from the UI, causing them to become "orphans" and appear at the bottom.
-                // if ( ! isset( $item[2] ) ) continue;
 
                 $name = isset($item[0]) ? $item[0] : '';
                 // Generate a unique slug, matching the logic in menu-manager.php
@@ -76,7 +72,7 @@ class SEAC_Settings_Page {
 
                 if( $icon == 'div' ) $icon = 'dashicons-admin-generic';
 
-                $formatted_menu[] = array(
+                $this->formatted_menu[] = array(
                     'original_name' => $name, 
                     'slug'          => $slug, 
                     'icon'          => $icon,
@@ -85,9 +81,15 @@ class SEAC_Settings_Page {
             }
         }
 
+    }
+
+    public function create_admin_page() {
+        // --- DATA PREPARATION ---
+        // The menu data is now prepared in the `prepare_menu_data` method, which runs on `admin_init`.
+        // This ensures we have the final, complete menu list before it gets reordered.
         $seac_data = array(
             'roles' => get_editable_roles(),
-            'menu'  => $formatted_menu,
+            'menu'  => $this->formatted_menu,
             'saved_settings' => get_option( 'seac_menu_settings', array() )
         );
         ?>

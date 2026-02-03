@@ -48,9 +48,7 @@ class SEAC_Menu_Manager {
         // Map it
         $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
-            // Use slug if it's a non-empty string, otherwise use index to ensure uniqueness.
-            // This prevents items with empty or missing slugs from overwriting each other in the map.
-            $key = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
+            $key = isset($item[2]) ? $item[2] : "index_$index";
             $original_menu_map[$key] = $item;
         }
 
@@ -61,15 +59,19 @@ class SEAC_Menu_Manager {
 
             if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // Find the original menu item from our map. This now handles all item types, including separators.
+            // Separators
+            if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
+                $new_menu[ $menu_order_index ] = array( '', 'read', "separator_{$menu_order_index}", '', 'wp-menu-separator' );
+                $menu_order_index++;
+                continue;
+            }
+
+            // Standard Items
             if ( isset( $original_menu_map[$slug] ) ) {
                 $menu_item = $original_menu_map[$slug];
 
-                // Only apply rename/icon to non-separator items
-                if ( !isset($config_item['type']) || $config_item['type'] !== 'separator' ) {
-                    if ( ! empty( $config_item['rename'] ) ) $menu_item[0] = $config_item['rename'];
-                    if ( ! empty( $config_item['icon'] ) ) $menu_item[6] = $config_item['icon'];
-                }
+                if ( ! empty( $config_item['rename'] ) ) $menu_item[0] = $config_item['rename'];
+                if ( ! empty( $config_item['icon'] ) ) $menu_item[6] = $config_item['icon'];
 
                 $new_menu[ $menu_order_index ] = $menu_item;
                 $menu_order_index++;
