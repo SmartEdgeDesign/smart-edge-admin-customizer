@@ -57,7 +57,7 @@ class SEAC_Settings_Page {
                 $name = isset($item[0]) ? $item[0] : '';
                 // Generate a unique slug, matching the logic in menu-manager.php
                 $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-                $slug = $raw_slug;
+                $slug = html_entity_decode( $raw_slug );
                 $type = 'item';
                 $icon = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
 

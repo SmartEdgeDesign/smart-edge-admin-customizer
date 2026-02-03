@@ -48,6 +48,8 @@ class SEAC_Menu_Manager {
         
         // Map Slugs to Indices (Robust Matching)
         $slug_to_index = array();
+        $name_to_index = array(); // New: Map Clean Names to Indices
+
         foreach ( $source_menu as $index => $item ) {
             // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
             $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
@@ -57,6 +59,15 @@ class SEAC_Menu_Manager {
             $decoded = html_entity_decode($raw_slug);
             if ( $decoded !== $raw_slug ) {
                 $slug_to_index[$decoded] = $index;
+            }
+
+            // Build Name Map (Strip tags like update bubbles)
+            $name = isset($item[0]) ? $item[0] : '';
+            $name = preg_replace( '/<span.*<\/span>/', '', $name ); 
+            $name = strip_tags( $name ); 
+            $name = trim( $name );
+            if ( ! empty( $name ) ) {
+                $name_to_index[ $name ] = $index;
             }
         }
 
@@ -107,6 +118,11 @@ class SEAC_Menu_Manager {
             // FALLBACK: Reverse Posts variation (Admin has CPT link, User has standard Posts)
             else if ( $slug === 'edit.php?post_type=post' && isset( $slug_to_index['edit.php'] ) ) {
                 $found_index = $slug_to_index['edit.php'];
+            }
+            // FALLBACK: Name Match (The "Nuclear Option" for stubborn items)
+            // If slug match failed, try to find an item with the same name (e.g. "Posts")
+            else if ( isset( $config_item['original_name'] ) && isset( $name_to_index[ $config_item['original_name'] ] ) ) {
+                $found_index = $name_to_index[ $config_item['original_name'] ];
             }
 
             if ( $found_index !== null ) {
