@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - FLASH FIXED (NO BG TRANSITION)
+   SMART EDGE ADMIN - ZERO BACKGROUND LATENCY
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -75,7 +75,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. MAIN MENU ITEMS (THE FIX)
+   4. MAIN MENU ITEMS
    -------------------------------------------------------------------------- */
 /* ACTIVE Item Background (#191919) */
 #adminmenu li.wp-has-current-submenu > a,
@@ -88,7 +88,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     background-color: #191919 !important;
 }
 
-/* FOCUS/CLICK STATE FIX (Prevents the Blue Flash on click) */
+/* FOCUS/CLICK STATE FIX */
 #adminmenu li.menu-top > a:focus,
 #adminmenu li.menu-top > a:active {
     background-color: #191919 !important;
@@ -106,8 +106,11 @@ html.wp-toolbar { padding-top: 0px !important; }
     color: #999999 !important;
     font-weight: 100 !important;
     
-    /* THE FLASH FIX: Only transition color, NOT background */
-    transition: color 0.1s ease, opacity 0.1s ease; 
+    /* THE NUCLEAR FIX: 
+       We explicitly force background-color to take 0 seconds (Instant).
+       We only allow color (text) to fade. 
+    */
+    transition: color 0.2s ease, background-color 0s linear !important;
 }
 
 /* HOVER: Force White */
@@ -134,7 +137,6 @@ html.wp-toolbar { padding-top: 0px !important; }
     font-weight: 400 !important;
 }
 
-/* Submenu Padding */
 #adminmenu .wp-submenu a {
     padding: 5px 0 5px 12px !important; 
     font-size: 13px !important;
@@ -150,7 +152,8 @@ html.wp-toolbar { padding-top: 0px !important; }
     font-size: 15px !important;
     padding: 10px 0 !important;
     opacity: 0.8 !important;
-    transition: color 0.1s ease; /* Fast transition */
+    /* Force 0s background transition here too just in case */
+    transition: color 0.2s ease, background-color 0s linear !important;
 }
 
 /* Default Image State */
