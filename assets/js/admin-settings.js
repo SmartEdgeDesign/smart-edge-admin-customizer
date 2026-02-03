@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
     
-    // --- 1. MEDIA UPLOADER LOGIC (Keep existing) ---
+    // --- 1. MEDIA UPLOADER ---
     var mediaUploader;
     $('#seac_upload_logo_btn').click(function(e) {
         e.preventDefault();
@@ -23,18 +23,29 @@ jQuery(document).ready(function($){
         $('#seac_logo_preview').css('background-image', 'none');
     });
 
-    // --- 2. MENU MANAGER LOGIC (New!) ---
-    
-    // Safety check if data exists
-    if( typeof seacData === 'undefined' ) return;
+    // --- 2. MENU MANAGER ---
+    if( typeof seacData === 'undefined' ) {
+        console.error('SEAC: Menu data not found!');
+        return;
+    }
 
     var roles = seacData.roles;
     var masterMenu = seacData.menu;
-    var activeRole = 'administrator'; // Default tab
+    var activeRole = 'administrator'; 
 
     // A. Render Tabs
     var $tabsContainer = $('#seac_role_tabs');
-    $.each(roles, function(roleKey, roleData){
+    $tabsContainer.empty();
+    
+    // Helper to sort roles (Admin first)
+    var sortedRoles = Object.keys(roles).sort(function(a,b){
+        if(a === 'administrator') return -1;
+        if(b === 'administrator') return 1;
+        return 0;
+    });
+
+    $.each(sortedRoles, function(i, roleKey){
+        var roleData = roles[roleKey];
         var activeClass = (roleKey === activeRole) ? 'active' : '';
         var tabHtml = '<button type="button" class="seac-role-tab '+activeClass+'" data-role="'+roleKey+'">' + roleData.name + '</button>';
         $tabsContainer.append(tabHtml);
@@ -45,18 +56,25 @@ jQuery(document).ready(function($){
         var $list = $('#seac_menu_list');
         $list.empty();
 
-        // Loop through the master menu items
         $.each(masterMenu, function(index, item){
-            // Clean up the icon class (strip the 'dashicons-' prefix if using WP icons for display)
-            var iconClass = item.icon; 
             
+            // Icon Handler: Is it a dashicon or a URL/Base64?
+            var iconHtml = '';
+            if( item.icon.indexOf('dashicons-') !== -1 ) {
+                iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
+            } else if ( item.icon.indexOf('http') !== -1 || item.icon.indexOf('data:') !== -1 ) {
+                 iconHtml = '<img src="' + item.icon + '" style="max-width:20px; max-height:20px;" />';
+            } else {
+                iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
+            }
+
             var liHtml = `
                 <li class="seac-menu-item" data-original-slug="${item.slug}">
                     <div class="seac-item-handle">
                         <span class="dashicons dashicons-menu"></span>
                     </div>
                     <div class="seac-item-icon">
-                        <span class="dashicons ${iconClass}"></span>
+                        ${iconHtml}
                     </div>
                     <div class="seac-item-details">
                         <input type="text" class="seac-rename-input" value="${item.original_name}" placeholder="Rename item...">
@@ -72,7 +90,6 @@ jQuery(document).ready(function($){
             $list.append(liHtml);
         });
 
-        // Initialize Sortable (Drag & Drop)
         $list.sortable({
             handle: '.seac-item-handle',
             placeholder: 'seac-sortable-placeholder',
@@ -80,19 +97,13 @@ jQuery(document).ready(function($){
         });
     }
 
-    // Initial Render
     renderMenuList(activeRole);
 
     // C. Handle Tab Switching
     $('.seac-role-tab').click(function(){
-        // Update UI
         $('.seac-role-tab').removeClass('active');
         $(this).addClass('active');
-        
-        // Update Data
         activeRole = $(this).data('role');
-        
-        // Re-render list (In Phase 2, we will save/load specific configs here)
         renderMenuList(activeRole);
     });
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - 20PX PADDING & BOTTOM MENU
+   SMART EDGE ADMIN - FINAL LOGO FIX (COLLAPSE SUPPORT)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -79,15 +79,16 @@ html.wp-toolbar { padding-top: 0px !important; }
     background: transparent !important; 
 }
 
-/* LOGO AREA (UPDATED: 20px Padding) */
+/* LOGO AREA */
 #adminmenuwrap::before {
     content: "";
     display: block;
     background-color: #0c0c0c;
     width: 100%;
     
+    /* Expanded State */
     height: 90px;
-    padding: 20px; /* INCREASED PADDING */
+    padding: 20px;
     
     border-bottom: solid 1px #333;
     
@@ -98,6 +99,13 @@ html.wp-toolbar { padding-top: 0px !important; }
     background-position: center;
     background-origin: content-box; 
     box-sizing: border-box; 
+}
+
+/* THE COLLAPSE FIX:
+   When the menu is folded (body.folded), hide the logo area entirely.
+*/
+body.folded #adminmenuwrap::before {
+    display: none !important;
 }
 
 /* --------------------------------------------------------------------------
