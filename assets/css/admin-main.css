@@ -1,11 +1,10 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - STABLE BASE (ROUNDED + COLORS)
+   SMART EDGE ADMIN - STABLE BASE (COLOR LOGIC FIXED)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. GLOBAL UI & ROUNDED CORNERS
    -------------------------------------------------------------------------- */
-/* Rounded Buttons */
 .wp-core-ui .button,
 .wp-core-ui .button-primary,
 .wp-core-ui .button-secondary {
@@ -13,7 +12,6 @@
     padding: 0 12px !important;
 }
 
-/* Rounded Inputs */
 input[type=color], input[type=date], input[type=datetime-local], 
 input[type=datetime], input[type=email], input[type=month], 
 input[type=number], input[type=password], input[type=search], 
@@ -24,7 +22,6 @@ input[type=url], input[type=week], select, textarea {
     border-color: #dfdfdf !important;
 }
 
-/* Rounded Tables */
 .wp-list-table {
     border-radius: 15px !important;
     overflow: hidden !important;
@@ -32,7 +29,6 @@ input[type=url], input[type=week], select, textarea {
     box-shadow: none !important;
 }
 
-/* Screen Options Tab */
 #screen-meta-links .show-settings {
     border-radius: 0 0 15px 15px !important;
 }
@@ -46,41 +42,35 @@ html.wp-toolbar { padding-top: 0px !important; }
 #contextual-help-link-wrap { display: none !important; }
 .wrap h1 { display: none !important; }
 
-/* Hide Elementor AI & Notices */
-#e-image-ai-media-library,
-.e-ai-button,
-.e-notice,
-.notice.dce-generic-notice {
+#e-image-ai-media-library, .e-ai-button, .e-notice, .notice.dce-generic-notice {
     display: none !important;
 }
-#e-admin-top-bar-root .e-admin-top-bar__secondary-area,
-.e-logo-wrapper {
+#e-admin-top-bar-root .e-admin-top-bar__secondary-area, .e-logo-wrapper {
     display: none !important;
 }
 
 /* --------------------------------------------------------------------------
-   3. MENU BACKGROUNDS (Hierarchy)
+   3. MENU BACKGROUNDS
    -------------------------------------------------------------------------- */
-/* Level 1: Sidebar (#0c0c0c) */
+/* Sidebar Background */
 #adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* Level 2: Selected Item (#191919) */
+/* Selected Item Background */
 #adminmenu li.wp-has-current-submenu > a,
 #adminmenu li.current > a {
     background-color: #191919 !important;
-    color: #ffffff !important;
 }
 
-/* Level 3: Submenus (#222222) */
+/* Submenu Background */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
     background-color: #222222 !important;
 }
 
-/* Logo Area Placeholder */
+/* Logo Area */
 #adminmenuwrap::before {
     content: "";
     display: block;
@@ -91,36 +81,37 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. TYPOGRAPHY & TEXT COLORS
+   4. TEXT COLORS (THE FIX)
    -------------------------------------------------------------------------- */
-/* Default State: Grey & Thin */
+/* Base State: Grey */
 #adminmenu a, 
-#adminmenu .wp-menu-name,
+#adminmenu .wp-menu-name, /* Targeting this specifically... */
 #adminmenu .wp-submenu a {
     color: #888888 !important;
     font-weight: 100 !important;
     transition: all 0.2s ease;
 }
 
-/* HOVER: Text turns Bright White */
+/* HOVER: Force White */
 #adminmenu li.menu-top:hover > a,
-#adminmenu li.menu-top > a:focus,
+#adminmenu li.menu-top:hover .wp-menu-name, /* ...means we MUST override it here too */
 #adminmenu .wp-submenu a:hover {
     color: #ffffff !important;
 }
 
-/* ACTIVE/SELECTED: Text turns Bright White */
-#adminmenu li.wp-has-current-submenu > a,
+/* ACTIVE: Force White */
 #adminmenu li.current > a,
-#adminmenu li.current .wp-submenu li.current a {
+#adminmenu li.current .wp-menu-name, /* ...and here */
+#adminmenu li.wp-has-current-submenu > a,
+#adminmenu li.wp-has-current-submenu .wp-menu-name {
     color: #ffffff !important;
     font-weight: 400 !important;
 }
 
 /* --------------------------------------------------------------------------
-   5. ICONS (The Logic: Grey -> Accent)
+   5. ICONS (Grey -> Accent)
    -------------------------------------------------------------------------- */
-/* Default State: Grey, 15px */
+/* Base State: Grey, 15px */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
     color: #666666 !important;
@@ -130,7 +121,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     transition: color 0.2s ease;
 }
 
-/* GENERIC CATCH-ALL (Attempts to catch Elementor/Images without specific IDs) */
+/* Base Image State */
 #adminmenu .wp-menu-image img,
 #adminmenu .wp-menu-image svg {
     width: 15px !important;
@@ -140,7 +131,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     opacity: 0.7 !important;
 }
 
-/* HOVER: Icon turns Accent Color */
+/* HOVER: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
 #adminmenu li:hover .wp-menu-image img,
 #adminmenu li:hover .wp-menu-image svg {
@@ -149,7 +140,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     opacity: 1 !important;
 }
 
-/* ACTIVE/SELECTED: Icon turns Accent Color */
+/* ACTIVE: Accent Color */
 #adminmenu li.current .wp-menu-image:before,
 #adminmenu li.current .wp-menu-image svg,
 #adminmenu li.wp-has-current-submenu .wp-menu-image:before {
@@ -170,7 +161,6 @@ html.wp-toolbar { padding-top: 0px !important; }
 a.DividerAbove { border-top: solid 1px #333 !important; }
 a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px #333 !important; }
 
-/* Hide Scrollbar */
 #adminmenu::-webkit-scrollbar { width: 0; }
 
 @media screen and (max-width: 782px) {
