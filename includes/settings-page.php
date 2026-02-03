@@ -13,11 +13,14 @@ class SEAC_Settings_Page {
         if ( 'toplevel_page_seac-settings' !== $hook ) {
             return;
         }
-        // Enqueue WordPress Media Uploader
+        // Core Media Uploader
         wp_enqueue_media();
         
-        // Enqueue our custom JS
+        // Our Settings Page Logic
         wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery' ), '1.0.0', true );
+        
+        // Our Settings Page Styling (Ensure this file exists!)
+        wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
     public function add_plugin_page() {
@@ -34,14 +37,27 @@ class SEAC_Settings_Page {
 
     public function create_admin_page() {
         ?>
-        <div class="wrap">
-            <h1>Smart Edge Admin Customizer</h1>
+        <div class="wrap seac-settings-wrap">
+            <h1 class="wp-heading-inline">Smart Edge Admin Customizer</h1>
+            
             <form method="post" action="options.php">
                 <?php
                 settings_fields( 'seac_option_group' );
-                do_settings_sections( 'seac-settings' );
-                submit_button();
                 ?>
+                
+                <div class="seac-card">
+                    <div class="seac-card-header">
+                        <h2>Branding & Colors</h2>
+                        <p>Customize the look and feel of your admin dashboard.</p>
+                    </div>
+                    <div class="seac-card-body">
+                        <?php do_settings_sections( 'seac-settings' ); ?>
+                    </div>
+                </div>
+
+                <div class="seac-submit-area">
+                    <?php submit_button( 'Save Changes', 'primary large', 'submit', false ); ?>
+                </div>
             </form>
         </div>
         <?php
@@ -56,7 +72,7 @@ class SEAC_Settings_Page {
 
         add_settings_section(
             'seac_setting_section_branding', 
-            'Branding Settings', 
+            '', // No title needed here, handled by card header
             null, 
             'seac-settings'
         );
@@ -92,12 +108,17 @@ class SEAC_Settings_Page {
         $options = get_option( 'seac_settings' );
         $logo_url = isset( $options['logo_url'] ) ? $options['logo_url'] : '';
         ?>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="seac_logo_preview" style="width: 80px; height: 80px; background-color: #0c0c0c; background-size: contain; background-repeat: no-repeat; background-position: center; border: 1px solid #444; <?php echo $logo_url ? 'background-image: url('.$logo_url.');' : ''; ?>"></div>
-            <div>
-                <input type="text" id="seac_logo_url" name="seac_settings[logo_url]" value="<?php echo esc_attr( $logo_url ); ?>" style="width: 300px; display: block; margin-bottom: 10px;" />
-                <input type="button" class="button button-secondary" value="Upload Image" id="seac_upload_logo_btn" />
-                <input type="button" class="button button-link-delete" value="Remove" id="seac_remove_logo_btn" />
+        <div class="seac-control-group">
+            <div id="seac_logo_preview" class="seac-logo-preview" style="<?php echo $logo_url ? 'background-image: url('.$logo_url.');' : ''; ?>"></div>
+            <div class="seac-input-group">
+                <input type="text" id="seac_logo_url" name="seac_settings[logo_url]" value="<?php echo esc_attr( $logo_url ); ?>" placeholder="https://..." />
+                <div class="seac-button-group">
+                    <input type="button" class="button button-secondary" value="Select Image" id="seac_upload_logo_btn" />
+                    <?php if ( $logo_url ) : ?>
+                        <input type="button" class="button button-link-delete" value="Remove" id="seac_remove_logo_btn" />
+                    <?php endif; ?>
+                </div>
+                <p class="description">Recommended size: 200px wide x 80px high (PNG or SVG).</p>
             </div>
         </div>
         <?php
@@ -106,7 +127,10 @@ class SEAC_Settings_Page {
     public function accent_color_callback() {
         $options = get_option( 'seac_settings' );
         $color = isset( $options['accent_color'] ) ? $options['accent_color'] : '#007cba';
+        echo '<div class="seac-control-group">';
         echo '<input type="color" id="accent_color" name="seac_settings[accent_color]" value="' . esc_attr( $color ) . '" />';
+        echo '<p class="description">Select the highlight color for menu icons and active states.</p>';
+        echo '</div>';
     }
 }
 

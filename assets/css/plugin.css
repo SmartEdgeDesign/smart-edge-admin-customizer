@@ -1,62 +1,150 @@
-/* assets/css/plugin.css */
+/* ==========================================================================
+   SMART EDGE ADMIN - SETTINGS PAGE STYLING
+   ========================================================================== */
 
-/* 1. Header Styling */
-.wrap h1 {
-    color: var(--seac-accent-color);
-    font-weight: 300;
-    font-size: 2.2rem;
+/* Main Wrapper */
+.seac-settings-wrap {
+    max-width: 800px;
+    margin: 20px 0;
+}
+
+.seac-settings-wrap h1 {
     margin-bottom: 20px;
+    font-weight: 300;
 }
 
-/* 2. Form Styling */
-.form-table th {
-    font-weight: 600;
-    color: #444;
-}
-
-/* 3. The "Save Settings" Button */
-p.submit input.button-primary {
-    /* This variable comes from admin-main.css */
-    background: var(--seac-accent-color) !important;
-    border-color: var(--seac-accent-color) !important;
-    text-shadow: none;
+/* --------------------------------------------------------------------------
+   THE CARD COMPONENT
+   -------------------------------------------------------------------------- */
+.seac-card {
+    background: #1e1e1e; /* Dark Card BG */
+    border: 1px solid #333;
+    border-radius: 15px; /* Matches your dashboard preference */
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border-radius: 4px;
-    padding: 5px 25px;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    margin-bottom: 25px;
+    overflow: hidden;
 }
 
-/* Hover Effect */
-p.submit input.button-primary:hover {
-    filter: brightness(110%); /* Makes it slightly lighter */
-    transform: translateY(-2px); /* Moves it up slightly */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+/* Card Header */
+.seac-card-header {
+    background: #252525;
+    padding: 20px 25px;
+    border-bottom: 1px solid #333;
 }
 
-/* Active/Click Effect */
-p.submit input.button-primary:active {
-    transform: translateY(0);
+.seac-card-header h2 {
+    color: #ffffff;
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.seac-card-header p {
+    color: #888;
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Card Body */
+.seac-card-body {
+    padding: 25px;
+}
+
+/* Table Clean up */
+.seac-card-body .form-table th {
+    width: 200px;
+    padding: 20px 0;
+    color: #ccc;
+    font-weight: 400;
+}
+
+.seac-card-body .form-table td {
+    padding: 20px 0;
+}
+
+/* --------------------------------------------------------------------------
+   FORM ELEMENTS
+   -------------------------------------------------------------------------- */
+/* Logo Preview Box */
+.seac-logo-preview {
+    width: 100px;
+    height: 80px;
+    background-color: #0c0c0c;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #444;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Control Groups (Flex layouts) */
+.seac-control-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.seac-input-group {
+    flex-grow: 1;
+}
+
+/* Inputs */
+.seac-card input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+
+.seac-card input[type="text"]:focus {
+    border-color: var(--seac-accent-color, #007cba);
     box-shadow: none;
 }
 
-#wpcontent, #wpfooter {
-    background-color: #f6f7f9; /* Modern light grey background */
+/* Buttons */
+.seac-button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-/* Turn standard WP pages into "Cards" */
-.wrap {
-    background: #ffffff;
-    border-radius: var(--seac-radius);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft modern shadow */
-    padding: 25px 30px;
-    margin: 20px 20px 0 0;
-    border: 1px solid #eaeaea;
+/* Description Text */
+.description {
+    color: #777;
+    font-style: italic;
+    margin-top: 5px;
 }
 
-/* Clean up the title area */
-.wrap h1 {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
+/* Color Picker override */
+.wp-picker-container .wp-color-result.button {
+    border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   SUBMIT BUTTON AREA
+   -------------------------------------------------------------------------- */
+.seac-submit-area {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.seac-submit-area .button-primary {
+    background: var(--seac-accent-color, #007cba) !important;
+    border-color: var(--seac-accent-color, #007cba) !important;
+    border-radius: 8px !important;
+    padding: 5px 25px !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+.seac-submit-area .button-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
