@@ -21,8 +21,8 @@ class SEAC_Settings_Page {
         }
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
-        // Bump version to force cache clear
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '7.0.0', true );
+        // Version 33.0.0 (The stable version)
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '33.0.0', true );
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
@@ -31,7 +31,9 @@ class SEAC_Settings_Page {
     }
 
     public function create_admin_page() {
-        // DATA PREPARATION
+        // --- DATA PREPARATION ---
+        
+        // USE THE CAPTURED MENU (from admin_init)
         if ( isset( $GLOBALS['seac_original_menu'] ) ) {
             $source_menu = $GLOBALS['seac_original_menu'];
         } else {
@@ -50,11 +52,13 @@ class SEAC_Settings_Page {
                 $type = 'item';
                 $icon = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
 
+                // Separators
                 if ( isset($item[4]) && strpos( $item[4], 'wp-menu-separator' ) !== false ) {
                     $type = 'separator';
                     $name = '--- Divider ---';
                     $icon = '';
                 } 
+                // Clean Names
                 else {
                     $name = preg_replace( '/<span.*<\/span>/', '', $name ); 
                     $name = strip_tags( $name ); 
@@ -107,10 +111,7 @@ class SEAC_Settings_Page {
                     <div class="seac-card-body seac-menu-manager">
                         <div class="seac-role-tabs" id="seac_role_tabs"></div>
                         
-                        <div style="margin-bottom: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-                             <button type="button" id="seac_add_divider_btn" class="button button-secondary">
-                                <span class="dashicons dashicons-plus" style="margin-top: 3px; font-size: 16px;"></span> Add Divider
-                             </button>
+                        <div style="margin-bottom: 15px; text-align: right;">
                              <button type="button" id="seac_reset_menu_btn" class="button">
                                 <span class="dashicons dashicons-image-rotate" style="margin-top: 3px; font-size: 16px;"></span> Reset to Default
                              </button>
