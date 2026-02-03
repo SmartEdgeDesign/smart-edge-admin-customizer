@@ -25,7 +25,7 @@ class SEAC_Settings_Page {
         }
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '5.0.0', true );
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), filemtime( SEAC_PLUGIN_PATH . 'assets/js/admin-settings.js' ), true );
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
