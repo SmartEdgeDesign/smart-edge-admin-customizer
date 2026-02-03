@@ -50,8 +50,9 @@ class SEAC_Menu_Manager {
         $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
             // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
-            $key = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-            $original_menu_map[$key] = $item;
+            $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
+            $decoded_slug = html_entity_decode( $raw_slug ); // Fixes issues with encoded ampersands
+            $original_menu_map[$decoded_slug] = $item;
         }
 
         $menu_order_index = 0;
@@ -86,15 +87,31 @@ class SEAC_Menu_Manager {
             }
 
             // Standard Items
+            $found_item = null;
+            $found_key = null;
+
             if ( isset( $original_menu_map[$slug] ) ) {
-                $menu_item = $original_menu_map[$slug];
+                $found_item = $original_menu_map[$slug];
+                $found_key = $slug;
+            } 
+            // FALLBACK: Handle "Profile" replacing "Users" for non-admins
+            else if ( $slug === 'users.php' && isset( $original_menu_map['profile.php'] ) ) {
+                $found_item = $original_menu_map['profile.php'];
+                $found_key = 'profile.php';
+            }
+            // FALLBACK: Handle "Posts" variations (rare, but happens with some plugins)
+            else if ( $slug === 'edit.php' && isset( $original_menu_map['edit.php?post_type=post'] ) ) {
+                $found_item = $original_menu_map['edit.php?post_type=post'];
+                $found_key = 'edit.php?post_type=post';
+            }
 
-                if ( ! empty( $config_item['rename'] ) ) $menu_item[0] = $config_item['rename'];
-                if ( ! empty( $config_item['icon'] ) ) $menu_item[6] = $config_item['icon'];
+            if ( $found_item ) {
+                if ( ! empty( $config_item['rename'] ) ) $found_item[0] = $config_item['rename'];
+                if ( ! empty( $config_item['icon'] ) ) $found_item[6] = $config_item['icon'];
 
-                $new_menu[ $menu_order_index ] = $menu_item;
+                $new_menu[ $menu_order_index ] = $found_item;
                 $menu_order_index++;
-                unset( $original_menu_map[$slug] );
+                unset( $original_menu_map[$found_key] );
             }
         }
 
