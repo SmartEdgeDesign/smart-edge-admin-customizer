@@ -57,7 +57,12 @@ class SEAC_Menu_Manager {
         foreach ( $role_config as $config_item ) {
             $slug = $config_item['slug'];
 
-            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
+            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) {
+                // This is a hidden item. We must remove it from the original map
+                // so it doesn't get re-added at the end with the "orphans".
+                unset( $original_menu_map[$slug] );
+                continue;
+            }
 
             // Handle newly added or existing separators from config
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
