@@ -253,8 +253,8 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
     font: normal 15px / 1 dashicons !important;
     color: #999999 !important;
 }
-#adminmenu #collapse-button .collapse-button-icon:after:hover{
-    color: var(--seac-accent-color) !important
+#adminmenu #collapse-button .collapse-button-icon:hover:after {
+    color: var(--seac-accent-color) !important;
 }
 
 /* Hover State */
