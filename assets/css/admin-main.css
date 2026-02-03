@@ -1,17 +1,15 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - STABLE CORE (V3)
+   SMART EDGE ADMIN - FORCE OVERRIDES
    ========================================================================== */
 
-/* 1. REMOVE ADMIN BAR */
-#wpadminbar {
-    display: none !important;
-}
-html.wp-toolbar {
-    padding-top: 0px !important;
-}
+/* 1. ADMIN BAR REMOVAL */
+#wpadminbar { display: none !important; }
+html.wp-toolbar { padding-top: 0px !important; }
 
-/* 2. MAIN CONTAINER & BACKGROUND */
-#adminmenu, #adminmenuback, #adminmenuwrap {
+/* 2. BACKGROUNDS (Deep Dark) */
+#adminmenu, #adminmenuback, #adminmenuwrap, 
+#adminmenu .wp-submenu, 
+#adminmenu .wp-has-current-submenu .wp-submenu {
     background-color: #0c0c0c !important;
 }
 
@@ -28,131 +26,100 @@ html.wp-toolbar {
     border-bottom: solid 1px #333;
 }
 
-/* 3. TEXT STYLING (Strictly White/Grey) */
-#adminmenu a, 
-#adminmenu .wp-menu-name {
+/* ==========================================================================
+   3. TEXT COLORS (The "White Text" Fix)
+   ========================================================================== */
+/* Default State: Grey */
+#adminmenu li a, 
+#adminmenu .wp-submenu a {
     color: #888888 !important;
     font-weight: 100 !important;
-    transition: all 0.2s ease;
 }
 
-/* 4. UNIVERSAL ICON STANDARDIZATION (The Fix for Elementor/Bricks) */
-/* This forces ALL icons (Font, SVG, or Image) to the same size and alignment */
-#adminmenu div.wp-menu-image:before,
-.dashicons-before:before,
-#adminmenu .wp-menu-image img,
-#adminmenu .wp-menu-image svg {
-    font-size: 15px !important;
-    width: 15px !important;     /* Force width for images */
-    height: auto !important;
-    padding: 10px 0 !important;
-    color: #666666 !important;  /* Default grey */
-    fill: #666666 !important;   /* For SVGs */
-    opacity: 0.7;               /* Dim images slightly */
-    transition: all 0.2s ease;
-}
-
-/* 5. INTERACTION: HOVER STATE */
-/* Text turns WHITE (Never Accent Color) */
+/* HOVER STATE: Text MUST be White */
 #adminmenu li.menu-top:hover > a,
-#adminmenu li.menu-top > a:focus {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.03) !important;
+#adminmenu li.menu-top > a:hover,
+#adminmenu li.menu-top > a:focus,
+#adminmenu .wp-submenu a:hover,
+#adminmenu .wp-submenu a:focus {
+    color: #ffffff !important; /* Force White */
+    background-color: transparent !important;
 }
 
-/* Icons turn ACCENT COLOR */
-#adminmenu li.menu-top:hover div.wp-menu-image:before,
-#adminmenu li.menu-top:hover .wp-menu-image svg,
-#adminmenu li.menu-top:hover .wp-menu-image img {
-    color: var(--seac-accent-color) !important;
-    fill: var(--seac-accent-color) !important; /* Colors SVGs */
-    opacity: 1;
-}
-
-/* 6. INTERACTION: ACTIVE STATE */
+/* ACTIVE STATE: Text MUST be White */
+#adminmenu li.current > a,
 #adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current > a {
-    background-color: #151515 !important;
+#adminmenu li.current .wp-submenu li.current a {
     color: #ffffff !important;
     font-weight: 400 !important;
+    background: #151515 !important;
 }
 
-/* Active Icon */
-#adminmenu li.wp-has-current-submenu div.wp-menu-image:before,
-#adminmenu li.current div.wp-menu-image:before {
-    color: var(--seac-accent-color) !important;
-}
-
-/* Remove Arrows */
-#adminmenu li.wp-has-current-submenu > a:after,
-#adminmenu li.current > a:after {
-    display: none;
-}
-
-/* 7. COLLAPSE MENU BUTTON FIX */
-/* Remove the default blue and fix the icon size */
-#collapse-menu, #collapse-button {
-    color: #888888 !important;
-    background: transparent !important;
-    border-top: 1px solid #333;
-}
-
-#collapse-menu:hover, #collapse-button:hover {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.03) !important;
-}
-
-/* Target the Collapse Icon specifically */
-#collapse-button .collapse-button-icon:before,
-#collapse-menu .collapse-button-icon:before {
-    font-size: 15px !important; /* Force small size */
+/* ==========================================================================
+   4. ICON COLORS (The "Accent" Fix)
+   ========================================================================== */
+/* Default State: Grey */
+#adminmenu .wp-menu-image:before,
+#adminmenu .wp-menu-image svg,
+#adminmenu .wp-menu-image img {
     color: #666666 !important;
-    padding-top: 2px !important; /* Vertical alignment adjustment */
+    fill: #666666 !important;
+    opacity: 0.7 !important;
+    font-size: 15px !important; /* Force Size */
+    width: 15px !important;
 }
 
-/* Color the icon on hover */
-#collapse-button:hover .collapse-button-icon:before,
-#collapse-menu:hover .collapse-button-icon:before {
+/* HOVER & ACTIVE: Icon turns Accent Color */
+#adminmenu li:hover .wp-menu-image:before,
+#adminmenu li.current .wp-menu-image:before,
+#adminmenu li.wp-has-current-submenu .wp-menu-image:before,
+#adminmenu li:hover .wp-menu-image svg,
+#adminmenu li:hover .wp-menu-image img {
+    color: var(--seac-accent-color) !important;
+    fill: var(--seac-accent-color) !important;
+    opacity: 1 !important;
+}
+
+/* ==========================================================================
+   5. COLLAPSE BUTTON (The "Blue" Fix)
+   ========================================================================== */
+/* We target the ID explicitly to kill the blue background */
+#adminmenu #collapse-button,
+#adminmenu #collapse-menu {
+    background: transparent !important;
+    border-top: 1px solid #333 !important;
+    color: #888888 !important;
+}
+
+#adminmenu #collapse-button:hover,
+#adminmenu #collapse-menu:hover {
+    color: #ffffff !important; /* Text/Icon white on hover */
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Target the icon inside the button */
+#adminmenu #collapse-button .collapse-button-icon:before,
+#adminmenu #collapse-menu .collapse-button-icon:before {
+    font-size: 15px !important;
+    color: #666666 !important;
+    padding-top: 2px !important;
+}
+
+/* Icon hover state */
+#adminmenu #collapse-button:hover .collapse-button-icon:before {
     color: var(--seac-accent-color) !important;
 }
 
-/* 8. SUBMENU STYLING */
-#adminmenu .wp-submenu,
-#adminmenu .wp-has-current-submenu .wp-submenu,
-#adminmenu .wp-submenu.sub-open {
-    background-color: #0c0c0c !important;
-}
-
-#adminmenu .wp-submenu a {
-    font-size: 13px;
-    font-weight: 100 !important;
-    color: #888888 !important; /* Ensure default is grey */
-    padding-left: 20px;
-}
-
-#adminmenu .wp-submenu a:hover,
-#adminmenu .wp-submenu li.current a {
-    color: #ffffff !important; /* White text on hover (Not Accent) */
-}
-
-/* 9. DIVIDERS */
+/* ==========================================================================
+   6. MOBILE & DIVIDERS
+   ========================================================================== */
 #adminmenu li.wp-menu-separator {
-    height: 1px;
-    padding: 0;
-    margin: 10px 0;
-    cursor: inherit;
-    background-color: #333;
-    border: none;
+    background: #333 !important;
+    height: 1px !important;
+    margin: 10px 0 !important;
 }
 
-/* 10. MOBILE */
 @media screen and (max-width: 782px) {
-    #adminmenu {
-        width: auto !important;
-        position: relative !important;
-        height: auto !important;
-        top: 0 !important;
-    }
+    #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
     #wpcontent { margin-left: 0 !important; }
-    #wpwrap.wp-responsive-open { overflow-x: hidden; }
 }
