@@ -119,10 +119,20 @@ class SEAC_Menu_Manager {
 
         if ( empty( $blocked_slugs ) ) return;
 
-        global $pagenow;
-        $current_slug = $pagenow;
-        if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) ) {
+        global $pagenow;        
+        $current_slug = $pagenow; // Default to the filename, e.g., "tools.php"
+
+        // Case 1: Standard submenu pages, e.g., /wp-admin/admin.php?page=some-slug
+        if ( $pagenow === 'admin.php' && isset( $_GET['page'] ) ) {
             $current_slug = $_GET['page'];
+        } 
+        // Case 2: Core pages differentiated by query parameters. This is the key fix.
+        else {
+            if ( in_array( $pagenow, array( 'edit.php', 'post-new.php' ) ) && isset( $_GET['post_type'] ) ) {
+                $current_slug = $pagenow . '?post_type=' . $_GET['post_type'];
+            } else if ( $pagenow === 'edit-tags.php' && isset( $_GET['taxonomy'] ) ) {
+                $current_slug = $pagenow . '?taxonomy=' . $_GET['taxonomy'];
+            }
         }
 
         if ( in_array( $current_slug, $blocked_slugs ) ) {
