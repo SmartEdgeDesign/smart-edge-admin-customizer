@@ -63,6 +63,12 @@ class SEAC_Menu_Manager {
                 // This is a hidden item. We must remove it from the original map
                 // so it doesn't get re-added at the end with the "orphans".
                 unset( $original_menu_map[$slug] );
+
+                // FIX: Handle "Profile" (profile.php) which replaces "Users" (users.php) for non-admins.
+                // If "Users" is hidden in the config, "Profile" should also be hidden for the user.
+                if ( $slug === 'users.php' && isset( $original_menu_map['profile.php'] ) ) {
+                    unset( $original_menu_map['profile.php'] );
+                }
                 continue;
             }
 
@@ -122,6 +128,10 @@ class SEAC_Menu_Manager {
         foreach ( $saved_settings[$role] as $item ) {
             if ( isset($item['hidden']) && $item['hidden'] == true ) {
                 $blocked_slugs[] = $item['slug'];
+                // FIX: Block profile.php if users.php is hidden
+                if ( $item['slug'] === 'users.php' ) {
+                    $blocked_slugs[] = 'profile.php';
+                }
             }
         }
 
