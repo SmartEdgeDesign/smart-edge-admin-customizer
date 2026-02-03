@@ -7,6 +7,15 @@ class SEAC_Settings_Page {
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        
+        // ALLOW SVG UPLOADS
+        add_filter( 'upload_mimes', array( $this, 'allow_svg_uploads' ) );
+    }
+
+    // New Function to Allow SVG
+    public function allow_svg_uploads( $mimes ) {
+        $mimes['svg'] = 'image/svg+xml';
+        return $mimes;
     }
 
     public function enqueue_admin_scripts( $hook ) {
@@ -19,14 +28,14 @@ class SEAC_Settings_Page {
         // Our Settings Page Logic
         wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery' ), '1.0.0', true );
         
-        // Our Settings Page Styling (Ensure this file exists!)
+        // Our Settings Page Styling
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
     public function add_plugin_page() {
         add_menu_page(
-            'Smart Edge Admin', 
-            'Smart Edge Admin', 
+            'Smart Edge Admin',   // Page Title (Browser Tab)
+            'Smart Admin',        // Menu Title (Sidebar Name - CHANGED)
             'manage_options', 
             'seac-settings', 
             array( $this, 'create_admin_page' ), 
@@ -72,7 +81,7 @@ class SEAC_Settings_Page {
 
         add_settings_section(
             'seac_setting_section_branding', 
-            '', // No title needed here, handled by card header
+            '', 
             null, 
             'seac-settings'
         );
@@ -118,7 +127,7 @@ class SEAC_Settings_Page {
                         <input type="button" class="button button-link-delete" value="Remove" id="seac_remove_logo_btn" />
                     <?php endif; ?>
                 </div>
-                <p class="description">Recommended size: 200px wide x 80px high (PNG or SVG).</p>
+                <p class="description">Supported formats: PNG, JPG, SVG.</p>
             </div>
         </div>
         <?php
