@@ -238,16 +238,14 @@ jQuery(document).ready(function($){
         }
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            // 1. Delete the config for this role entirely.
-            // This allows the role to revert to its native WordPress default menu.
-            delete currentConfig[activeRole];
+            // 1. Reset Data in memory (Copy Master Menu).
+            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             
-            // 2. Bypass the standard submit handler to ensure the deletion is sent.
-            var jsonString = JSON.stringify(currentConfig);
-            $('#seac_menu_config_input').val(jsonString);
+            // 2. Re-render the list from the reset data.
+            // This ensures that when the form is submitted, saveCurrentTabState() reads the correct (reset) state.
+            renderMenuList(activeRole);
             
-            // 3. Unbind the submit handler to prevent overwriting, then submit.
-            $('.seac-settings-wrap form').off('submit');
+            // 3. Submit the form.
             $('.seac-settings-wrap form').submit();
         }
     });

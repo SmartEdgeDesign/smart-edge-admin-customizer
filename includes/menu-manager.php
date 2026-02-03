@@ -51,7 +51,8 @@ class SEAC_Menu_Manager {
         foreach ( $source_menu as $index => $item ) {
             // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
             $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-            $original_menu_map[$raw_slug] = $item;
+            $decoded_slug = html_entity_decode( $raw_slug ); 
+            $original_menu_map[$decoded_slug] = $item;
         }
 
         $menu_order_index = 0;
