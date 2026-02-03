@@ -38,6 +38,7 @@ jQuery(document).ready(function($){
         if( savedSettings[roleKey] ) {
             currentConfig[roleKey] = savedSettings[roleKey];
         } else {
+            // Clone master menu
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
     });
@@ -78,7 +79,6 @@ jQuery(document).ready(function($){
 
             // --- SEPARATOR LOGIC ---
             if ( item.type === 'separator' ) {
-                // Simplified UI for Dividers
                 var liHtml = `
                     <li class="seac-menu-item seac-is-separator ${hiddenClass}" data-slug="${item.slug}" data-type="separator">
                          <div class="seac-item-handle" style="width:100%; text-align:center; padding:5px 0; color:#ccc;">
@@ -139,6 +139,7 @@ jQuery(document).ready(function($){
         }
     }
 
+    // Capture state from DOM into currentConfig
     function saveCurrentTabState() {
         var newOrder = [];
         $('#seac_menu_list li').each(function(){
@@ -146,7 +147,7 @@ jQuery(document).ready(function($){
             newOrder.push({
                 slug: $li.data('slug'),
                 original_name: $li.data('original-name'),
-                type: $li.data('type'),
+                type: $li.data('type'), // Keep track if it is item or separator
                 rename: $li.find('.seac-rename-input').val(),
                 icon: $li.find('.seac-icon-input').val(),
                 hidden: $li.hasClass('seac-hidden')
@@ -155,8 +156,10 @@ jQuery(document).ready(function($){
         currentConfig[activeRole] = newOrder;
     }
 
+    // Initial Render
     renderMenuList(activeRole);
 
+    // Tab Switching
     $('.seac-role-tab').click(function(){
         saveCurrentTabState();
         $('.seac-role-tab').removeClass('active');
@@ -165,6 +168,7 @@ jQuery(document).ready(function($){
         renderMenuList(activeRole);
     });
 
+    // Visibility Toggle
     $(document).on('click', '.seac-visibility-toggle', function(){
         var $btn = $(this);
         var $icon = $btn.find('.dashicons');
@@ -179,6 +183,18 @@ jQuery(document).ready(function($){
         }
     });
 
+    // --- RESET BUTTON LOGIC ---
+    $('#seac_reset_menu_btn').click(function(e){
+        e.preventDefault();
+        
+        if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default? This will undo all reordering and renaming.') ) {
+            // Overwrite current role config with fresh master copy
+            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
+            renderMenuList(activeRole);
+        }
+    });
+
+    // FORM SUBMISSION
     $('.seac-settings-wrap form').submit(function(e){
         saveCurrentTabState();
         var jsonString = JSON.stringify(currentConfig);
