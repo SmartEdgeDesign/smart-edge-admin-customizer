@@ -87,6 +87,9 @@ jQuery(document).ready(function($){
                              <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
                                 <span class="dashicons ${hiddenIcon}"></span>
                             </button>
+                            <button type="button" class="seac-remove-item" title="Remove Item">
+                                <span class="dashicons dashicons-trash"></span>
+                            </button>
                         </div>
                         <input type="hidden" class="seac-rename-input" value="">
                         <input type="hidden" class="seac-icon-input" value="">
@@ -121,6 +124,9 @@ jQuery(document).ready(function($){
                         <div class="seac-item-actions">
                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
                                 <span class="dashicons ${hiddenIcon}"></span>
+                            </button>
+                            <button type="button" class="seac-remove-item" title="Remove Item">
+                                <span class="dashicons dashicons-trash"></span>
                             </button>
                         </div>
                     </li>
@@ -175,6 +181,41 @@ jQuery(document).ready(function($){
         } else {
             $li.addClass('seac-hidden');
             $icon.removeClass('dashicons-visibility').addClass('dashicons-hidden');
+        }
+    });
+
+    // --- ADD DIVIDER BUTTON ---
+    $('#seac_add_divider_btn').click(function(e){
+        e.preventDefault();
+        var $list = $('#seac_menu_list');
+        // Create a unique slug for the new divider using a timestamp
+        var uniqueSlug = 'separator_' + new Date().getTime();
+
+        var liHtml = `
+            <li class="seac-menu-item seac-is-separator" data-slug="${uniqueSlug}" data-type="separator">
+                 <div class="seac-item-handle" style="width:100%; text-align:center; padding:5px 0; color:#ccc;">
+                    <span class="dashicons dashicons-menu"></span> —————— Divider ——————
+                </div>
+                <div class="seac-item-actions">
+                     <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
+                        <span class="dashicons dashicons-visibility"></span>
+                    </button>
+                    <button type="button" class="seac-remove-item" title="Remove Item">
+                        <span class="dashicons dashicons-trash"></span>
+                    </button>
+                </div>
+                <input type="hidden" class="seac-rename-input" value="">
+                <input type="hidden" class="seac-icon-input" value="">
+            </li>
+        `;
+        $list.append(liHtml);
+    });
+
+    // --- REMOVE ITEM BUTTON ---
+    $(document).on('click', '.seac-remove-item', function(){
+        // Use a confirmation dialog to prevent accidental removal
+        if ( confirm('Are you sure you want to remove this item from the menu configuration? This cannot be undone.') ) {
+            $(this).closest('li').remove();
         }
     });
 

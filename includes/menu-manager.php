@@ -59,10 +59,16 @@ class SEAC_Menu_Manager {
 
             if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // Separators
+            // Handle newly added or existing separators from config
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
-                $new_menu[ $menu_order_index ] = array( '', 'read', "separator_{$menu_order_index}", '', 'wp-menu-separator' );
+                // Use the unique slug from the config. This allows for persistent, user-added dividers.
+                $new_menu[ $menu_order_index ] = array( '', 'read', $slug, '', 'wp-menu-separator' );
                 $menu_order_index++;
+                // If this separator was part of the original menu, remove it from the map
+                // so it doesn't get added again with the orphans.
+                if ( isset($original_menu_map[$slug]) ) {
+                    unset( $original_menu_map[$slug] );
+                }
                 continue;
             }
 

@@ -121,7 +121,10 @@ class SEAC_Settings_Page {
                     </div>
                     <div class="seac-card-body seac-menu-manager">
                         <div class="seac-role-tabs" id="seac_role_tabs"></div>
-                        <div style="margin-bottom: 15px; text-align: right;">
+                        <div class="seac-menu-controls" style="margin-bottom: 15px; text-align: right;">
+                             <button type="button" id="seac_add_divider_btn" class="button" style="margin-right: 8px;">
+                                <span class="dashicons dashicons-minus"></span> Add Divider
+                             </button>
                              <button type="button" id="seac_reset_menu_btn" class="button">
                                 <span class="dashicons dashicons-image-rotate" style="margin-top: 3px; font-size: 16px;"></span> Reset to Default
                              </button>
