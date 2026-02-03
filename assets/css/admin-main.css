@@ -64,7 +64,8 @@ html.wp-toolbar { padding-top: 0px !important; }
 
 /* Hover OR Open Submenu State (#191919) */
 #adminmenu li.menu-top:hover,
-#adminmenu li.opensub {
+#adminmenu li.opensub,
+#adminmenu #collapse-menu:hover {
     background: #191919 !important;
 }
 
@@ -249,11 +250,11 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
 }
 
 /* Hover State - Label */
-#adminmenu #collapse-menu:hover #collapse-button .collapse-button-label {
+#adminmenu #collapse-menu:hover .collapse-button-label {
     color: #ffffff !important;
 }
 
 /* Hover State - Icon (Matches other menu items) */
-#adminmenu #collapse-menu:hover #collapse-button .collapse-button-icon:before {
+#adminmenu #collapse-menu:hover .collapse-button-icon:before {
     color: var(--seac-accent-color) !important;
 }
