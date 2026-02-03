@@ -25,35 +25,29 @@ jQuery(document).ready(function($){
 
     // --- 2. MENU MANAGER ---
     
-    // FETCH THE DATA FROM THE HIDDEN DIV
-    var $dataDiv = $('#seac-json-data');
-    if ( $dataDiv.length === 0 ) {
-        console.log('SEAC: Data div not found.');
-        return;
-    }
-
-    // Parse the JSON safely
-    try {
-        var seacData = JSON.parse( $dataDiv.attr('data-json') );
-    } catch (e) {
-        console.error('SEAC: JSON Parse error', e);
+    // Safety check: Does the variable exist?
+    if ( typeof seacData === 'undefined' ) {
+        console.error("SEAC Error: seacData variable is missing.");
+        $('#seac_role_tabs').html('<p style="color:red; padding:10px;">Error: Menu data not loaded.</p>');
         return;
     }
 
     var roles = seacData.roles;
     var masterMenu = seacData.menu;
-    var activeRole = 'administrator'; 
+    var activeRole = 'administrator'; // Default
 
     // A. Render Tabs
     var $tabsContainer = $('#seac_role_tabs');
     $tabsContainer.empty();
     
+    // Sort roles to put Administrator first
     var sortedRoles = Object.keys(roles).sort(function(a,b){
         if(a === 'administrator') return -1;
         if(b === 'administrator') return 1;
         return 0;
     });
 
+    // Build Tab Buttons
     $.each(sortedRoles, function(i, roleKey){
         var roleData = roles[roleKey];
         var activeClass = (roleKey === activeRole) ? 'active' : '';
@@ -66,9 +60,14 @@ jQuery(document).ready(function($){
         var $list = $('#seac_menu_list');
         $list.empty();
 
+        if( masterMenu.length === 0 ) {
+            $list.html('<li style="padding:20px;">No menu items found.</li>');
+            return;
+        }
+
         $.each(masterMenu, function(index, item){
             
-            // Icon Handler
+            // Icon Logic
             var iconHtml = '';
             if( item.icon.indexOf('dashicons-') !== -1 ) {
                 iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
@@ -100,7 +99,7 @@ jQuery(document).ready(function($){
             $list.append(liHtml);
         });
 
-        // Initialize Sortable
+        // Enable Drag & Drop
         if ($.fn.sortable) {
             $list.sortable({
                 handle: '.seac-item-handle',
@@ -110,9 +109,10 @@ jQuery(document).ready(function($){
         }
     }
 
+    // Initial Render
     renderMenuList(activeRole);
 
-    // C. Handle Tab Switching
+    // C. Tab Switching Logic
     $('.seac-role-tab').click(function(){
         $('.seac-role-tab').removeClass('active');
         $(this).addClass('active');
@@ -120,7 +120,7 @@ jQuery(document).ready(function($){
         renderMenuList(activeRole);
     });
 
-    // D. Handle Visibility Toggle
+    // D. Visibility Toggle Logic
     $(document).on('click', '.seac-visibility-toggle', function(){
         var $btn = $(this);
         var $icon = $btn.find('.dashicons');
