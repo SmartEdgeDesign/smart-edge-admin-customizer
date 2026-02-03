@@ -56,9 +56,7 @@ class SEAC_Settings_Page {
 
                 $name = isset($item[0]) ? $item[0] : '';
                 // Generate a unique slug, matching the logic in menu-manager.php
-                $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-                $slug = $raw_slug;
-                $slug = html_entity_decode( $raw_slug );
+                $slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
                 $type = 'item';
                 $icon = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
 
@@ -97,12 +95,10 @@ class SEAC_Settings_Page {
         // --- DATA PREPARATION ---
         // The menu data is now prepared in the `prepare_menu_data` method, which runs on `admin_init`.
         // This ensures we have the final, complete menu list before it gets reordered.
-        $options = get_option( 'seac_settings' );
-        $saved_menu_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
         $seac_data = array(
             'roles' => get_editable_roles(),
             'menu'  => $this->formatted_menu,
-            'saved_settings' => $saved_menu_settings
+            'saved_settings' => get_option( 'seac_menu_settings', array() )
         );
         ?>
         
@@ -167,14 +163,10 @@ class SEAC_Settings_Page {
         $new_input = array();
         if( isset( $input['logo_url'] ) ) $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
         if( isset( $input['accent_color'] ) ) $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
-        
-        // Standardize saving the menu config as part of the main settings array.
-        // This avoids race conditions from using update_option inside a sanitize callback.
-        if ( isset( $input['menu_config'] ) ) {
+        if ( isset( $input['menu_config'] ) && ! empty( $input['menu_config'] ) ) {
             $json = stripslashes( $input['menu_config'] );
             $decoded = json_decode( $json, true );
-            // Only add to our settings array if it's valid decoded JSON.
-            if ( is_array( $decoded ) ) $new_input['menu_config'] = $decoded;
+            if ( is_array( $decoded ) ) update_option( 'seac_menu_settings', $decoded );
         }
         return $new_input;
     }

@@ -31,11 +31,10 @@ class SEAC_Menu_Manager {
         $role = $this->get_current_role();
         if ( ! $role ) return;
 
-        $options = get_option( 'seac_settings' );
-        $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
+        $saved_settings = get_option( 'seac_menu_settings', array() );
         
         // If no settings, stop. Leave default menu alone.
-        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) || ! is_array( $saved_settings[$role] ) ) {
+        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
             return;
         }
 
@@ -46,101 +45,53 @@ class SEAC_Menu_Manager {
         // Use our perfect snapshot
         $source_menu = $GLOBALS['seac_original_menu'];
         
-        // Map Slugs to Indices (Robust Matching)
-        $slug_to_index = array();
-        $name_to_index = array(); // New: Map Clean Names to Indices
-
+        // Map it
+        $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
-            // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
-            $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-            $slug_to_index[$raw_slug] = $index;
-            
-            // Also map the decoded version to the same index to handle encoding mismatches (e.g. & vs &amp;)
-            $decoded = html_entity_decode($raw_slug);
-            if ( $decoded !== $raw_slug ) {
-                $slug_to_index[$decoded] = $index;
-            }
-
-            // Build Name Map (Strip tags like update bubbles)
-            $name = isset($item[0]) ? $item[0] : '';
-            $name = preg_replace( '/<span.*<\/span>/', '', $name ); 
-            $name = strip_tags( $name ); 
-            $name = trim( $name );
-            if ( ! empty( $name ) ) {
-                $name_to_index[ $name ] = $index;
-            }
+            $key = isset($item[2]) ? $item[2] : "index_$index";
+            $original_menu_map[$key] = $item;
         }
 
-        $used_indices = array();
         $menu_order_index = 0;
 
         foreach ( $role_config as $config_item ) {
             $slug = $config_item['slug'];
 
-            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) {
-                // Mark as used so it doesn't appear as orphan
-                if ( isset($slug_to_index[$slug]) ) {
-                    $used_indices[ $slug_to_index[$slug] ] = true;
-                }
-                // Handle Profile/Users fallback
-                if ( $slug === 'users.php' && isset($slug_to_index['profile.php']) ) {
-                    $used_indices[ $slug_to_index['profile.php'] ] = true;
-                }
-                continue;
-            }
+            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
             // Handle newly added or existing separators from config
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
                 // Use the unique slug from the config. This allows for persistent, user-added dividers.
                 $new_menu[ $menu_order_index ] = array( '', 'read', $slug, '', 'wp-menu-separator' );
                 $menu_order_index++;
-                // If this separator was part of the original menu, mark it used
-                if ( isset($slug_to_index[$slug]) ) {
-                    $used_indices[ $slug_to_index[$slug] ] = true;
+                // If this separator was part of the original menu, remove it from the map
+                // so it doesn't get added again with the orphans.
+                if ( isset($original_menu_map[$slug]) ) {
+                    unset( $original_menu_map[$slug] );
                 }
                 continue;
             }
 
             // Standard Items
-            $found_index = null;
-
-            if ( isset( $slug_to_index[$slug] ) ) {
-                $found_index = $slug_to_index[$slug];
-            } 
-            // FALLBACK: Handle "Profile" replacing "Users" for non-admins
-            else if ( $slug === 'users.php' && isset( $slug_to_index['profile.php'] ) ) {
-                $found_index = $slug_to_index['profile.php'];
-            }
-            // FALLBACK: Handle "Posts" variations (rare, but happens with some plugins)
-            else if ( $slug === 'edit.php' && isset( $slug_to_index['edit.php?post_type=post'] ) ) {
-                $found_index = $slug_to_index['edit.php?post_type=post'];
-            }
-            // FALLBACK: Reverse Posts variation (Admin has CPT link, User has standard Posts)
-            else if ( $slug === 'edit.php?post_type=post' && isset( $slug_to_index['edit.php'] ) ) {
-                $found_index = $slug_to_index['edit.php'];
-            }
-            // FALLBACK: Name Match (The "Nuclear Option" for stubborn items)
-            // If slug match failed, try to find an item with the same name (e.g. "Posts")
-            else if ( isset( $config_item['original_name'] ) && isset( $name_to_index[ $config_item['original_name'] ] ) ) {
-                $found_index = $name_to_index[ $config_item['original_name'] ];
-            }
-
-            if ( $found_index !== null ) {
-                $menu_item = $source_menu[$found_index];
+            if ( isset( $original_menu_map[$slug] ) ) {
+                $menu_item = $original_menu_map[$slug];
 
                 if ( ! empty( $config_item['rename'] ) ) $menu_item[0] = $config_item['rename'];
                 if ( ! empty( $config_item['icon'] ) ) $menu_item[6] = $config_item['icon'];
 
                 $new_menu[ $menu_order_index ] = $menu_item;
                 $menu_order_index++;
-                $used_indices[$found_index] = true;
+                unset( $original_menu_map[$slug] );
             }
         }
 
         // 4. APPEND ORPHANS
-        foreach ( $source_menu as $index => $item ) {
-            if ( ! isset( $used_indices[$index] ) ) {
-                $new_menu[ $menu_order_index ] = $item;
+        // If Bricks was in the snapshot but not in your saved config, it adds here.
+        // BUT since we captured it correctly this time, if you click "Reset", 
+        // it will go back to its correct spot in step 3 next time you save.
+        if ( ! empty( $original_menu_map ) ) {
+            foreach ( $original_menu_map as $orphan ) {
+                $new_menu[ $menu_order_index ] = $orphan;
                 $menu_order_index++;
             }
         }
@@ -156,37 +107,22 @@ class SEAC_Menu_Manager {
         if ( ! $role ) return;
         if ( current_user_can( 'administrator' ) ) return;
 
-        $options = get_option( 'seac_settings' );
-        $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
-        if ( !isset($saved_settings[$role]) || empty( $saved_settings[$role] ) ) return;
+        $saved_settings = get_option( 'seac_menu_settings', array() );
+        if ( empty( $saved_settings[$role] ) ) return;
 
         $blocked_slugs = array();
         foreach ( $saved_settings[$role] as $item ) {
             if ( isset($item['hidden']) && $item['hidden'] == true ) {
                 $blocked_slugs[] = $item['slug'];
-                // FIX: Block profile.php if users.php is hidden
-                if ( $item['slug'] === 'users.php' ) {
-                    $blocked_slugs[] = 'profile.php';
-                }
             }
         }
 
         if ( empty( $blocked_slugs ) ) return;
 
-        global $pagenow;        
-        $current_slug = $pagenow; // Default to the filename, e.g., "tools.php"
-
-        // Case 1: Standard submenu pages, e.g., /wp-admin/admin.php?page=some-slug
-        if ( $pagenow === 'admin.php' && isset( $_GET['page'] ) ) {
+        global $pagenow;
+        $current_slug = $pagenow;
+        if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) ) {
             $current_slug = $_GET['page'];
-        } 
-        // Case 2: Core pages differentiated by query parameters. This is the key fix.
-        else {
-            if ( in_array( $pagenow, array( 'edit.php', 'post-new.php' ) ) && isset( $_GET['post_type'] ) ) {
-                $current_slug = $pagenow . '?post_type=' . $_GET['post_type'];
-            } else if ( $pagenow === 'edit-tags.php' && isset( $_GET['taxonomy'] ) ) {
-                $current_slug = $pagenow . '?taxonomy=' . $_GET['taxonomy'];
-            }
         }
 
         if ( in_array( $current_slug, $blocked_slugs ) ) {
