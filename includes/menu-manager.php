@@ -35,7 +35,7 @@ class SEAC_Menu_Manager {
         $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
         
         // If no settings, stop. Leave default menu alone.
-        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
+        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) || ! is_array( $saved_settings[$role] ) ) {
             return;
         }
 

@@ -106,7 +106,7 @@ jQuery(document).ready(function($){
         var menuItems = currentConfig[role];
 
         if( !menuItems || menuItems.length === 0 ) {
-            $list.html('<li style="padding:20px;">No menu items found.</li>');
+            $list.html('<li style="padding:20px; color:#666;">No custom configuration. The default WordPress menu will be used for this role.</li>');
             return;
         }
 
@@ -182,7 +182,8 @@ jQuery(document).ready(function($){
 
     function saveCurrentTabState() {
         var newOrder = [];
-        $('#seac_menu_list li').each(function(){
+        // FIX: Only select actual menu items, ignoring the "No items found" message
+        $('#seac_menu_list li.seac-menu-item').each(function(){
             var $li = $(this);
             newOrder.push({
                 slug: $li.data('slug'),
@@ -238,8 +239,14 @@ jQuery(document).ready(function($){
         }
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            // 1. Reset Data in memory (Copy Master Menu).
-            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
+            // 1. Reset Data
+            if ( activeRole === 'administrator' ) {
+                // For Admin, we revert to the master capture (all items)
+                currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
+            } else {
+                // For others, we CLEAR the config so the native WP menu loads
+                currentConfig[activeRole] = [];
+            }
             
             // 2. Re-render the list from the reset data.
             // This ensures that when the form is submitted, saveCurrentTabState() reads the correct (reset) state.
