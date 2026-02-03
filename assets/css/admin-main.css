@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - 90PX LOGO & PADDING
+   SMART EDGE ADMIN - 20PX PADDING & BOTTOM MENU
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -79,16 +79,15 @@ html.wp-toolbar { padding-top: 0px !important; }
     background: transparent !important; 
 }
 
-/* LOGO AREA (UPDATED: 90px Height, 15px Padding) */
+/* LOGO AREA (UPDATED: 20px Padding) */
 #adminmenuwrap::before {
     content: "";
     display: block;
     background-color: #0c0c0c;
     width: 100%;
     
-    /* NEW DIMENSIONS */
     height: 90px;
-    padding: 15px; 
+    padding: 20px; /* INCREASED PADDING */
     
     border-bottom: solid 1px #333;
     

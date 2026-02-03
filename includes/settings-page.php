@@ -12,7 +12,6 @@ class SEAC_Settings_Page {
         add_filter( 'upload_mimes', array( $this, 'allow_svg_uploads' ) );
     }
 
-    // New Function to Allow SVG
     public function allow_svg_uploads( $mimes ) {
         $mimes['svg'] = 'image/svg+xml';
         return $mimes;
@@ -22,25 +21,20 @@ class SEAC_Settings_Page {
         if ( 'toplevel_page_seac-settings' !== $hook ) {
             return;
         }
-        // Core Media Uploader
         wp_enqueue_media();
-        
-        // Our Settings Page Logic
         wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery' ), '1.0.0', true );
-        
-        // Our Settings Page Styling
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
     public function add_plugin_page() {
         add_menu_page(
-            'Smart Edge Admin',   // Page Title (Browser Tab)
-            'Smart Admin',        // Menu Title (Sidebar Name - CHANGED)
+            'Smart Edge Admin',   
+            'Smart Admin',        
             'manage_options', 
             'seac-settings', 
             array( $this, 'create_admin_page' ), 
             'dashicons-admin-appearance', 
-            2
+            110 // <-- MOVED TO BOTTOM (Position 110)
         );
     }
 
