@@ -33,11 +33,29 @@ jQuery(document).ready(function($){
     
     var currentConfig = {};
 
-    // Initialize Config
+    // --- INITIALIZATION LOGIC (UPDATED) ---
     $.each(roles, function(roleKey, roleData){
         if( savedSettings[roleKey] ) {
-            currentConfig[roleKey] = savedSettings[roleKey];
+            // 1. Start with the Saved Config
+            var config = savedSettings[roleKey];
+            
+            // 2. DETECT ORPHANS (Merge logic)
+            // Look for items in the Master Menu that are missing from the Saved Config.
+            // This ensures new plugins or extra separators appear at the bottom instead of being invisible.
+            var savedSlugs = config.map(function(item){ return item.slug; });
+            
+            var orphans = masterMenu.filter(function(item){
+                return savedSlugs.indexOf(item.slug) === -1;
+            });
+            
+            // 3. Append orphans to the config
+            if ( orphans.length > 0 ) {
+                config = config.concat(orphans);
+            }
+            
+            currentConfig[roleKey] = config;
         } else {
+            // No save exists? Use the Master Menu as is.
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
     });
@@ -178,20 +196,13 @@ jQuery(document).ready(function($){
         }
     });
 
-    // --- RESET BUTTON LOGIC (UPDATED: INSTANT SAVE) ---
+    // --- RESET BUTTON LOGIC ---
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
-        
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            
-            // 1. Reset Data
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
-            
-            // 2. Prepare Form Data
             var jsonString = JSON.stringify(currentConfig);
             $('#seac_menu_config_input').val(jsonString);
-            
-            // 3. AUTO SUBMIT
             $('.seac-settings-wrap form').submit();
         }
     });
