@@ -1,61 +1,65 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - SETTINGS PAGE STYLING
+   SMART EDGE ADMIN - SETTINGS PAGE (LIGHT THEME)
    ========================================================================== */
 
-/* Main Wrapper */
+/* Main Wrapper - Full Width */
 .seac-settings-wrap {
-    max-width: 800px;
+    width: 98%; /* Uses almost full width of the screen */
     margin: 20px 0;
 }
 
 .seac-settings-wrap h1 {
     margin-bottom: 20px;
-    font-weight: 300;
+    font-weight: 400;
+    color: #1d2327;
 }
 
 /* --------------------------------------------------------------------------
-   THE CARD COMPONENT
+   THE CARD COMPONENT (LIGHT)
    -------------------------------------------------------------------------- */
 .seac-card {
-    background: #1e1e1e; /* Dark Card BG */
-    border: 1px solid #333;
-    border-radius: 15px; /* Matches your dashboard preference */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
+    background: #ffffff; /* White BG */
+    border: 1px solid #c3c4c7; /* Standard WP Border */
+    border-radius: 4px; /* Clean standard radius */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
     overflow: hidden;
 }
 
 /* Card Header */
 .seac-card-header {
-    background: #252525;
-    padding: 20px 25px;
-    border-bottom: 1px solid #333;
+    background: #f0f0f1; /* Light Grey Header */
+    padding: 15px 20px;
+    border-bottom: 1px solid #c3c4c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .seac-card-header h2 {
-    color: #ffffff;
-    margin: 0 0 5px 0;
-    font-size: 18px;
-    font-weight: 500;
+    color: #1d2327;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .seac-card-header p {
-    color: #888;
+    color: #646970;
     margin: 0;
     font-size: 13px;
 }
 
 /* Card Body */
 .seac-card-body {
-    padding: 25px;
+    padding: 20px;
 }
 
-/* Table Clean up */
+/* Table Cleanup */
 .seac-card-body .form-table th {
     width: 200px;
     padding: 20px 0;
-    color: #ccc;
-    font-weight: 400;
+    color: #1d2327;
+    font-weight: 600;
 }
 
 .seac-card-body .form-table td {
@@ -67,18 +71,20 @@
    -------------------------------------------------------------------------- */
 /* Logo Preview Box */
 .seac-logo-preview {
-    width: 100px;
+    width: 200px;
     height: 80px;
-    background-color: #0c0c0c;
+    background-color: #f0f0f1; /* Light grey checkerboard placeholder */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid #444;
-    border-radius: 8px;
+    background-origin: content-box; /* Respects padding */
+    padding: 10px;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
     margin-bottom: 10px;
 }
 
-/* Control Groups (Flex layouts) */
+/* Control Groups */
 .seac-control-group {
     display: flex;
     align-items: flex-start;
@@ -92,18 +98,18 @@
 /* Inputs */
 .seac-card input[type="text"] {
     width: 100%;
-    max-width: 400px;
-    background: #2a2a2a;
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 10px;
+    max-width: 500px;
+    background: #ffffff;
+    border: 1px solid #8c8f94;
+    color: #2c3338;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-bottom: 5px;
 }
 
 .seac-card input[type="text"]:focus {
     border-color: var(--seac-accent-color, #007cba);
-    box-shadow: none;
+    box-shadow: 0 0 0 1px var(--seac-accent-color, #007cba);
 }
 
 /* Buttons */
@@ -111,18 +117,14 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-top: 5px;
 }
 
 /* Description Text */
 .description {
-    color: #777;
-    font-style: italic;
+    color: #646970;
+    font-style: normal;
     margin-top: 5px;
-}
-
-/* Color Picker override */
-.wp-picker-container .wp-color-result.button {
-    border-radius: 8px;
 }
 
 /* --------------------------------------------------------------------------
@@ -130,21 +132,18 @@
    -------------------------------------------------------------------------- */
 .seac-submit-area {
     margin-top: 20px;
-    text-align: right;
+    text-align: left; /* Standard left align */
 }
 
 .seac-submit-area .button-primary {
-    background: var(--seac-accent-color, #007cba) !important;
-    border-color: var(--seac-accent-color, #007cba) !important;
-    border-radius: 8px !important;
-    padding: 5px 25px !important;
+    background: #2271b1 !important; /* Standard WP Blue */
+    border-color: #2271b1 !important;
+    text-transform: none;
     font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.2s;
+    padding: 5px 15px !important;
 }
 
 .seac-submit-area .button-primary:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    background: #135e96 !important;
+    border-color: #135e96 !important;
 }

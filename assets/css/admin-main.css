@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - SPLIT SUBMENU FIX
+   SMART EDGE ADMIN - LIGHT THEME READY
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -79,7 +79,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     background: transparent !important; 
 }
 
-/* Logo Area */
+/* LOGO AREA (FIXED PADDING) */
 #adminmenuwrap::before {
     content: "";
     display: block;
@@ -88,11 +88,16 @@ html.wp-toolbar { padding-top: 0px !important; }
     height: 80px;
     border-bottom: solid 1px #333;
     
-    /* DYNAMIC IMAGE FROM SETTINGS */
+    /* DYNAMIC IMAGE */
     background-image: var(--seac-logo-url);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    
+    /* PADDING FIX: Use content-box so padding shrinks the image, not grows the box */
+    background-origin: content-box; 
+    padding: 12px; 
+    box-sizing: border-box; /* Ensures height stays 80px */
 }
 
 /* --------------------------------------------------------------------------
@@ -125,20 +130,20 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   5. SUBMENUS (THE SPLIT FIX)
+   5. SUBMENUS
    -------------------------------------------------------------------------- */
 /* Rule 1: DEFAULT (Flyouts) -> Keep Padding */
 #adminmenu .wp-submenu {
     background-color: #222222 !important;
-    padding: 7px 0 8px !important; /* Standard Padding for flyouts */
+    padding: 7px 0 8px !important;
 }
 
 /* Rule 2: EXPANDED (Inside Main Menu) -> Remove Padding */
 #adminmenu li.wp-has-current-submenu .wp-submenu {
-    padding: 0 !important; /* No padding for active accordion */
+    padding: 0 !important;
 }
 
-/* THE TRIANGLE FIX (Targeting all potential states) */
+/* THE TRIANGLE FIX */
 #adminmenu li.wp-has-current-submenu .wp-submenu:before,
 #adminmenu li.opensub .wp-submenu:before,
 #adminmenu li.menu-top:hover .wp-submenu:before,
@@ -146,16 +151,13 @@ html.wp-toolbar { padding-top: 0px !important; }
     border-right-color: #222222 !important;
 }
 
-/* --------------------------------------------------------------------------
-   6. ACTIVE SUBMENU ITEM (BACKGROUND REMOVAL)
-   -------------------------------------------------------------------------- */
-/* This removes the background from the list item AND the link */
+/* Active Item - No BG */
 #adminmenu .wp-submenu li.current,
 #adminmenu .wp-submenu li.current a,
 #adminmenu .wp-submenu li.current a:hover {
-    background-color: transparent !important; /* Force transparent */
+    background-color: transparent !important;
     background: transparent !important;
-    color: #ffffff !important; /* Keep white text */
+    color: #ffffff !important;
     font-weight: 400 !important;
 }
 
@@ -165,7 +167,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   7. ICONS
+   6. ICONS
    -------------------------------------------------------------------------- */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
@@ -200,7 +202,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   8. DIVIDERS & MOBILE
+   7. DIVIDERS & MOBILE
    -------------------------------------------------------------------------- */
 #adminmenu li.wp-menu-separator {
     background: #333 !important;
