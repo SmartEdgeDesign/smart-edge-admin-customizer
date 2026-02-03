@@ -34,7 +34,7 @@ class SEAC_Menu_Manager {
         $saved_settings = get_option( 'seac_menu_settings', array() );
         
         // If no settings, stop. Leave default menu alone.
-        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
+        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) || ! is_array( $saved_settings[$role] ) ) {
             return;
         }
 
@@ -45,53 +45,85 @@ class SEAC_Menu_Manager {
         // Use our perfect snapshot
         $source_menu = $GLOBALS['seac_original_menu'];
         
-        // Map it
-        $original_menu_map = array();
+        // 1. Build Lookup Maps (Slug & Name)
+        // This allows us to find items even if their ID changes (e.g. users.php -> profile.php)
+        $slug_to_index = array();
+        $name_to_index = array();
+
         foreach ( $source_menu as $index => $item ) {
-            $key = isset($item[2]) ? $item[2] : "index_$index";
-            $original_menu_map[$key] = $item;
+            // Standardize slug generation
+            $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
+            $slug_to_index[$raw_slug] = $index;
+
+            // Clean Name for fallback matching (e.g. "Posts" matches "Posts")
+            $name = isset($item[0]) ? $item[0] : '';
+            $name = preg_replace( '/<span.*<\/span>/', '', $name ); // Remove update bubbles
+            $name = strip_tags( $name ); 
+            $name = trim( $name );
+            if ( ! empty( $name ) ) {
+                $name_to_index[ $name ] = $index;
+            }
         }
 
+        $used_indices = array(); // Track which items we have handled
         $menu_order_index = 0;
 
         foreach ( $role_config as $config_item ) {
             $slug = $config_item['slug'];
 
-            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
+            // FIND THE ITEM
+            $found_index = null;
+
+            // A. Try Exact Slug Match
+            if ( isset( $slug_to_index[$slug] ) ) {
+                $found_index = $slug_to_index[$slug];
+            } 
+            // B. Try Name Match (Fallback for when slugs differ between roles)
+            else if ( isset( $config_item['original_name'] ) && isset( $name_to_index[ $config_item['original_name'] ] ) ) {
+                $found_index = $name_to_index[ $config_item['original_name'] ];
+            }
+            // C. Special Case: Profile vs Users
+            else if ( $slug === 'users.php' && isset( $slug_to_index['profile.php'] ) ) {
+                $found_index = $slug_to_index['profile.php'];
+            }
+
+            // IF HIDDEN: Mark as used so it doesn't appear as orphan, then skip.
+            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) {
+                if ( $found_index !== null ) $used_indices[$found_index] = true;
+                continue; 
+            }
 
             // Handle newly added or existing separators from config
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
                 // Use the unique slug from the config. This allows for persistent, user-added dividers.
                 $new_menu[ $menu_order_index ] = array( '', 'read', $slug, '', 'wp-menu-separator' );
                 $menu_order_index++;
-                // If this separator was part of the original menu, remove it from the map
-                // so it doesn't get added again with the orphans.
-                if ( isset($original_menu_map[$slug]) ) {
-                    unset( $original_menu_map[$slug] );
+                
+                // If this separator existed in source, mark it used
+                if ( $found_index !== null ) {
+                    $used_indices[$found_index] = true;
                 }
                 continue;
             }
 
             // Standard Items
-            if ( isset( $original_menu_map[$slug] ) ) {
-                $menu_item = $original_menu_map[$slug];
+            if ( $found_index !== null ) {
+                $menu_item = $source_menu[$found_index];
 
                 if ( ! empty( $config_item['rename'] ) ) $menu_item[0] = $config_item['rename'];
                 if ( ! empty( $config_item['icon'] ) ) $menu_item[6] = $config_item['icon'];
 
                 $new_menu[ $menu_order_index ] = $menu_item;
                 $menu_order_index++;
-                unset( $original_menu_map[$slug] );
+                $used_indices[$found_index] = true;
             }
         }
 
         // 4. APPEND ORPHANS
-        // If Bricks was in the snapshot but not in your saved config, it adds here.
-        // BUT since we captured it correctly this time, if you click "Reset", 
-        // it will go back to its correct spot in step 3 next time you save.
-        if ( ! empty( $original_menu_map ) ) {
-            foreach ( $original_menu_map as $orphan ) {
-                $new_menu[ $menu_order_index ] = $orphan;
+        // Add any items from the source that weren't in the config or handled above.
+        foreach ( $source_menu as $index => $item ) {
+            if ( ! isset( $used_indices[$index] ) ) {
+                $new_menu[ $menu_order_index ] = $item;
                 $menu_order_index++;
             }
         }
