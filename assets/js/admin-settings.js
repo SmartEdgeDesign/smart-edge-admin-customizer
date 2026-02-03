@@ -245,8 +245,7 @@ jQuery(document).ready(function($){
             // This ensures that when the form is submitted, saveCurrentTabState() reads the correct (reset) state.
             renderMenuList(activeRole);
             
-            // 3. Submit the form.
-            $('.seac-settings-wrap form').submit();
+            // 3. No auto-submit. User must click "Save Changes" manually.
         }
     });
 });
