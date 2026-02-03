@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - THE "BACKGROUND SEAL" FIX
+   SMART EDGE ADMIN - CONTAINER FIX (NO FLASH)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -50,40 +50,38 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   3. THE BACKGROUND SEAL (Fixing the Flash)
+   3. MENU BACKGROUNDS (THE FIX)
    -------------------------------------------------------------------------- */
-/* Force the entire container to be black */
-#adminmenu, #adminmenuback, #adminmenuwrap, #adminmenu li.menu-top {
+/* Force the wrapper to be black */
+#adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* Force the LIST ITEM to also be black (This covers the "Blue Flash") */
+/* THE CORE FIX: 
+   We style the LI (Container), not the A (Link). 
+   This stops the background from flickering when the link loses focus.
+*/
+
+/* Default Container State */
 #adminmenu li.menu-top {
-    transition: none !important; /* Stop the list item from animating */
+    background: #0c0c0c !important;
+    transition: none !important; /* Stop WP animations */
 }
 
-/* --------------------------------------------------------------------------
-   4. ACTIVE & HOVER STATES
-   -------------------------------------------------------------------------- */
-/* ACTIVE Item (#191919) */
-#adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current > a,
-#adminmenu li.wp-has-current-submenu, /* Set parent LI too */
-#adminmenu li.current {              /* Set parent LI too */
-    background-color: #191919 !important;
+/* Hover Container State */
+#adminmenu li.menu-top:hover {
+    background: #191919 !important; /* This overrides the WP Blue flash */
 }
 
-/* HOVER Item (#191919) */
-#adminmenu li.menu-top:hover > a,
-#adminmenu li.menu-top:hover { /* Hovering the LI triggers the color too */
-    background-color: #191919 !important;
+/* Active Container State */
+#adminmenu li.wp-has-current-submenu,
+#adminmenu li.current {
+    background: #191919 !important;
 }
 
-/* Submenu Background (#222222) */
-#adminmenu .wp-submenu,
-#adminmenu .wp-has-current-submenu .wp-submenu,
-#adminmenu .wp-submenu.sub-open {
-    background-color: #222222 !important;
+/* Make the LINKS Transparent so the Container color shows through */
+#adminmenu li.menu-top > a {
+    background: transparent !important; 
 }
 
 /* Logo Area */
@@ -97,7 +95,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   5. TEXT COLORS (#999999 Default)
+   4. TEXT COLORS (#999999 -> White)
    -------------------------------------------------------------------------- */
 /* Default State */
 #adminmenu a, 
@@ -105,7 +103,6 @@ html.wp-toolbar { padding-top: 0px !important; }
 #adminmenu .wp-submenu a {
     color: #999999 !important;
     font-weight: 100 !important;
-    /* We only animate color, never background */
     transition: color 0.2s ease !important;
 }
 
@@ -125,7 +122,17 @@ html.wp-toolbar { padding-top: 0px !important; }
     font-weight: 400 !important;
 }
 
-/* SUBMENU ACTIVE STATE: Transparent BG, White Text */
+/* --------------------------------------------------------------------------
+   5. SUBMENUS
+   -------------------------------------------------------------------------- */
+/* Submenu Background (#222222) */
+#adminmenu .wp-submenu,
+#adminmenu .wp-has-current-submenu .wp-submenu,
+#adminmenu .wp-submenu.sub-open {
+    background-color: #222222 !important;
+}
+
+/* Active Submenu Item (Transparent BG, White Text) */
 #adminmenu .wp-submenu li.current a,
 #adminmenu .wp-submenu li.current a:hover {
     background-color: transparent !important;
