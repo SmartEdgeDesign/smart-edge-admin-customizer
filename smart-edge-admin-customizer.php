@@ -18,7 +18,8 @@ define( 'SEAC_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SEAC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 // This forces the browser to download the NEWEST CSS every time you refresh.
-define( 'SEAC_VERSION', date('YmdHis') ); 
+//define( 'SEAC_VERSION', date('YmdHis') ); 
+define( 'SEAC_VERSION', '4.0.0-force-update' );
 
 // Include the necessary files.
 require_once SEAC_PLUGIN_PATH . 'includes/enqueue-scripts.php';
