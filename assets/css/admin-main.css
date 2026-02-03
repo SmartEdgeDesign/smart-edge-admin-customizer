@@ -1,80 +1,139 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - DARK MINIMAL THEME
+   SMART EDGE ADMIN - STABLE CORE
    ========================================================================== */
 
-/* 1. THE DEEP DARK BACKGROUND (Default Width) */
-/* We rely on WordPress default width to prevent layout breaks */
+/* 1. REMOVE ADMIN BAR (Everywhere, for everyone) */
+#wpadminbar {
+    display: none !important;
+}
+
+html.wp-toolbar {
+    padding-top: 0px !important;
+}
+
+/* 2. MAIN MENU CONTAINER & BACKGROUND */
 #adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* 2. RESET LINK COLORS (Muted Grey by default) */
+/* Logo Area (Prepared for the logo feature we will add later) */
+#adminmenuwrap::before {
+    content: "";
+    display: block;
+    background-color: #0c0c0c;
+    width: 100%;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-bottom: solid 1px #333;
+}
+
+/* 3. TYPOGRAPHY & LINK COLORS */
 #adminmenu a {
     color: #888888 !important;
-    font-weight: 400;
+    font-weight: 100 !important; /* Your requested thin weight */
     transition: all 0.2s ease;
 }
 
-/* 3. ICON STYLING (Smaller & Subtle) */
-#adminmenu div.wp-menu-image:before {
-    font-size: 16px !important; /* Resized smaller as requested */
-    color: #666666 !important;  /* Darker grey for icons initially */
-    padding-top: 3px;           /* Re-aligns the smaller icon */
+#adminmenu .wp-menu-name {
+    font-weight: 100 !important;
+}
+
+/* 4. ICON STYLING (Your custom sizes) */
+#adminmenu div.wp-menu-image:before,
+.dashicons-before:before {
+    font-size: 15px !important; /* Your requested size */
+    padding: 10px 0 !important; /* Your requested padding */
+    color: #666666 !important;
     transition: color 0.2s ease;
 }
 
-
-/* ==========================================================================
-   INTERACTION STATES (The Accent Color Logic)
-   ========================================================================== */
-
-/* 4. HOVER STATE */
+/* 5. INTERACTION: HOVER STATE */
 /* Text turns white, Icon turns Accent Color */
 #adminmenu li.menu-top:hover > a {
     color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.03) !important; /* Extremely subtle highlight */
+    background-color: rgba(255, 255, 255, 0.03) !important;
 }
 
 #adminmenu li.menu-top:hover div.wp-menu-image:before {
-    color: var(--seac-accent-color) !important; /* The Accent Pop */
+    color: var(--seac-accent-color) !important;
 }
 
-/* 5. ACTIVE / SELECTED STATE */
-/* Text turns bright white, Icon turns Accent Color */
+/* 6. INTERACTION: ACTIVE STATE */
 #adminmenu li.wp-has-current-submenu > a,
 #adminmenu li.current > a {
-    background-color: #151515 !important; /* Very slightly lighter than bg */
+    background-color: #151515 !important;
     color: #ffffff !important;
-    font-weight: 600;
+    font-weight: 400 !important; /* Slightly bolder for active item */
 }
 
+/* Only the icon gets the accent color */
 #adminmenu li.wp-has-current-submenu div.wp-menu-image:before,
 #adminmenu li.current div.wp-menu-image:before {
-    color: var(--seac-accent-color) !important; /* The Accent Pop */
+    color: var(--seac-accent-color) !important;
 }
 
-/* Remove the default WordPress active arrow marker for a cleaner look */
+/* Remove default WP triangular arrow */
 #adminmenu li.wp-has-current-submenu > a:after,
 #adminmenu li.current > a:after {
     display: none;
 }
 
+/* 7. DIVIDERS (Restored as requested) */
+#adminmenu li.wp-menu-separator {
+    height: 1px;
+    padding: 0;
+    margin: 10px 0;
+    cursor: inherit;
+    background-color: #333;
+    border: none;
+}
 
-/* ==========================================================================
-   SUBMENU STYLING
-   ========================================================================== */
-#adminmenu .wp-submenu, 
-#adminmenu .wp-has-current-submenu .wp-submenu, 
+/* Custom separator classes (for future use) */
+a.DividerAbove {
+    border-top: solid 1px #333 !important;
+}
+
+a.DividerBoth {
+    border-top: solid 1px #333 !important;
+    border-bottom: solid 1px #333 !important;
+}
+
+/* 8. SUBMENU STYLING */
+#adminmenu .wp-submenu,
+#adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
     background-color: #0c0c0c !important;
 }
 
 #adminmenu .wp-submenu a {
     font-size: 13px;
-    padding-left: 15px; /* Indent sub-items slightly more */
+    font-weight: 100 !important;
+    padding-left: 20px;
 }
 
 #adminmenu .wp-submenu a:hover,
 #adminmenu .wp-submenu li.current a {
     color: var(--seac-accent-color) !important;
+}
+
+/* 9. MOBILE FIXES */
+/* We keep the menu accessible but remove fixed widths */
+@media screen and (max-width: 782px) {
+    #adminmenu {
+        width: auto !important; /* Let WordPress handle width */
+        position: relative !important;
+        height: auto !important;
+        top: 0 !important;
+    }
+    
+    #wpcontent {
+        margin-left: 0 !important;
+    }
+
+    /* Fix the scrollbar issue you had previously */
+    #wpwrap.wp-responsive-open {
+        overflow-x: hidden;
+    }
 }
