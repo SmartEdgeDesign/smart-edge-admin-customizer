@@ -53,7 +53,7 @@ html.wp-toolbar { padding-top: 0px !important; }
    3. MAIN MENU CONTAINERS
    -------------------------------------------------------------------------- */
 #adminmenu, #adminmenuback, #adminmenuwrap {
-    background-color: #0c0c0c !important;
+    background-color: #00ffda !important;
 }
 
 /* Container State */

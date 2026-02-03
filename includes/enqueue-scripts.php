@@ -45,7 +45,7 @@ function seac_enqueue_admin_assets( $hook ) {
     }
 }
 // Keep the priority 999!
-add_action( 'admin_enqueue_scripts', 'seac_enqueue_admin_assets' );
+add_action( 'admin_enqueue_scripts', 'seac_enqueue_admin_assets', 999 );
 
 
 /**
