@@ -113,7 +113,28 @@ class SEAC_Settings_Page {
         add_settings_field( 'accent_color', 'Accent Color', array( $this, 'accent_color_callback' ), 'seac-settings', 'seac_setting_section_branding' );
     }
 
-    public function sanitize( $input ) { return $input; }
+    public function sanitize( $input ) {
+        $new_input = array();
+        
+        // Save Branding
+        if( isset( $input['logo_url'] ) )
+            $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
+        if( isset( $input['accent_color'] ) )
+            $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
+
+        // SAVE MENU CONFIG (The new part)
+        // We get this from $_POST because add_settings_field is tricky with hidden arrays
+        if ( isset( $_POST['seac_settings']['menu_config'] ) ) {
+            // It comes in as a JSON string
+            $json = stripslashes( $_POST['seac_settings']['menu_config'] );
+            $decoded = json_decode( $json, true );
+            
+            // Save to a separate option key for cleaner data
+            update_option( 'seac_menu_settings', $decoded );
+        }
+
+        return $new_input;
+    }
 
     public function logo_url_callback() {
         $options = get_option( 'seac_settings' );

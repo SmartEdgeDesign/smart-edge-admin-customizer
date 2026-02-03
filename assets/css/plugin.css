@@ -1,16 +1,9 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - SETTINGS STYLING (V2)
+   SMART EDGE ADMIN - SETTINGS STYLING (V3)
    ========================================================================== */
 
-.seac-settings-wrap {
-    width: 98%;
-    margin: 20px 0;
-}
-.seac-settings-wrap h1 {
-    margin-bottom: 20px;
-    font-weight: 400;
-    color: #1d2327;
-}
+.seac-settings-wrap { width: 98%; margin: 20px 0; }
+.seac-settings-wrap h1 { margin-bottom: 20px; font-weight: 400; color: #1d2327; }
 
 /* CARD STYLES */
 .seac-card {
@@ -22,12 +15,8 @@
     overflow: hidden;
 }
 .seac-card-header {
-    background: #f0f0f1;
-    padding: 15px 20px;
-    border-bottom: 1px solid #c3c4c7;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: #f0f0f1; padding: 15px 20px; border-bottom: 1px solid #c3c4c7;
+    display: flex; justify-content: space-between; align-items: center;
 }
 .seac-card-header h2 { margin: 0; font-size: 16px; font-weight: 600; color: #1d2327; }
 .seac-card-header p { margin: 0; font-size: 13px; color: #646970; }
@@ -36,163 +25,87 @@
 /* --------------------------------------------------------------------------
    MENU MANAGER STYLES
    -------------------------------------------------------------------------- */
-
-/* 1. ROLE TABS */
 .seac-role-tabs {
-    display: flex;
-    gap: 5px;
-    border-bottom: 1px solid #c3c4c7;
-    margin-bottom: 20px;
-    padding-bottom: 0;
+    display: flex; gap: 5px; border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px; padding-bottom: 0;
 }
-
 .seac-role-tab {
-    background: #f6f7f7;
-    border: 1px solid #c3c4c7;
-    border-bottom: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 500;
-    color: #50575e;
-    border-radius: 4px 4px 0 0;
-    transition: all 0.2s;
-    margin-bottom: -1px; /* Overlap border */
+    background: #f6f7f7; border: 1px solid #c3c4c7; border-bottom: none;
+    padding: 10px 20px; cursor: pointer; font-weight: 500; color: #50575e;
+    border-radius: 4px 4px 0 0; transition: all 0.2s; margin-bottom: -1px;
 }
-
-.seac-role-tab:hover {
-    background: #fff;
-    color: var(--seac-accent-color, #2271b1);
-}
-
+.seac-role-tab:hover { background: #fff; color: #2271b1; }
 .seac-role-tab.active {
-    background: #fff;
-    border-bottom: 1px solid #fff; /* Hide bottom border */
-    color: #1d2327;
-    font-weight: 600;
-    box-shadow: 0 -2px 0 var(--seac-accent-color, #2271b1) inset; /* Top highlight */
+    background: #fff; border-bottom: 1px solid #fff; color: #1d2327;
+    font-weight: 600; box-shadow: 0 -2px 0 #2271b1 inset;
 }
 
-/* 2. MENU LIST */
-.seac-sortable-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-width: 800px; /* Prevent it getting too wide */
-}
+/* MENU LIST */
+.seac-sortable-list { list-style: none; padding: 0; margin: 0; max-width: 800px; }
 
 .seac-menu-item {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border: 1px solid #dcdcde;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    padding: 10px;
-    transition: all 0.2s;
+    display: flex; align-items: flex-start; /* Changed to start for multi-line inputs */
+    background: #fff; border: 1px solid #dcdcde; border-radius: 4px;
+    margin-bottom: 8px; padding: 12px; transition: all 0.2s;
 }
-
-.seac-menu-item:hover {
-    border-color: #2271b1;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+.seac-menu-item:hover { border-color: #2271b1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
 /* Hidden State */
-.seac-menu-item.seac-hidden {
-    opacity: 0.5;
-    background: #f0f0f1;
-}
-.seac-menu-item.seac-hidden .seac-rename-input {
-    text-decoration: line-through;
-    color: #888;
-}
+.seac-menu-item.seac-hidden { opacity: 0.6; background: #f0f0f1; }
+.seac-menu-item.seac-hidden .seac-rename-input { text-decoration: line-through; color: #888; }
 
-/* Handle (Drag Grip) */
-.seac-item-handle {
-    cursor: grab;
-    color: #a7aaad;
-    padding-right: 15px;
-}
+/* Handle */
+.seac-item-handle { cursor: grab; color: #a7aaad; padding-right: 15px; padding-top: 5px; }
 .seac-item-handle:hover { color: #333; }
 
-/* Icon */
-.seac-item-icon {
-    width: 30px;
-    color: #646970;
-    display: flex;
-    align-items: center;
-}
+/* Icon Preview */
+.seac-item-icon { width: 30px; color: #646970; display: flex; align-items: center; padding-top: 5px; }
 
-/* Details (Input + Label) */
-.seac-item-details {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
+/* Details Column */
+.seac-item-details { flex-grow: 1; display: flex; flex-direction: column; gap: 6px; }
 
+/* Rename Input */
 .seac-rename-input {
-    font-size: 14px;
-    font-weight: 500;
-    border: 1px solid transparent !important; /* Invisible until focused */
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100%;
-    color: #1d2327;
+    font-size: 14px; font-weight: 600; border: 1px solid transparent !important;
+    background: transparent !important; padding: 0 !important; margin: 0 !important;
+    width: 100%; color: #1d2327;
 }
-
 .seac-rename-input:focus {
-    border: 1px solid #2271b1 !important;
-    background: #fff !important;
-    padding: 4px 8px !important;
+    border: 1px solid #2271b1 !important; background: #fff !important; padding: 4px 8px !important;
 }
 
+/* New: Icon Input */
+.seac-icon-input {
+    font-size: 12px; color: #646970; border: 1px solid #dcdcde !important;
+    background: #fcfcfc !important; width: 200px; padding: 2px 6px !important;
+    border-radius: 3px;
+}
+
+/* Labels */
 .seac-original-label {
-    font-size: 11px;
-    color: #a7aaad;
+    font-size: 11px; color: #a7aaad; 
+    margin-top: 4px; /* Added Spacing */
+    display: block;
 }
 
-/* Actions (Eye Button) */
-.seac-item-actions {
-    padding-left: 15px;
-}
-
+/* Actions */
+.seac-item-actions { padding-left: 15px; padding-top: 2px; }
 .seac-visibility-toggle {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #646970;
-    padding: 5px;
-    border-radius: 4px;
+    background: transparent; border: none; cursor: pointer;
+    color: #646970; padding: 5px; border-radius: 4px;
 }
-.seac-visibility-toggle:hover {
-    background: #f0f0f1;
-    color: #2271b1;
-}
+.seac-visibility-toggle:hover { background: #f0f0f1; color: #2271b1; }
 
-/* Sortable Placeholder (The gap when dragging) */
 .seac-sortable-placeholder {
-    background: #f6f7f7;
-    border: 1px dashed #2271b1;
-    height: 50px;
-    margin-bottom: 8px;
-    border-radius: 4px;
+    background: #f6f7f7; border: 1px dashed #2271b1; height: 60px;
+    margin-bottom: 8px; border-radius: 4px;
 }
 
-/* --------------------------------------------------------------------------
-   EXISTING SETTINGS STYLES (Kept for compatibility)
-   -------------------------------------------------------------------------- */
-.seac-logo-preview {
-    width: 200px; height: 80px; background-color: #f0f0f1;
-    background-size: contain; background-repeat: no-repeat;
-    background-position: center; background-origin: content-box;
-    padding: 10px; border: 1px dashed #c3c4c7; border-radius: 4px; margin-bottom: 10px;
-}
+/* Existing Styles */
+.seac-logo-preview { width: 200px; height: 80px; background-color: #f0f0f1; background-size: contain; background-repeat: no-repeat; background-position: center; background-origin: content-box; padding: 10px; border: 1px dashed #c3c4c7; border-radius: 4px; margin-bottom: 10px; }
 .seac-control-group { display: flex; align-items: flex-start; gap: 20px; }
 .seac-input-group { flex-grow: 1; }
-.seac-card input[type="text"]:not(.seac-rename-input) {
-    width: 100%; max-width: 500px; background: #ffffff; border: 1px solid #8c8f94;
-    color: #2c3338; border-radius: 4px; padding: 6px 12px; margin-bottom: 5px;
-}
+.seac-card input[type="text"]:not(.seac-rename-input):not(.seac-icon-input) { width: 100%; max-width: 500px; background: #ffffff; border: 1px solid #8c8f94; color: #2c3338; border-radius: 4px; padding: 6px 12px; margin-bottom: 5px; }
 .seac-button-group { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
 .description { color: #646970; font-style: normal; margin-top: 5px; }
 .seac-submit-area { margin-top: 20px; text-align: left; }

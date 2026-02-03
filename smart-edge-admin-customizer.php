@@ -23,6 +23,7 @@ define( 'SEAC_VERSION', date('YmdHis') );
 // Include the necessary files.
 require_once SEAC_PLUGIN_PATH . 'includes/enqueue-scripts.php';
 require_once SEAC_PLUGIN_PATH . 'includes/settings-page.php';
-require_once SEAC_PLUGIN_PATH . 'includes/menu-management.php';
+require_once SEAC_PLUGIN_PATH . 'includes/menu-manager.php';
 require_once SEAC_PLUGIN_PATH . 'includes/utility-functions.php';
+
 

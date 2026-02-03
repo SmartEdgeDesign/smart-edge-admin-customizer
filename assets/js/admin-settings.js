@@ -25,29 +25,37 @@ jQuery(document).ready(function($){
 
     // --- 2. MENU MANAGER ---
     
-    // Safety check: Does the variable exist?
-    if ( typeof seacData === 'undefined' ) {
-        console.error("SEAC Error: seacData variable is missing.");
-        $('#seac_role_tabs').html('<p style="color:red; padding:10px;">Error: Menu data not loaded.</p>');
-        return;
-    }
+    if ( typeof seacData === 'undefined' ) return;
 
     var roles = seacData.roles;
-    var masterMenu = seacData.menu;
-    var activeRole = 'administrator'; // Default
+    var masterMenu = seacData.menu; // The default WordPress menu structure
+    var savedSettings = seacData.saved_settings || {}; // Existing saves
+    var activeRole = 'administrator';
+    
+    // This object holds the CURRENT state of all tabs
+    var currentConfig = {};
+
+    // Initialize Config: Load saved settings OR default to master menu
+    $.each(roles, function(roleKey, roleData){
+        if( savedSettings[roleKey] ) {
+            currentConfig[roleKey] = savedSettings[roleKey];
+        } else {
+            // If no save exists, clone the master menu
+            // We use JSON parse/stringify to deep clone the array so editing one role doesn't edit others
+            currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
+        }
+    });
 
     // A. Render Tabs
     var $tabsContainer = $('#seac_role_tabs');
     $tabsContainer.empty();
     
-    // Sort roles to put Administrator first
     var sortedRoles = Object.keys(roles).sort(function(a,b){
         if(a === 'administrator') return -1;
         if(b === 'administrator') return 1;
         return 0;
     });
 
-    // Build Tab Buttons
     $.each(sortedRoles, function(i, roleKey){
         var roleData = roles[roleKey];
         var activeClass = (roleKey === activeRole) ? 'active' : '';
@@ -59,13 +67,15 @@ jQuery(document).ready(function($){
     function renderMenuList( role ) {
         var $list = $('#seac_menu_list');
         $list.empty();
+        
+        var menuItems = currentConfig[role];
 
-        if( masterMenu.length === 0 ) {
+        if( !menuItems || menuItems.length === 0 ) {
             $list.html('<li style="padding:20px;">No menu items found.</li>');
             return;
         }
 
-        $.each(masterMenu, function(index, item){
+        $.each(menuItems, function(index, item){
             
             // Icon Logic
             var iconHtml = '';
@@ -77,8 +87,11 @@ jQuery(document).ready(function($){
                 iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
             }
 
+            var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
+            var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
+
             var liHtml = `
-                <li class="seac-menu-item" data-original-slug="${item.slug}">
+                <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}">
                     <div class="seac-item-handle">
                         <span class="dashicons dashicons-menu"></span>
                     </div>
@@ -86,12 +99,15 @@ jQuery(document).ready(function($){
                         ${iconHtml}
                     </div>
                     <div class="seac-item-details">
-                        <input type="text" class="seac-rename-input" value="${item.original_name}" placeholder="Rename item...">
+                        <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
+                        
+                        <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
+                        
                         <span class="seac-original-label">Original: ${item.original_name}</span>
                     </div>
                     <div class="seac-item-actions">
                         <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
-                            <span class="dashicons dashicons-visibility"></span>
+                            <span class="dashicons ${hiddenIcon}"></span>
                         </button>
                     </div>
                 </li>
@@ -99,7 +115,6 @@ jQuery(document).ready(function($){
             $list.append(liHtml);
         });
 
-        // Enable Drag & Drop
         if ($.fn.sortable) {
             $list.sortable({
                 handle: '.seac-item-handle',
@@ -109,18 +124,42 @@ jQuery(document).ready(function($){
         }
     }
 
+    // Helper: Scrape the DOM and update 'currentConfig' for the active role
+    function saveCurrentTabState() {
+        var newOrder = [];
+        $('#seac_menu_list li').each(function(){
+            var $li = $(this);
+            newOrder.push({
+                slug: $li.data('slug'),
+                original_name: $li.data('original-name'),
+                rename: $li.find('.seac-rename-input').val(),
+                icon: $li.find('.seac-icon-input').val(),
+                hidden: $li.hasClass('seac-hidden')
+            });
+        });
+        currentConfig[activeRole] = newOrder;
+    }
+
     // Initial Render
     renderMenuList(activeRole);
 
-    // C. Tab Switching Logic
+    // C. Tab Switching
     $('.seac-role-tab').click(function(){
+        // 1. Save current state before switching
+        saveCurrentTabState();
+
+        // 2. Switch UI
         $('.seac-role-tab').removeClass('active');
         $(this).addClass('active');
+        
+        // 3. Update Active Role
         activeRole = $(this).data('role');
+        
+        // 4. Render new data
         renderMenuList(activeRole);
     });
 
-    // D. Visibility Toggle Logic
+    // D. Visibility Toggle
     $(document).on('click', '.seac-visibility-toggle', function(){
         var $btn = $(this);
         var $icon = $btn.find('.dashicons');
@@ -133,6 +172,18 @@ jQuery(document).ready(function($){
             $li.addClass('seac-hidden');
             $icon.removeClass('dashicons-visibility').addClass('dashicons-hidden');
         }
+    });
+
+    // E. FORM SUBMISSION (The Save)
+    $('form').submit(function(){
+        // Save the currently open tab first
+        saveCurrentTabState();
+
+        // Convert the huge config object to JSON
+        var jsonString = JSON.stringify(currentConfig);
+
+        // Put it in the hidden input
+        $('#seac_menu_config_input').val(jsonString);
     });
 
 });
