@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - FINAL COLOR BALANCE
+   SMART EDGE ADMIN - FLASH FIXED (NO BG TRANSITION)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -75,7 +75,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. MAIN MENU ITEMS (HOVER = ACTIVE)
+   4. MAIN MENU ITEMS (THE FIX)
    -------------------------------------------------------------------------- */
 /* ACTIVE Item Background (#191919) */
 #adminmenu li.wp-has-current-submenu > a,
@@ -83,9 +83,17 @@ html.wp-toolbar { padding-top: 0px !important; }
     background-color: #191919 !important;
 }
 
-/* HOVER Item Background (NOW ALSO #191919) */
+/* HOVER Item Background (#191919) */
 #adminmenu li.menu-top:hover > a {
     background-color: #191919 !important;
+}
+
+/* FOCUS/CLICK STATE FIX (Prevents the Blue Flash on click) */
+#adminmenu li.menu-top > a:focus,
+#adminmenu li.menu-top > a:active {
+    background-color: #191919 !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -97,7 +105,9 @@ html.wp-toolbar { padding-top: 0px !important; }
 #adminmenu .wp-submenu a {
     color: #999999 !important;
     font-weight: 100 !important;
-    transition: all 0.2s ease;
+    
+    /* THE FLASH FIX: Only transition color, NOT background */
+    transition: color 0.1s ease, opacity 0.1s ease; 
 }
 
 /* HOVER: Force White */
@@ -124,7 +134,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     font-weight: 400 !important;
 }
 
-/* Submenu Padding Fix */
+/* Submenu Padding */
 #adminmenu .wp-submenu a {
     padding: 5px 0 5px 12px !important; 
     font-size: 13px !important;
@@ -133,14 +143,14 @@ html.wp-toolbar { padding-top: 0px !important; }
 /* --------------------------------------------------------------------------
    6. ICONS (#999999 -> Accent)
    -------------------------------------------------------------------------- */
-/* Default State: #999999 */
+/* Default State */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
     color: #999999 !important;
     font-size: 15px !important;
     padding: 10px 0 !important;
-    opacity: 0.8 !important; /* Slightly higher opacity for lighter grey */
-    transition: color 0.2s ease;
+    opacity: 0.8 !important;
+    transition: color 0.1s ease; /* Fast transition */
 }
 
 /* Default Image State */
