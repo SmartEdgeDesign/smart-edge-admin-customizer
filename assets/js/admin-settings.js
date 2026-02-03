@@ -204,18 +204,24 @@ jQuery(document).ready(function($){
         $list.scrollTop($list[0].scrollHeight);
     });
 
-    // RESET BUTTON (Clean Overwrite)
+    // RESET BUTTON (THE FIX)
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default? This will remove all custom dividers and layout changes.') ) {
-            // Overwrite with CLEAN master menu (no custom dividers)
+            
+            // 1. Get the CLEAN master menu
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             var jsonString = JSON.stringify(currentConfig);
+            
+            // 2. Put it in the box
             $('#seac_menu_config_input').val(jsonString);
-            $('.seac-settings-wrap form').submit();
+            
+            // 3. USE NATIVE SUBMIT (Bypasses jQuery handler so we don't save the messy list)
+            $('.seac-settings-wrap form')[0].submit();
         }
     });
 
+    // SAVE HANDLER
     $('.seac-settings-wrap form').submit(function(e){
         saveCurrentTabState();
         var jsonString = JSON.stringify(currentConfig);
