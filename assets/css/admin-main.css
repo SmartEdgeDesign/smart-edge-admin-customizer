@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - CONTAINER FIX (NO FLASH)
+   SMART EDGE ADMIN - SUBMENU GAP FIX
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -50,27 +50,27 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   3. MENU BACKGROUNDS (THE FIX)
+   3. MENU BACKGROUNDS (THE BRIDGE FIX)
    -------------------------------------------------------------------------- */
-/* Force the wrapper to be black */
+/* Wrapper Background */
 #adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* THE CORE FIX: 
-   We style the LI (Container), not the A (Link). 
-   This stops the background from flickering when the link loses focus.
+/* THE FIX: We added '#adminmenu li.opensub' to these rules.
+   This ensures the background stays dark even while the menu is waiting to close.
 */
 
-/* Default Container State */
+/* Container State (Black default) */
 #adminmenu li.menu-top {
     background: #0c0c0c !important;
-    transition: none !important; /* Stop WP animations */
+    transition: none !important;
 }
 
-/* Hover Container State */
-#adminmenu li.menu-top:hover {
-    background: #191919 !important; /* This overrides the WP Blue flash */
+/* Hover OR Open Submenu State (#191919) */
+#adminmenu li.menu-top:hover,
+#adminmenu li.opensub {  /* <--- THIS STOPS THE FLASH */
+    background: #191919 !important;
 }
 
 /* Active Container State */
@@ -79,7 +79,7 @@ html.wp-toolbar { padding-top: 0px !important; }
     background: #191919 !important;
 }
 
-/* Make the LINKS Transparent so the Container color shows through */
+/* Make LINKS Transparent */
 #adminmenu li.menu-top > a {
     background: transparent !important; 
 }
@@ -95,7 +95,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. TEXT COLORS (#999999 -> White)
+   4. TEXT COLORS
    -------------------------------------------------------------------------- */
 /* Default State */
 #adminmenu a, 
@@ -109,7 +109,9 @@ html.wp-toolbar { padding-top: 0px !important; }
 /* HOVER: Force White */
 #adminmenu li.menu-top:hover > a,
 #adminmenu li.menu-top:hover .wp-menu-name,
-#adminmenu .wp-submenu a:hover {
+#adminmenu .wp-submenu a:hover,
+#adminmenu li.opensub > a,      /* Keep text white while closing */
+#adminmenu li.opensub .wp-menu-name {
     color: #ffffff !important;
 }
 
@@ -125,14 +127,13 @@ html.wp-toolbar { padding-top: 0px !important; }
 /* --------------------------------------------------------------------------
    5. SUBMENUS
    -------------------------------------------------------------------------- */
-/* Submenu Background (#222222) */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
     background-color: #222222 !important;
 }
 
-/* Active Submenu Item (Transparent BG, White Text) */
+/* Active Submenu Item */
 #adminmenu .wp-submenu li.current a,
 #adminmenu .wp-submenu li.current a:hover {
     background-color: transparent !important;
@@ -146,7 +147,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   6. ICONS (#999999 -> Accent)
+   6. ICONS
    -------------------------------------------------------------------------- */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
@@ -166,10 +167,12 @@ html.wp-toolbar { padding-top: 0px !important; }
     opacity: 0.8 !important;
 }
 
-/* HOVER & ACTIVE: Accent Color */
+/* HOVER & ACTIVE & OPEN: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
 #adminmenu li:hover .wp-menu-image img,
 #adminmenu li:hover .wp-menu-image svg,
+#adminmenu li.opensub .wp-menu-image:before, /* Keep icon accent while closing */
+#adminmenu li.opensub .wp-menu-image svg,
 #adminmenu li.current .wp-menu-image:before,
 #adminmenu li.current .wp-menu-image svg,
 #adminmenu li.wp-has-current-submenu .wp-menu-image:before {
