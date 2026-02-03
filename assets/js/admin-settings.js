@@ -24,29 +24,25 @@ jQuery(document).ready(function($){
     });
 
     // --- 2. MENU MANAGER ---
-    
     if ( typeof seacData === 'undefined' ) return;
 
     var roles = seacData.roles;
-    var masterMenu = seacData.menu; // The default WordPress menu structure
-    var savedSettings = seacData.saved_settings || {}; // Existing saves
+    var masterMenu = seacData.menu;
+    var savedSettings = seacData.saved_settings || {};
     var activeRole = 'administrator';
     
-    // This object holds the CURRENT state of all tabs
     var currentConfig = {};
 
-    // Initialize Config: Load saved settings OR default to master menu
+    // Initialize Config
     $.each(roles, function(roleKey, roleData){
         if( savedSettings[roleKey] ) {
             currentConfig[roleKey] = savedSettings[roleKey];
         } else {
-            // If no save exists, clone the master menu
-            // We use JSON parse/stringify to deep clone the array so editing one role doesn't edit others
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
     });
 
-    // A. Render Tabs
+    // Render Tabs
     var $tabsContainer = $('#seac_role_tabs');
     $tabsContainer.empty();
     
@@ -63,7 +59,7 @@ jQuery(document).ready(function($){
         $tabsContainer.append(tabHtml);
     });
 
-    // B. Render Menu List
+    // Render List
     function renderMenuList( role ) {
         var $list = $('#seac_menu_list');
         $list.empty();
@@ -77,42 +73,61 @@ jQuery(document).ready(function($){
 
         $.each(menuItems, function(index, item){
             
-            // Icon Logic
-            var iconHtml = '';
-            if( item.icon.indexOf('dashicons-') !== -1 ) {
-                iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
-            } else if ( item.icon.indexOf('http') !== -1 || item.icon.indexOf('data:') !== -1 ) {
-                 iconHtml = '<img src="' + item.icon + '" style="max-width:20px; max-height:20px;" />';
-            } else {
-                iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
-            }
-
             var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
             var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
 
-            var liHtml = `
-                <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}">
-                    <div class="seac-item-handle">
-                        <span class="dashicons dashicons-menu"></span>
-                    </div>
-                    <div class="seac-item-icon">
-                        ${iconHtml}
-                    </div>
-                    <div class="seac-item-details">
-                        <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
-                        
-                        <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
-                        
-                        <span class="seac-original-label">Original: ${item.original_name}</span>
-                    </div>
-                    <div class="seac-item-actions">
-                        <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
-                            <span class="dashicons ${hiddenIcon}"></span>
-                        </button>
-                    </div>
-                </li>
-            `;
-            $list.append(liHtml);
+            // --- SEPARATOR LOGIC ---
+            if ( item.type === 'separator' ) {
+                // Simplified UI for Dividers
+                var liHtml = `
+                    <li class="seac-menu-item seac-is-separator ${hiddenClass}" data-slug="${item.slug}" data-type="separator">
+                         <div class="seac-item-handle" style="width:100%; text-align:center; padding:5px 0; color:#ccc;">
+                            <span class="dashicons dashicons-menu"></span> —————— Divider ——————
+                        </div>
+                        <div class="seac-item-actions">
+                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
+                                <span class="dashicons ${hiddenIcon}"></span>
+                            </button>
+                        </div>
+                        <input type="hidden" class="seac-rename-input" value="">
+                        <input type="hidden" class="seac-icon-input" value="">
+                    </li>
+                `;
+                $list.append(liHtml);
+            } 
+            // --- STANDARD ITEM LOGIC ---
+            else {
+                var iconHtml = '';
+                if( item.icon.indexOf('dashicons-') !== -1 ) {
+                    iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
+                } else if ( item.icon.indexOf('http') !== -1 || item.icon.indexOf('data:') !== -1 ) {
+                     iconHtml = '<img src="' + item.icon + '" style="max-width:20px; max-height:20px;" />';
+                } else {
+                    iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
+                }
+
+                var liHtml = `
+                    <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item">
+                        <div class="seac-item-handle">
+                            <span class="dashicons dashicons-menu"></span>
+                        </div>
+                        <div class="seac-item-icon">
+                            ${iconHtml}
+                        </div>
+                        <div class="seac-item-details">
+                            <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
+                            <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
+                            <span class="seac-original-label">Original: ${item.original_name}</span>
+                        </div>
+                        <div class="seac-item-actions">
+                            <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
+                                <span class="dashicons ${hiddenIcon}"></span>
+                            </button>
+                        </div>
+                    </li>
+                `;
+                $list.append(liHtml);
+            }
         });
 
         if ($.fn.sortable) {
@@ -124,7 +139,6 @@ jQuery(document).ready(function($){
         }
     }
 
-    // Helper: Scrape the DOM and update 'currentConfig' for the active role
     function saveCurrentTabState() {
         var newOrder = [];
         $('#seac_menu_list li').each(function(){
@@ -132,6 +146,7 @@ jQuery(document).ready(function($){
             newOrder.push({
                 slug: $li.data('slug'),
                 original_name: $li.data('original-name'),
+                type: $li.data('type'),
                 rename: $li.find('.seac-rename-input').val(),
                 icon: $li.find('.seac-icon-input').val(),
                 hidden: $li.hasClass('seac-hidden')
@@ -140,26 +155,16 @@ jQuery(document).ready(function($){
         currentConfig[activeRole] = newOrder;
     }
 
-    // Initial Render
     renderMenuList(activeRole);
 
-    // C. Tab Switching
     $('.seac-role-tab').click(function(){
-        // 1. Save current state before switching
         saveCurrentTabState();
-
-        // 2. Switch UI
         $('.seac-role-tab').removeClass('active');
         $(this).addClass('active');
-        
-        // 3. Update Active Role
         activeRole = $(this).data('role');
-        
-        // 4. Render new data
         renderMenuList(activeRole);
     });
 
-    // D. Visibility Toggle
     $(document).on('click', '.seac-visibility-toggle', function(){
         var $btn = $(this);
         var $icon = $btn.find('.dashicons');
@@ -174,16 +179,11 @@ jQuery(document).ready(function($){
         }
     });
 
-    // E. FORM SUBMISSION (The Save)
-    $('form').submit(function(){
-        // Save the currently open tab first
+    $('.seac-settings-wrap form').submit(function(e){
         saveCurrentTabState();
-
-        // Convert the huge config object to JSON
         var jsonString = JSON.stringify(currentConfig);
-
-        // Put it in the hidden input
         $('#seac_menu_config_input').val(jsonString);
+        return true; 
     });
 
 });
