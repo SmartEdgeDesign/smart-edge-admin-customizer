@@ -19,15 +19,9 @@ class SEAC_Settings_Page {
         if ( 'toplevel_page_seac-settings' !== $hook ) {
             return;
         }
-        
-        // 1. Core Scripts
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
-        
-        // 2. Custom JS
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '1.0.0', true );
-        
-        // 3. Custom CSS
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '1.0.1', true ); // Bumped version
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
@@ -36,29 +30,31 @@ class SEAC_Settings_Page {
     }
 
     public function create_admin_page() {
-        // --- DATA GATHERING (Happens here to ensure $menu is ready) ---
+        // --- 1. PREPARE DATA ---
         global $menu;
         $formatted_menu = array();
         
-        // Clean up the messy WordPress menu array
         if ( !empty($menu) ) {
-            foreach ( $menu as $index => $item ) {
+            foreach ( $menu as $item ) {
                 if ( ! empty( $item[0] ) ) {
                     // Skip separators
                     if ( strpos( $item[4], 'wp-menu-separator' ) !== false ) continue;
+                    
+                    // Handle icons safely
+                    $icon_class = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
+                    if( $icon_class == 'div' ) $icon_class = 'dashicons-admin-generic'; // Fix for Elementor 'div' icon
 
                     $formatted_menu[] = array(
-                        'original_name' => strip_tags($item[0]), // Clean HTML out of names
+                        'original_name' => strip_tags($item[0]), 
                         'capability'    => $item[1], 
                         'slug'          => $item[2], 
-                        'icon'          => isset($item[6]) ? $item[6] : 'dashicons-admin-generic',
+                        'icon'          => $icon_class,
                         'id'            => 'menu-' . sanitize_title($item[0])
                     );
                 }
             }
         }
 
-        // Prepare Data for JS
         $seac_data = array(
             'roles' => get_editable_roles(),
             'menu'  => $formatted_menu,
@@ -66,13 +62,11 @@ class SEAC_Settings_Page {
         );
         ?>
         
-        <script type="text/javascript">
-            var seacData = <?php echo json_encode($seac_data); ?>;
-        </script>
-
         <div class="wrap seac-settings-wrap">
             <h1 class="wp-heading-inline">Smart Edge Admin Customizer</h1>
             
+            <div id="seac-json-data" style="display:none;" data-json="<?php echo esc_attr( wp_json_encode($seac_data) ); ?>"></div>
+
             <form method="post" action="options.php">
                 <?php settings_fields( 'seac_option_group' ); ?>
                 
@@ -92,13 +86,10 @@ class SEAC_Settings_Page {
                         <p>Drag to reorder, rename items, or hide them per user role.</p>
                     </div>
                     <div class="seac-card-body seac-menu-manager">
-                        
                         <div class="seac-role-tabs" id="seac_role_tabs"></div>
-
                         <div class="seac-menu-editor" id="seac_menu_editor">
                             <ul id="seac_menu_list" class="seac-sortable-list"></ul>
                         </div>
-                        
                         <input type="hidden" name="seac_settings[menu_config]" id="seac_menu_config_input">
                     </div>
                 </div>
