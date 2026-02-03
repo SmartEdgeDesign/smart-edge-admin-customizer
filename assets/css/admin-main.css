@@ -1,31 +1,93 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - FINAL PRIORITY FIX
+   SMART EDGE ADMIN - MASTER MERGE
    ========================================================================== */
 
-/* 1. ADMIN BAR REMOVAL */
-body #wpadminbar { display: none !important; }
+/* --------------------------------------------------------------------------
+   1. GLOBAL UI & "ROUNDED" LOOK (From your snippet)
+   -------------------------------------------------------------------------- */
+/* Rounded Corners for Buttons & Inputs */
+.wp-core-ui .button,
+.wp-core-ui .button-primary,
+.wp-core-ui .button-secondary {
+    border-radius: 15px !important;
+    padding: 0 12px !important;
+}
+
+input[type=color], input[type=date], input[type=datetime-local], 
+input[type=datetime], input[type=email], input[type=month], 
+input[type=number], input[type=password], input[type=search], 
+input[type=tel], input[type=text], input[type=time], 
+input[type=url], input[type=week], select, textarea {
+    border-radius: 15px !important;
+    padding: 0 12px !important;
+    border-color: #dfdfdf !important;
+}
+
+/* Rounded Tables */
+.wp-list-table {
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    border-color: #dfdfdf !important;
+    box-shadow: none !important;
+}
+
+/* Screen Options Tab */
+#screen-meta-links .show-settings {
+    border-radius: 0 0 15px 15px !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. CLEANUP & HIDING JUNK (From your snippet)
+   -------------------------------------------------------------------------- */
+/* Remove Admin Bar & Toolbar Padding */
+#wpadminbar { display: none !important; }
 html.wp-toolbar { padding-top: 0px !important; }
 
-/* 2. BACKGROUNDS (Layered Depth) */
-body #adminmenu, body #adminmenuback, body #adminmenuwrap {
+/* Hide Footer & Help Tabs */
+#wpfooter { display: none !important; }
+#contextual-help-link-wrap { display: none !important; }
+
+/* Hide Page Titles (Requested in your snippet) */
+.wrap h1 { display: none !important; }
+
+/* Hide Elementor AI & Notices */
+#e-image-ai-media-library,
+.e-ai-button,
+.e-notice,
+.notice.dce-generic-notice {
+    display: none !important;
+}
+
+/* Hide specific Elementor Header Junk */
+#e-admin-top-bar-root .e-admin-top-bar__secondary-area,
+.e-logo-wrapper {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. ADMIN MENU COLORS (The #0c0c0c Hierarchy)
+   -------------------------------------------------------------------------- */
+/* Level 1: Sidebar Background */
+#adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* Selected Item Background (#191919) */
-body #adminmenu li.wp-has-current-submenu > a,
-body #adminmenu li.current > a {
+/* Level 2: Selected Item (#191919) */
+#adminmenu li.wp-has-current-submenu > a,
+#adminmenu li.current > a {
     background-color: #191919 !important;
+    color: #ffffff !important;
 }
 
-/* Submenu Background (#222222) */
-body #adminmenu .wp-submenu,
-body #adminmenu .wp-has-current-submenu .wp-submenu,
-body #adminmenu .wp-submenu.sub-open {
+/* Level 3: Submenus (#222222) */
+#adminmenu .wp-submenu,
+#adminmenu .wp-has-current-submenu .wp-submenu,
+#adminmenu .wp-submenu.sub-open {
     background-color: #222222 !important;
 }
 
 /* Logo Area */
-body #adminmenuwrap::before {
+#adminmenuwrap::before {
     content: "";
     display: block;
     background-color: #0c0c0c;
@@ -37,123 +99,127 @@ body #adminmenuwrap::before {
     border-bottom: solid 1px #333;
 }
 
-/* ==========================================================================
-   3. TEXT COLORS (Fixing the Dark Text Issue)
-   ========================================================================== */
-/* Default State */
-body #adminmenu li a, 
-body #adminmenu .wp-menu-name {
+/* --------------------------------------------------------------------------
+   4. TYPOGRAPHY (Thin Weight)
+   -------------------------------------------------------------------------- */
+#adminmenu a, 
+#adminmenu .wp-menu-name,
+#adminmenu .wp-submenu a {
     color: #888888 !important;
-    font-weight: 100 !important;
+    font-weight: 100 !important; /* Your requested thin weight */
+    transition: all 0.2s ease;
 }
 
 /* HOVER: Bright White */
-body #adminmenu li.menu-top:hover > a,
-body #adminmenu li.menu-top > a:focus {
+#adminmenu li.menu-top:hover > a,
+#adminmenu li.menu-top > a:focus,
+#adminmenu .wp-submenu a:hover {
     color: #ffffff !important;
 }
 
-/* ACTIVE/SELECTED: Bright White */
-/* This specific selector fixes the "Dark Text" issue on selected items */
-body #adminmenu li.wp-has-current-submenu > a.menu-top,
-body #adminmenu li.current > a.menu-top,
-body #adminmenu li.current div.wp-menu-name {
+/* ACTIVE: Bright White */
+#adminmenu li.wp-has-current-submenu > a,
+#adminmenu li.current > a,
+#adminmenu li.current .wp-submenu li.current a {
     color: #ffffff !important;
     font-weight: 400 !important;
 }
 
-/* Submenu Links */
-body #adminmenu .wp-submenu a {
-    color: #888888 !important;
-}
-body #adminmenu .wp-submenu a:hover,
-body #adminmenu .wp-submenu li.current a {
-    color: #ffffff !important; /* White on hover/active */
-}
-
-
-/* ==========================================================================
-   4. ICON STYLING (Fixing Elementor Size & Hover Color)
-   ========================================================================== */
-/* Standard Icons */
-body #adminmenu .wp-menu-image:before {
+/* --------------------------------------------------------------------------
+   5. ICONS & 3RD PARTY OVERRIDES (Elementor/Bricks)
+   -------------------------------------------------------------------------- */
+/* Standard Dashicons */
+#adminmenu .wp-menu-image:before {
     color: #666666 !important;
     font-size: 15px !important;
     padding: 10px 0 !important;
     opacity: 0.7 !important;
 }
 
-/* THE ELEMENTOR FIX: Force Image/SVG Size */
-body #adminmenu .wp-menu-image img,
-body #adminmenu .wp-menu-image svg {
-    width: 15px !important;       /* Forces 15px width */
-    height: auto !important;      /* Keeps aspect ratio */
-    max-width: 15px !important;   /* Prevents overrides */
+/* SPECIFIC FIX: Elementor & Bricks IDs (From your snippet) */
+#adminmenu #toplevel_page_elementor div.wp-menu-image:before,
+#adminmenu #menu-posts-elementor_library .wp-menu-image:before,
+#adminmenu #toplevel_page_e_addons div.wp-menu-image::before,
+#adminmenu #toplevel_page_bricks div.wp-menu-image:before {
+    font-size: 15px !important;
+    color: #666666 !important;
+    padding-top: 10px !important;
+}
+
+/* Universal Catch-All for SVG/Images (The "Big Icon" Killer) */
+#adminmenu .wp-menu-image img,
+#adminmenu .wp-menu-image svg {
+    width: 15px !important;
+    height: auto !important;
+    max-width: 15px !important;
     padding: 10px 0 !important;
+    fill: #666666 !important;
     opacity: 0.7 !important;
-    fill: #666666 !important;     /* Forces SVG fill color */
 }
 
-/* HOVER: Accent Color (Including SVGs) */
-body #adminmenu li:hover .wp-menu-image:before,
-body #adminmenu li:hover .wp-menu-image svg,
-body #adminmenu li:hover .wp-menu-image img {
-    color: var(--seac-accent-color) !important;
-    fill: var(--seac-accent-color) !important; /* Colors the Elementor SVG */
-    opacity: 1 !important;
-}
-
-/* ACTIVE: Accent Color */
-body #adminmenu li.current .wp-menu-image:before,
-body #adminmenu li.wp-has-current-submenu .wp-menu-image:before,
-body #adminmenu li.current .wp-menu-image svg,
-body #adminmenu li.wp-has-current-submenu .wp-menu-image svg {
+/* HOVER: Accent Color on ALL Icons */
+#adminmenu li:hover .wp-menu-image:before,
+#adminmenu li:hover .wp-menu-image img,
+#adminmenu li:hover .wp-menu-image svg {
     color: var(--seac-accent-color) !important;
     fill: var(--seac-accent-color) !important;
     opacity: 1 !important;
 }
 
-/* ==========================================================================
-   5. COLLAPSE BUTTON FIX (Killing the Blue)
-   ========================================================================== */
-body #adminmenu #collapse-button,
-body #adminmenu #collapse-menu {
+/* ACTIVE: Accent Color on ALL Icons */
+#adminmenu li.current .wp-menu-image:before,
+#adminmenu li.current .wp-menu-image svg,
+#adminmenu li.wp-has-current-submenu .wp-menu-image:before {
+    color: var(--seac-accent-color) !important;
+    fill: var(--seac-accent-color) !important;
+    opacity: 1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. COLLAPSE BUTTON
+   -------------------------------------------------------------------------- */
+#collapse-menu, #collapse-button {
     background: transparent !important;
     border-top: 1px solid #333 !important;
     color: #888888 !important;
 }
 
-/* Hover: Bright White Text, Accent Icon */
-body #adminmenu #collapse-button:hover,
-body #adminmenu #collapse-menu:hover {
-    color: #ffffff !important; /* Text White */
-    background-color: rgba(255,255,255,0.05) !important; /* Dark Grey BG */
+#collapse-menu:hover, #collapse-button:hover {
+    color: #ffffff !important;
+    background-color: rgba(255,255,255,0.05) !important;
 }
 
-/* The Icon Itself */
-body #adminmenu #collapse-button .collapse-button-icon:before,
-body #adminmenu #collapse-menu .collapse-button-icon:before {
+#collapse-menu .collapse-button-icon:before {
     font-size: 15px !important;
-    color: #666666 !important; /* Default Grey */
+    color: #666666 !important;
     padding-top: 2px !important;
 }
 
-/* HOVER FIX: Force Accent Color instead of Blue */
-body #adminmenu #collapse-button:hover .collapse-button-icon:before,
-body #adminmenu #collapse-menu:hover .collapse-button-icon:before {
-    color: var(--seac-accent-color) !important; /* ACCENT COLOR */
+#collapse-menu:hover .collapse-button-icon:before {
+    color: var(--seac-accent-color) !important;
 }
 
-/* ==========================================================================
-   6. MOBILE & DIVIDERS
-   ========================================================================== */
-body #adminmenu li.wp-menu-separator {
+/* --------------------------------------------------------------------------
+   7. SCROLLBARS & DIVIDERS
+   -------------------------------------------------------------------------- */
+/* Hide Scrollbar (From your snippet) */
+#adminmenu::-webkit-scrollbar {
+    width: 0;
+}
+
+/* Restored Dividers */
+#adminmenu li.wp-menu-separator {
     background: #333 !important;
     height: 1px !important;
     margin: 10px 0 !important;
 }
 
+a.DividerAbove { border-top: solid 1px #333 !important; }
+a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px #333 !important; }
+
+/* Mobile */
 @media screen and (max-width: 782px) {
-    body #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
-    body #wpcontent { margin-left: 0 !important; }
+    #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
+    #wpcontent { margin-left: 0 !important; }
+    #wpwrap.wp-responsive-open::-webkit-scrollbar { width:0; }
 }
