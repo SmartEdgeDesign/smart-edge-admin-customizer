@@ -248,18 +248,12 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
     transition: color 0.2s ease !important;
 }
 
-#adminmenu #collapse-button .collapse-button-icon:after {
-    top: 10px !important;
-    font: normal 15px / 1 dashicons !important;
-    color: #999999 !important;
-}
-#adminmenu #collapse-button .collapse-button-icon:hover:after {
-    color: var(--seac-accent-color) !important;
-}
-
-/* Hover State */
-#adminmenu #collapse-menu:hover #collapse-button .collapse-button-label,
-#adminmenu #collapse-menu:hover #collapse-button .collapse-button-icon:before {
+/* Hover State - Label */
+#adminmenu #collapse-menu:hover #collapse-button .collapse-button-label {
     color: #ffffff !important;
 }
 
+/* Hover State - Icon (Matches other menu items) */
+#adminmenu #collapse-menu:hover #collapse-button .collapse-button-icon:before {
+    color: var(--seac-accent-color) !important;
+}
