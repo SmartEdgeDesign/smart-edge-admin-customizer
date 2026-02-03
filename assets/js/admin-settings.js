@@ -38,7 +38,6 @@ jQuery(document).ready(function($){
         if( savedSettings[roleKey] ) {
             currentConfig[roleKey] = savedSettings[roleKey];
         } else {
-            // Clone master menu
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
     });
@@ -139,7 +138,6 @@ jQuery(document).ready(function($){
         }
     }
 
-    // Capture state from DOM
     function saveCurrentTabState() {
         var newOrder = [];
         $('#seac_menu_list li').each(function(){
@@ -180,7 +178,7 @@ jQuery(document).ready(function($){
         }
     });
 
-    // --- RESET BUTTON LOGIC (REVERTED TO INSTANT SAVE) ---
+    // --- RESET BUTTON LOGIC (UPDATED: INSTANT SAVE) ---
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
         

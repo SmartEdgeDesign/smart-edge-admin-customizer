@@ -21,8 +21,7 @@ class SEAC_Settings_Page {
         }
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
-        // Version 33.0.0 (The stable version)
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '33.0.0', true );
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '5.0.0', true );
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
@@ -33,7 +32,8 @@ class SEAC_Settings_Page {
     public function create_admin_page() {
         // --- DATA PREPARATION ---
         
-        // USE THE CAPTURED MENU (from admin_init)
+        // THE FIX: Use the backup 'original' menu if it exists, otherwise fall back to global $menu
+        // This ensures the "Reset" button gets the Clean WordPress Menu, not the reordered one.
         if ( isset( $GLOBALS['seac_original_menu'] ) ) {
             $source_menu = $GLOBALS['seac_original_menu'];
         } else {
@@ -110,13 +110,11 @@ class SEAC_Settings_Page {
                     </div>
                     <div class="seac-card-body seac-menu-manager">
                         <div class="seac-role-tabs" id="seac_role_tabs"></div>
-                        
                         <div style="margin-bottom: 15px; text-align: right;">
                              <button type="button" id="seac_reset_menu_btn" class="button">
                                 <span class="dashicons dashicons-image-rotate" style="margin-top: 3px; font-size: 16px;"></span> Reset to Default
                              </button>
                         </div>
-
                         <div class="seac-menu-editor" id="seac_menu_editor">
                             <ul id="seac_menu_list" class="seac-sortable-list"></ul>
                         </div>
