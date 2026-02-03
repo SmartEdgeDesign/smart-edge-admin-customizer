@@ -48,7 +48,8 @@ class SEAC_Menu_Manager {
         // Map it
         $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
-            $key = isset($item[2]) ? $item[2] : "index_$index";
+            // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
+            $key = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
             $original_menu_map[$key] = $item;
         }
 
