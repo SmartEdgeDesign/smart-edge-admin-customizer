@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - SUBMENU GAP FIX
+   SMART EDGE ADMIN - ARROW FIX (PERFECT BLEND)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -50,18 +50,13 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   3. MENU BACKGROUNDS (THE BRIDGE FIX)
+   3. MENU BACKGROUNDS
    -------------------------------------------------------------------------- */
-/* Wrapper Background */
 #adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* THE FIX: We added '#adminmenu li.opensub' to these rules.
-   This ensures the background stays dark even while the menu is waiting to close.
-*/
-
-/* Container State (Black default) */
+/* Container State */
 #adminmenu li.menu-top {
     background: #0c0c0c !important;
     transition: none !important;
@@ -69,7 +64,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 
 /* Hover OR Open Submenu State (#191919) */
 #adminmenu li.menu-top:hover,
-#adminmenu li.opensub {  /* <--- THIS STOPS THE FLASH */
+#adminmenu li.opensub {
     background: #191919 !important;
 }
 
@@ -97,7 +92,6 @@ html.wp-toolbar { padding-top: 0px !important; }
 /* --------------------------------------------------------------------------
    4. TEXT COLORS
    -------------------------------------------------------------------------- */
-/* Default State */
 #adminmenu a, 
 #adminmenu .wp-menu-name, 
 #adminmenu .wp-submenu a {
@@ -110,7 +104,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 #adminmenu li.menu-top:hover > a,
 #adminmenu li.menu-top:hover .wp-menu-name,
 #adminmenu .wp-submenu a:hover,
-#adminmenu li.opensub > a,      /* Keep text white while closing */
+#adminmenu li.opensub > a,
 #adminmenu li.opensub .wp-menu-name {
     color: #ffffff !important;
 }
@@ -125,12 +119,21 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   5. SUBMENUS
+   5. SUBMENUS & THE ARROW FIX
    -------------------------------------------------------------------------- */
+/* Submenu Box */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
     background-color: #222222 !important;
+}
+
+/* THE ARROW FIX: 
+   This colors the little triangle that points from the sidebar 
+   to the submenu. It matches the submenu background (#222222).
+*/
+#adminmenu .wp-submenu:before {
+    border-right-color: #222222 !important;
 }
 
 /* Active Submenu Item */
@@ -171,7 +174,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 #adminmenu li:hover .wp-menu-image:before,
 #adminmenu li:hover .wp-menu-image img,
 #adminmenu li:hover .wp-menu-image svg,
-#adminmenu li.opensub .wp-menu-image:before, /* Keep icon accent while closing */
+#adminmenu li.opensub .wp-menu-image:before,
 #adminmenu li.opensub .wp-menu-image svg,
 #adminmenu li.current .wp-menu-image:before,
 #adminmenu li.current .wp-menu-image svg,
