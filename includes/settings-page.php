@@ -21,8 +21,7 @@ class SEAC_Settings_Page {
         }
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
-        // Bump version to force refresh
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '4.0.0', true );
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '5.0.0', true );
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
@@ -32,12 +31,20 @@ class SEAC_Settings_Page {
 
     public function create_admin_page() {
         // --- DATA PREPARATION ---
-        global $menu;
+        
+        // THE FIX: Use the backup 'original' menu if it exists, otherwise fall back to global $menu
+        // This ensures the "Reset" button gets the Clean WordPress Menu, not the reordered one.
+        if ( isset( $GLOBALS['seac_original_menu'] ) ) {
+            $source_menu = $GLOBALS['seac_original_menu'];
+        } else {
+            global $menu;
+            $source_menu = $menu;
+        }
+
         $formatted_menu = array();
         
-        if ( !empty($menu) && is_array($menu) ) {
-            foreach ( $menu as $item ) {
-                // Ensure valid item
+        if ( !empty($source_menu) && is_array($source_menu) ) {
+            foreach ( $source_menu as $item ) {
                 if ( ! isset( $item[2] ) ) continue;
 
                 $name = isset($item[0]) ? $item[0] : '';
@@ -45,13 +52,13 @@ class SEAC_Settings_Page {
                 $type = 'item';
                 $icon = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
 
-                // --- 1. HANDLE SEPARATORS ---
+                // Separators
                 if ( isset($item[4]) && strpos( $item[4], 'wp-menu-separator' ) !== false ) {
                     $type = 'separator';
                     $name = '--- Divider ---';
                     $icon = '';
                 } 
-                // --- 2. CLEAN NAMES (Remove number bubbles) ---
+                // Clean Names
                 else {
                     $name = preg_replace( '/<span.*<\/span>/', '', $name ); 
                     $name = strip_tags( $name ); 
@@ -102,19 +109,15 @@ class SEAC_Settings_Page {
                         <p>Drag to reorder, rename items, or hide them per user role.</p>
                     </div>
                     <div class="seac-card-body seac-menu-manager">
-                        
                         <div class="seac-role-tabs" id="seac_role_tabs"></div>
-                        
                         <div style="margin-bottom: 15px; text-align: right;">
                              <button type="button" id="seac_reset_menu_btn" class="button">
                                 <span class="dashicons dashicons-image-rotate" style="margin-top: 3px; font-size: 16px;"></span> Reset to Default
                              </button>
                         </div>
-
                         <div class="seac-menu-editor" id="seac_menu_editor">
                             <ul id="seac_menu_list" class="seac-sortable-list"></ul>
                         </div>
-                        
                         <input type="hidden" name="seac_settings[menu_config]" id="seac_menu_config_input">
                     </div>
                 </div>
@@ -136,23 +139,13 @@ class SEAC_Settings_Page {
 
     public function sanitize( $input ) {
         $new_input = array();
-        
-        // Save Branding
-        if( isset( $input['logo_url'] ) )
-            $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
-        if( isset( $input['accent_color'] ) )
-            $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
-
-        // SAVE MENU CONFIG
+        if( isset( $input['logo_url'] ) ) $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
+        if( isset( $input['accent_color'] ) ) $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
         if ( isset( $input['menu_config'] ) && ! empty( $input['menu_config'] ) ) {
             $json = stripslashes( $input['menu_config'] );
             $decoded = json_decode( $json, true );
-            
-            if ( is_array( $decoded ) ) {
-                update_option( 'seac_menu_settings', $decoded );
-            }
+            if ( is_array( $decoded ) ) update_option( 'seac_menu_settings', $decoded );
         }
-
         return $new_input;
     }
 
