@@ -1,27 +1,23 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - FINAL COLORS
+   SMART EDGE ADMIN - FINAL PRIORITY FIX
    ========================================================================== */
 
 /* 1. ADMIN BAR REMOVAL */
 body #wpadminbar { display: none !important; }
 html.wp-toolbar { padding-top: 0px !important; }
 
-/* 2. BACKGROUNDS: The Layered Look */
-/* Level 1: Main Sidebar (Deep Dark) */
-body #adminmenu, 
-body #adminmenuback, 
-body #adminmenuwrap {
+/* 2. BACKGROUNDS (Layered Depth) */
+body #adminmenu, body #adminmenuback, body #adminmenuwrap {
     background-color: #0c0c0c !important;
 }
 
-/* Level 2: Selected Item Background (Slightly Lighter) */
+/* Selected Item Background (#191919) */
 body #adminmenu li.wp-has-current-submenu > a,
 body #adminmenu li.current > a {
     background-color: #191919 !important;
-    color: #ffffff !important;
 }
 
-/* Level 3: Submenus (Lighter still) */
+/* Submenu Background (#222222) */
 body #adminmenu .wp-submenu,
 body #adminmenu .wp-has-current-submenu .wp-submenu,
 body #adminmenu .wp-submenu.sub-open {
@@ -42,59 +38,72 @@ body #adminmenuwrap::before {
 }
 
 /* ==========================================================================
-   3. TEXT COLORS (Bright White on Hover/Active)
+   3. TEXT COLORS (Fixing the Dark Text Issue)
    ========================================================================== */
-/* Default State: Grey */
+/* Default State */
 body #adminmenu li a, 
-body #adminmenu .wp-submenu a,
 body #adminmenu .wp-menu-name {
     color: #888888 !important;
     font-weight: 100 !important;
-    transition: all 0.2s ease;
 }
 
-/* HOVER & FOCUS: Force Bright White */
+/* HOVER: Bright White */
 body #adminmenu li.menu-top:hover > a,
-body #adminmenu li.menu-top > a:focus,
-body #adminmenu .wp-submenu a:hover,
-body #adminmenu .wp-submenu a:focus {
-    color: #ffffff !important; 
+body #adminmenu li.menu-top > a:focus {
+    color: #ffffff !important;
 }
 
-/* ACTIVE STATE: Force Bright White */
-body #adminmenu li.current > a,
-body #adminmenu li.wp-has-current-submenu > a {
+/* ACTIVE/SELECTED: Bright White */
+/* This specific selector fixes the "Dark Text" issue on selected items */
+body #adminmenu li.wp-has-current-submenu > a.menu-top,
+body #adminmenu li.current > a.menu-top,
+body #adminmenu li.current div.wp-menu-name {
     color: #ffffff !important;
     font-weight: 400 !important;
 }
 
-/* ==========================================================================
-   4. ICON STYLING (Accent Color on Hover)
-   ========================================================================== */
-/* Default State: Grey & 15px */
-body #adminmenu .wp-menu-image:before,
-body #adminmenu .wp-menu-image svg,
-body #adminmenu .wp-menu-image img {
-    color: #666666 !important;
-    fill: #666666 !important; /* For SVGs */
-    font-size: 15px !important;
-    width: 15px !important;
-    height: auto !important;
-    padding: 10px 0 !important;
-    opacity: 0.7 !important;
-    transition: all 0.2s ease;
+/* Submenu Links */
+body #adminmenu .wp-submenu a {
+    color: #888888 !important;
+}
+body #adminmenu .wp-submenu a:hover,
+body #adminmenu .wp-submenu li.current a {
+    color: #ffffff !important; /* White on hover/active */
 }
 
-/* HOVER: Icon turns Accent Color */
+
+/* ==========================================================================
+   4. ICON STYLING (Fixing Elementor Size & Hover Color)
+   ========================================================================== */
+/* Standard Icons */
+body #adminmenu .wp-menu-image:before {
+    color: #666666 !important;
+    font-size: 15px !important;
+    padding: 10px 0 !important;
+    opacity: 0.7 !important;
+}
+
+/* THE ELEMENTOR FIX: Force Image/SVG Size */
+body #adminmenu .wp-menu-image img,
+body #adminmenu .wp-menu-image svg {
+    width: 15px !important;       /* Forces 15px width */
+    height: auto !important;      /* Keeps aspect ratio */
+    max-width: 15px !important;   /* Prevents overrides */
+    padding: 10px 0 !important;
+    opacity: 0.7 !important;
+    fill: #666666 !important;     /* Forces SVG fill color */
+}
+
+/* HOVER: Accent Color (Including SVGs) */
 body #adminmenu li:hover .wp-menu-image:before,
 body #adminmenu li:hover .wp-menu-image svg,
 body #adminmenu li:hover .wp-menu-image img {
     color: var(--seac-accent-color) !important;
-    fill: var(--seac-accent-color) !important;
+    fill: var(--seac-accent-color) !important; /* Colors the Elementor SVG */
     opacity: 1 !important;
 }
 
-/* ACTIVE: Icon turns Accent Color */
+/* ACTIVE: Accent Color */
 body #adminmenu li.current .wp-menu-image:before,
 body #adminmenu li.wp-has-current-submenu .wp-menu-image:before,
 body #adminmenu li.current .wp-menu-image svg,
@@ -105,7 +114,7 @@ body #adminmenu li.wp-has-current-submenu .wp-menu-image svg {
 }
 
 /* ==========================================================================
-   5. COLLAPSE BUTTON FIX
+   5. COLLAPSE BUTTON FIX (Killing the Blue)
    ========================================================================== */
 body #adminmenu #collapse-button,
 body #adminmenu #collapse-menu {
@@ -114,24 +123,25 @@ body #adminmenu #collapse-menu {
     color: #888888 !important;
 }
 
-/* Hover: Bright White Text */
+/* Hover: Bright White Text, Accent Icon */
 body #adminmenu #collapse-button:hover,
 body #adminmenu #collapse-menu:hover {
-    color: #ffffff !important;
-    background-color: rgba(255,255,255,0.05) !important;
+    color: #ffffff !important; /* Text White */
+    background-color: rgba(255,255,255,0.05) !important; /* Dark Grey BG */
 }
 
-/* Icon Default */
+/* The Icon Itself */
 body #adminmenu #collapse-button .collapse-button-icon:before,
 body #adminmenu #collapse-menu .collapse-button-icon:before {
     font-size: 15px !important;
-    color: #666666 !important;
+    color: #666666 !important; /* Default Grey */
     padding-top: 2px !important;
 }
 
-/* Icon Hover: Accent Color */
-body #adminmenu #collapse-button:hover .collapse-button-icon:before {
-    color: var(--seac-accent-color) !important;
+/* HOVER FIX: Force Accent Color instead of Blue */
+body #adminmenu #collapse-button:hover .collapse-button-icon:before,
+body #adminmenu #collapse-menu:hover .collapse-button-icon:before {
+    color: var(--seac-accent-color) !important; /* ACCENT COLOR */
 }
 
 /* ==========================================================================
