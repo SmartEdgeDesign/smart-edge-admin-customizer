@@ -38,11 +38,11 @@ jQuery(document).ready(function($){
         if( savedSettings[roleKey] ) {
             var config = savedSettings[roleKey];
             
-            // ORPHAN LOGIC: Add new plugins, but SKIP separators
+            // ORPHAN LOGIC: Detect new items (e.g. Links) and add them to list.
             var savedSlugs = config.map(function(item){ return item.slug; });
             
             var orphans = masterMenu.filter(function(item){
-                // EXCLUDE SEPARATORS from orphan check so we don't get duplicates
+                // Skip default separators to avoid ghost lines
                 if ( item.type === 'separator' ) return false;
                 return savedSlugs.indexOf(item.slug) === -1;
             });
@@ -53,6 +53,7 @@ jQuery(document).ready(function($){
             
             currentConfig[roleKey] = config;
         } else {
+            // No save? Start clean.
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
     });
@@ -99,7 +100,6 @@ jQuery(document).ready(function($){
         }
     }
 
-    // Helper to append a single item
     function appendMenuItem( item ) {
         var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
         var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
@@ -185,7 +185,6 @@ jQuery(document).ready(function($){
         var $btn = $(this);
         var $icon = $btn.find('.dashicons');
         var $li = $btn.closest('li');
-
         if( $li.hasClass('seac-hidden') ) {
             $li.removeClass('seac-hidden');
             $icon.removeClass('dashicons-hidden').addClass('dashicons-visibility');
@@ -195,25 +194,21 @@ jQuery(document).ready(function($){
         }
     });
 
-    // --- ADD DIVIDER BUTTON ---
+    // ADD DIVIDER
     $('#seac_add_divider_btn').click(function(e){
         e.preventDefault();
         var uniqueID = 'sep_' + Date.now();
-        var newItem = {
-            slug: uniqueID,
-            type: 'separator',
-            hidden: false
-        };
+        var newItem = { slug: uniqueID, type: 'separator', hidden: false };
         appendMenuItem(newItem);
         var $list = $('#seac_menu_list');
         $list.scrollTop($list[0].scrollHeight);
     });
 
-    // --- RESET BUTTON ---
+    // RESET BUTTON (Clean Overwrite)
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
-        if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            // Restore from masterMenu (which is based on the clean global capture)
+        if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default? This will remove all custom dividers and layout changes.') ) {
+            // Overwrite with CLEAN master menu (no custom dividers)
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             var jsonString = JSON.stringify(currentConfig);
             $('#seac_menu_config_input').val(jsonString);

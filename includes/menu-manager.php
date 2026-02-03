@@ -4,8 +4,10 @@ if ( ! defined( 'WPINC' ) ) { die; }
 class SEAC_Menu_Manager {
 
     public function __construct() {
-        // Run on 'admin_init' (Priority 100) to capture the final menu (including Bricks/Elementor)
-        add_action( 'admin_init', array( $this, 'manage_menu_ordering' ), 100 );
+        // PRIORITY FIX: Run at PHP_INT_MAX on admin_init.
+        // This ensures we run AFTER every other plugin (including Bricks) 
+        // has finished setting up their menu items.
+        add_action( 'admin_init', array( $this, 'manage_menu_ordering' ), PHP_INT_MAX );
         add_action( 'admin_init', array( $this, 'block_hidden_pages' ), 10 );
     }
 
@@ -15,6 +17,7 @@ class SEAC_Menu_Manager {
         global $menu;
 
         // 1. CAPTURE FINAL ORIGINAL MENU
+        // Because we are at PHP_INT_MAX, this snapshot includes Bricks in its correct spot.
         if ( ! isset( $GLOBALS['seac_original_menu'] ) ) {
             $GLOBALS['seac_original_menu'] = $menu;
         }
@@ -24,6 +27,7 @@ class SEAC_Menu_Manager {
 
         $saved_settings = get_option( 'seac_menu_settings', array() );
         
+        // If no settings for this role, do nothing (leave WP default)
         if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
             return;
         }
@@ -47,15 +51,14 @@ class SEAC_Menu_Manager {
 
             if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // Handle Separators
+            // Handle Custom Separators
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
-                // We add 'seac-custom-divider' so CSS can force it to show at the bottom
                 $new_menu[ $menu_order_index ] = array( 
                     '', 
                     'read', 
                     "separator_{$menu_order_index}", 
                     '', 
-                    'wp-menu-separator seac-custom-divider' 
+                    'wp-menu-separator seac-custom-divider' // Custom Class ensures visibility
                 );
                 $menu_order_index++;
                 continue;
@@ -74,11 +77,14 @@ class SEAC_Menu_Manager {
             }
         }
 
-        // 4. APPEND ORPHANS (BUT SKIP DEFAULT SEPARATORS)
-        // This prevents the "3 ghost dividers" from appearing at the bottom.
+        // 4. APPEND ORPHANS
+        // If an item exists in WP but not in your save file (like "Links" if you just installed it),
+        // we add it to the bottom so it isn't lost.
         if ( ! empty( $original_menu_map ) ) {
             foreach ( $original_menu_map as $orphan ) {
-                // SKIP separators
+                
+                // SKIP DEFAULT WORDPRESS SEPARATORS
+                // This prevents the "3 Ghost Dividers" at the bottom.
                 if ( isset($orphan[4]) && strpos( $orphan[4], 'wp-menu-separator' ) !== false ) {
                     continue;
                 }
