@@ -35,7 +35,7 @@ class SEAC_Menu_Manager {
         $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
         
         // If no settings, stop. Leave default menu alone.
-        if ( ! isset( $saved_settings[$role] ) ) {
+        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
             return;
         }
 
@@ -51,8 +51,7 @@ class SEAC_Menu_Manager {
         foreach ( $source_menu as $index => $item ) {
             // This logic must be IDENTICAL to the slug generation in `includes/settings-page.php`.
             $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
-            $decoded_slug = html_entity_decode( $raw_slug ); // Fixes issues with encoded ampersands
-            $original_menu_map[$decoded_slug] = $item;
+            $original_menu_map[$raw_slug] = $item;
         }
 
         $menu_order_index = 0;
@@ -103,6 +102,11 @@ class SEAC_Menu_Manager {
             else if ( $slug === 'edit.php' && isset( $original_menu_map['edit.php?post_type=post'] ) ) {
                 $found_item = $original_menu_map['edit.php?post_type=post'];
                 $found_key = 'edit.php?post_type=post';
+            }
+            // FALLBACK: Reverse Posts variation (Admin has CPT link, User has standard Posts)
+            else if ( $slug === 'edit.php?post_type=post' && isset( $original_menu_map['edit.php'] ) ) {
+                $found_item = $original_menu_map['edit.php'];
+                $found_key = 'edit.php';
             }
 
             if ( $found_item ) {

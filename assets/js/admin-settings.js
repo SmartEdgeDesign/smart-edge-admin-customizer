@@ -238,14 +238,16 @@ jQuery(document).ready(function($){
         }
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            // 1. Reset Data in memory.
-            currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
+            // 1. Delete the config for this role entirely.
+            // This allows the role to revert to its native WordPress default menu.
+            delete currentConfig[activeRole];
             
-            // 2. Re-render the list from the reset data. This is the crucial step.
-            // This ensures that when the form is submitted, saveCurrentTabState() reads the correct (reset) state.
-            renderMenuList(activeRole);
+            // 2. Bypass the standard submit handler to ensure the deletion is sent.
+            var jsonString = JSON.stringify(currentConfig);
+            $('#seac_menu_config_input').val(jsonString);
             
-            // 3. Now, submit the form. The generic submit handler will do the rest.
+            // 3. Unbind the submit handler to prevent overwriting, then submit.
+            $('.seac-settings-wrap form').off('submit');
             $('.seac-settings-wrap form').submit();
         }
     });
