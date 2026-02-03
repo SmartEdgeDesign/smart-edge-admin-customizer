@@ -44,11 +44,15 @@ class SEAC_Settings_Page {
         $formatted_menu = array();
         
         if ( !empty($source_menu) && is_array($source_menu) ) {
-            foreach ( $source_menu as $item ) {
-                if ( ! isset( $item[2] ) ) continue;
+            // We need the index to create unique slugs for items that don't have one.
+            foreach ( $source_menu as $index => $item ) {
+                // This check was hiding malformed menu items (like separators without a slug)
+                // from the UI, causing them to become "orphans" and appear at the bottom.
+                // if ( ! isset( $item[2] ) ) continue;
 
                 $name = isset($item[0]) ? $item[0] : '';
-                $slug = $item[2];
+                // Generate a unique slug, matching the logic in menu-manager.php
+                $slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
                 $type = 'item';
                 $icon = isset($item[6]) ? $item[6] : 'dashicons-admin-generic';
 
@@ -63,6 +67,11 @@ class SEAC_Settings_Page {
                     $name = preg_replace( '/<span.*<\/span>/', '', $name ); 
                     $name = strip_tags( $name ); 
                     $name = trim( $name );
+                }
+
+                // Handle items that are completely empty but are not separators
+                if ( empty($name) && $type === 'item' ) {
+                    $name = '(Unnamed Item)';
                 }
 
                 if( $icon == 'div' ) $icon = 'dashicons-admin-generic';
