@@ -24,8 +24,19 @@ jQuery(document).ready(function($){
     });
 
     // --- 2. MENU MANAGER ---
-    if( typeof seacData === 'undefined' ) {
-        console.error('SEAC: Menu data not found!');
+    
+    // FETCH THE DATA FROM THE HIDDEN DIV
+    var $dataDiv = $('#seac-json-data');
+    if ( $dataDiv.length === 0 ) {
+        console.log('SEAC: Data div not found.');
+        return;
+    }
+
+    // Parse the JSON safely
+    try {
+        var seacData = JSON.parse( $dataDiv.attr('data-json') );
+    } catch (e) {
+        console.error('SEAC: JSON Parse error', e);
         return;
     }
 
@@ -37,7 +48,6 @@ jQuery(document).ready(function($){
     var $tabsContainer = $('#seac_role_tabs');
     $tabsContainer.empty();
     
-    // Helper to sort roles (Admin first)
     var sortedRoles = Object.keys(roles).sort(function(a,b){
         if(a === 'administrator') return -1;
         if(b === 'administrator') return 1;
@@ -58,7 +68,7 @@ jQuery(document).ready(function($){
 
         $.each(masterMenu, function(index, item){
             
-            // Icon Handler: Is it a dashicon or a URL/Base64?
+            // Icon Handler
             var iconHtml = '';
             if( item.icon.indexOf('dashicons-') !== -1 ) {
                 iconHtml = '<span class="dashicons ' + item.icon + '"></span>';
@@ -90,11 +100,14 @@ jQuery(document).ready(function($){
             $list.append(liHtml);
         });
 
-        $list.sortable({
-            handle: '.seac-item-handle',
-            placeholder: 'seac-sortable-placeholder',
-            forcePlaceholderSize: true
-        });
+        // Initialize Sortable
+        if ($.fn.sortable) {
+            $list.sortable({
+                handle: '.seac-item-handle',
+                placeholder: 'seac-sortable-placeholder',
+                forcePlaceholderSize: true
+            });
+        }
     }
 
     renderMenuList(activeRole);
