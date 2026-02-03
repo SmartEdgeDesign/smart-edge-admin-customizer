@@ -1,149 +1,199 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - SETTINGS PAGE (LIGHT THEME)
+   SMART EDGE ADMIN - SETTINGS STYLING (V2)
    ========================================================================== */
 
-/* Main Wrapper - Full Width */
 .seac-settings-wrap {
-    width: 98%; /* Uses almost full width of the screen */
+    width: 98%;
     margin: 20px 0;
 }
-
 .seac-settings-wrap h1 {
     margin-bottom: 20px;
     font-weight: 400;
     color: #1d2327;
 }
 
-/* --------------------------------------------------------------------------
-   THE CARD COMPONENT (LIGHT)
-   -------------------------------------------------------------------------- */
+/* CARD STYLES */
 .seac-card {
-    background: #ffffff; /* White BG */
-    border: 1px solid #c3c4c7; /* Standard WP Border */
-    border-radius: 4px; /* Clean standard radius */
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     margin-bottom: 20px;
     overflow: hidden;
 }
-
-/* Card Header */
 .seac-card-header {
-    background: #f0f0f1; /* Light Grey Header */
+    background: #f0f0f1;
     padding: 15px 20px;
     border-bottom: 1px solid #c3c4c7;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
-.seac-card-header h2 {
-    color: #1d2327;
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.seac-card-header p {
-    color: #646970;
-    margin: 0;
-    font-size: 13px;
-}
-
-/* Card Body */
-.seac-card-body {
-    padding: 20px;
-}
-
-/* Table Cleanup */
-.seac-card-body .form-table th {
-    width: 200px;
-    padding: 20px 0;
-    color: #1d2327;
-    font-weight: 600;
-}
-
-.seac-card-body .form-table td {
-    padding: 20px 0;
-}
+.seac-card-header h2 { margin: 0; font-size: 16px; font-weight: 600; color: #1d2327; }
+.seac-card-header p { margin: 0; font-size: 13px; color: #646970; }
+.seac-card-body { padding: 20px; }
 
 /* --------------------------------------------------------------------------
-   FORM ELEMENTS
+   MENU MANAGER STYLES
    -------------------------------------------------------------------------- */
-/* Logo Preview Box */
-.seac-logo-preview {
-    width: 200px;
-    height: 80px;
-    background-color: #f0f0f1; /* Light grey checkerboard placeholder */
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-origin: content-box; /* Respects padding */
-    padding: 10px;
-    border: 1px dashed #c3c4c7;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
 
-/* Control Groups */
-.seac-control-group {
+/* 1. ROLE TABS */
+.seac-role-tabs {
     display: flex;
-    align-items: flex-start;
-    gap: 20px;
+    gap: 5px;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+    padding-bottom: 0;
 }
 
-.seac-input-group {
-    flex-grow: 1;
-}
-
-/* Inputs */
-.seac-card input[type="text"] {
-    width: 100%;
-    max-width: 500px;
-    background: #ffffff;
-    border: 1px solid #8c8f94;
-    color: #2c3338;
-    border-radius: 4px;
-    padding: 6px 12px;
-    margin-bottom: 5px;
-}
-
-.seac-card input[type="text"]:focus {
-    border-color: var(--seac-accent-color, #007cba);
-    box-shadow: 0 0 0 1px var(--seac-accent-color, #007cba);
-}
-
-/* Buttons */
-.seac-button-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-top: 5px;
-}
-
-/* Description Text */
-.description {
-    color: #646970;
-    font-style: normal;
-    margin-top: 5px;
-}
-
-/* --------------------------------------------------------------------------
-   SUBMIT BUTTON AREA
-   -------------------------------------------------------------------------- */
-.seac-submit-area {
-    margin-top: 20px;
-    text-align: left; /* Standard left align */
-}
-
-.seac-submit-area .button-primary {
-    background: #2271b1 !important; /* Standard WP Blue */
-    border-color: #2271b1 !important;
-    text-transform: none;
+.seac-role-tab {
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-bottom: none;
+    padding: 10px 20px;
+    cursor: pointer;
     font-weight: 500;
-    padding: 5px 15px !important;
+    color: #50575e;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s;
+    margin-bottom: -1px; /* Overlap border */
 }
 
-.seac-submit-area .button-primary:hover {
-    background: #135e96 !important;
-    border-color: #135e96 !important;
+.seac-role-tab:hover {
+    background: #fff;
+    color: var(--seac-accent-color, #2271b1);
 }
+
+.seac-role-tab.active {
+    background: #fff;
+    border-bottom: 1px solid #fff; /* Hide bottom border */
+    color: #1d2327;
+    font-weight: 600;
+    box-shadow: 0 -2px 0 var(--seac-accent-color, #2271b1) inset; /* Top highlight */
+}
+
+/* 2. MENU LIST */
+.seac-sortable-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: 800px; /* Prevent it getting too wide */
+}
+
+.seac-menu-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    padding: 10px;
+    transition: all 0.2s;
+}
+
+.seac-menu-item:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Hidden State */
+.seac-menu-item.seac-hidden {
+    opacity: 0.5;
+    background: #f0f0f1;
+}
+.seac-menu-item.seac-hidden .seac-rename-input {
+    text-decoration: line-through;
+    color: #888;
+}
+
+/* Handle (Drag Grip) */
+.seac-item-handle {
+    cursor: grab;
+    color: #a7aaad;
+    padding-right: 15px;
+}
+.seac-item-handle:hover { color: #333; }
+
+/* Icon */
+.seac-item-icon {
+    width: 30px;
+    color: #646970;
+    display: flex;
+    align-items: center;
+}
+
+/* Details (Input + Label) */
+.seac-item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.seac-rename-input {
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid transparent !important; /* Invisible until focused */
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    color: #1d2327;
+}
+
+.seac-rename-input:focus {
+    border: 1px solid #2271b1 !important;
+    background: #fff !important;
+    padding: 4px 8px !important;
+}
+
+.seac-original-label {
+    font-size: 11px;
+    color: #a7aaad;
+}
+
+/* Actions (Eye Button) */
+.seac-item-actions {
+    padding-left: 15px;
+}
+
+.seac-visibility-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #646970;
+    padding: 5px;
+    border-radius: 4px;
+}
+.seac-visibility-toggle:hover {
+    background: #f0f0f1;
+    color: #2271b1;
+}
+
+/* Sortable Placeholder (The gap when dragging) */
+.seac-sortable-placeholder {
+    background: #f6f7f7;
+    border: 1px dashed #2271b1;
+    height: 50px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   EXISTING SETTINGS STYLES (Kept for compatibility)
+   -------------------------------------------------------------------------- */
+.seac-logo-preview {
+    width: 200px; height: 80px; background-color: #f0f0f1;
+    background-size: contain; background-repeat: no-repeat;
+    background-position: center; background-origin: content-box;
+    padding: 10px; border: 1px dashed #c3c4c7; border-radius: 4px; margin-bottom: 10px;
+}
+.seac-control-group { display: flex; align-items: flex-start; gap: 20px; }
+.seac-input-group { flex-grow: 1; }
+.seac-card input[type="text"]:not(.seac-rename-input) {
+    width: 100%; max-width: 500px; background: #ffffff; border: 1px solid #8c8f94;
+    color: #2c3338; border-radius: 4px; padding: 6px 12px; margin-bottom: 5px;
+}
+.seac-button-group { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+.description { color: #646970; font-style: normal; margin-top: 5px; }
+.seac-submit-area { margin-top: 20px; text-align: left; }
+.seac-submit-area .button-primary { background: #2271b1 !important; border-color: #2271b1 !important; text-transform: none; font-weight: 500; padding: 5px 15px !important; }

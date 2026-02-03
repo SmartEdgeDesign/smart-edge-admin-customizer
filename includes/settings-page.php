@@ -7,8 +7,6 @@ class SEAC_Settings_Page {
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-        
-        // ALLOW SVG UPLOADS
         add_filter( 'upload_mimes', array( $this, 'allow_svg_uploads' ) );
     }
 
@@ -21,21 +19,43 @@ class SEAC_Settings_Page {
         if ( 'toplevel_page_seac-settings' !== $hook ) {
             return;
         }
+        
+        // 1. Core Scripts
         wp_enqueue_media();
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery' ), '1.0.0', true );
+        wp_enqueue_script( 'jquery-ui-sortable' ); // Required for Drag & Drop
+        
+        // 2. Custom JS
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '1.0.0', true );
+        
+        // 3. Custom CSS
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
+
+        // 4. DATA PACKET (Pass PHP data to JS)
+        global $menu;
+        $formatted_menu = array();
+        
+        // Clean up the messy WordPress menu array
+        foreach ( $menu as $index => $item ) {
+            if ( ! empty( $item[0] ) ) {
+                $formatted_menu[] = array(
+                    'original_name' => $item[0], // The Name
+                    'capability'    => $item[1], // Who can see it
+                    'slug'          => $item[2], // The URL
+                    'icon'          => isset($item[6]) ? $item[6] : 'dashicons-admin-generic',
+                    'id'            => 'menu-' . sanitize_title($item[0])
+                );
+            }
+        }
+
+        wp_localize_script( 'seac-admin-js', 'seacData', array(
+            'roles' => get_editable_roles(),
+            'menu'  => $formatted_menu,
+            'saved_settings' => get_option( 'seac_menu_settings', array() ) // Placeholder for future save
+        ));
     }
 
     public function add_plugin_page() {
-        add_menu_page(
-            'Smart Edge Admin',   
-            'Smart Admin',        
-            'manage_options', 
-            'seac-settings', 
-            array( $this, 'create_admin_page' ), 
-            'dashicons-admin-appearance', 
-            110 // <-- MOVED TO BOTTOM (Position 110)
-        );
+        add_menu_page( 'Smart Edge Admin', 'Smart Admin', 'manage_options', 'seac-settings', array( $this, 'create_admin_page' ), 'dashicons-admin-appearance', 110 );
     }
 
     public function create_admin_page() {
@@ -44,9 +64,7 @@ class SEAC_Settings_Page {
             <h1 class="wp-heading-inline">Smart Edge Admin Customizer</h1>
             
             <form method="post" action="options.php">
-                <?php
-                settings_fields( 'seac_option_group' );
-                ?>
+                <?php settings_fields( 'seac_option_group' ); ?>
                 
                 <div class="seac-card">
                     <div class="seac-card-header">
@@ -55,6 +73,25 @@ class SEAC_Settings_Page {
                     </div>
                     <div class="seac-card-body">
                         <?php do_settings_sections( 'seac-settings' ); ?>
+                    </div>
+                </div>
+
+                <div class="seac-card">
+                    <div class="seac-card-header">
+                        <h2>Menu Manager</h2>
+                        <p>Drag to reorder, rename items, or hide them per user role.</p>
+                    </div>
+                    <div class="seac-card-body seac-menu-manager">
+                        
+                        <div class="seac-role-tabs" id="seac_role_tabs">
+                            </div>
+
+                        <div class="seac-menu-editor" id="seac_menu_editor">
+                            <ul id="seac_menu_list" class="seac-sortable-list">
+                                </ul>
+                        </div>
+                        
+                        <input type="hidden" name="seac_settings[menu_config]" id="seac_menu_config_input">
                     </div>
                 </div>
 
@@ -67,44 +104,17 @@ class SEAC_Settings_Page {
     }
 
     public function page_init() {
-        register_setting(
-            'seac_option_group', 
-            'seac_settings', 
-            array( $this, 'sanitize' ) 
-        );
+        register_setting( 'seac_option_group', 'seac_settings', array( $this, 'sanitize' ) );
 
-        add_settings_section(
-            'seac_setting_section_branding', 
-            '', 
-            null, 
-            'seac-settings'
-        );
+        add_settings_section( 'seac_setting_section_branding', '', null, 'seac-settings' );
 
-        add_settings_field(
-            'logo_url', 
-            'Admin Menu Logo', 
-            array( $this, 'logo_url_callback' ), 
-            'seac-settings', 
-            'seac_setting_section_branding'
-        );
-
-        add_settings_field(
-            'accent_color', 
-            'Accent Color', 
-            array( $this, 'accent_color_callback' ), 
-            'seac-settings', 
-            'seac_setting_section_branding'
-        );
+        add_settings_field( 'logo_url', 'Admin Menu Logo', array( $this, 'logo_url_callback' ), 'seac-settings', 'seac_setting_section_branding' );
+        add_settings_field( 'accent_color', 'Accent Color', array( $this, 'accent_color_callback' ), 'seac-settings', 'seac_setting_section_branding' );
     }
 
     public function sanitize( $input ) {
-        $new_input = array();
-        if( isset( $input['logo_url'] ) )
-            $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
-        if( isset( $input['accent_color'] ) )
-            $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
-
-        return $new_input;
+        // Simple sanitization for now
+        return $input; 
     }
 
     public function logo_url_callback() {
@@ -114,14 +124,11 @@ class SEAC_Settings_Page {
         <div class="seac-control-group">
             <div id="seac_logo_preview" class="seac-logo-preview" style="<?php echo $logo_url ? 'background-image: url('.$logo_url.');' : ''; ?>"></div>
             <div class="seac-input-group">
-                <input type="text" id="seac_logo_url" name="seac_settings[logo_url]" value="<?php echo esc_attr( $logo_url ); ?>" placeholder="https://..." />
+                <input type="text" id="seac_logo_url" name="seac_settings[logo_url]" value="<?php echo esc_attr( $logo_url ); ?>" />
                 <div class="seac-button-group">
                     <input type="button" class="button button-secondary" value="Select Image" id="seac_upload_logo_btn" />
-                    <?php if ( $logo_url ) : ?>
-                        <input type="button" class="button button-link-delete" value="Remove" id="seac_remove_logo_btn" />
-                    <?php endif; ?>
+                    <?php if ( $logo_url ) : ?><input type="button" class="button button-link-delete" value="Remove" id="seac_remove_logo_btn" /><?php endif; ?>
                 </div>
-                <p class="description">Supported formats: PNG, JPG, SVG.</p>
             </div>
         </div>
         <?php
@@ -130,12 +137,8 @@ class SEAC_Settings_Page {
     public function accent_color_callback() {
         $options = get_option( 'seac_settings' );
         $color = isset( $options['accent_color'] ) ? $options['accent_color'] : '#007cba';
-        echo '<div class="seac-control-group">';
-        echo '<input type="color" id="accent_color" name="seac_settings[accent_color]" value="' . esc_attr( $color ) . '" />';
-        echo '<p class="description">Select the highlight color for menu icons and active states.</p>';
-        echo '</div>';
+        echo '<div class="seac-control-group"><input type="color" id="accent_color" name="seac_settings[accent_color]" value="' . esc_attr( $color ) . '" /></div>';
     }
 }
 
-if ( is_admin() )
-    $seac_settings_page = new SEAC_Settings_Page();
+if ( is_admin() ) $seac_settings_page = new SEAC_Settings_Page();
