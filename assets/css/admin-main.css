@@ -228,3 +228,28 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
     #wpcontent { margin-left: 0 !important; }
     #wpwrap.wp-responsive-open::-webkit-scrollbar { width:0; }
 }
+
+/* --------------------------------------------------------------------------
+   8. COLLAPSE BUTTON
+   -------------------------------------------------------------------------- */
+#adminmenu #collapse-button {
+    background: transparent !important;
+}
+
+#adminmenu #collapse-button .collapse-button-label {
+    color: #999999 !important;
+    font-weight: 100 !important;
+    transition: color 0.2s ease !important;
+}
+
+#adminmenu #collapse-button .collapse-button-icon:before {
+    color: #999999 !important;
+    font-size: 15px !important;
+    transition: color 0.2s ease !important;
+}
+
+/* Hover State */
+#adminmenu #collapse-menu:hover #collapse-button .collapse-button-label,
+#adminmenu #collapse-menu:hover #collapse-button .collapse-button-icon:before {
+    color: #ffffff !important;
+}
