@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - STABLE BASE (SUBMENU FIX)
+   SMART EDGE ADMIN - FINAL COLOR BALANCE
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -34,7 +34,7 @@ input[type=url], input[type=week], select, textarea {
 }
 
 /* --------------------------------------------------------------------------
-   2. CLEANUP (Hiding Junk)
+   2. CLEANUP
    -------------------------------------------------------------------------- */
 #wpadminbar { display: none !important; }
 html.wp-toolbar { padding-top: 0px !important; }
@@ -57,12 +57,6 @@ html.wp-toolbar { padding-top: 0px !important; }
     background-color: #0c0c0c !important;
 }
 
-/* Selected Top-Level Item Background */
-#adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current > a {
-    background-color: #191919 !important;
-}
-
 /* Submenu Container Background */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
@@ -81,41 +75,39 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. TEXT COLORS & SUBMENU STYLING (FIXED)
+   4. MAIN MENU ITEMS (HOVER = ACTIVE)
    -------------------------------------------------------------------------- */
-/* Base Text Color: Grey */
+/* ACTIVE Item Background (#191919) */
+#adminmenu li.wp-has-current-submenu > a,
+#adminmenu li.current > a {
+    background-color: #191919 !important;
+}
+
+/* HOVER Item Background (NOW ALSO #191919) */
+#adminmenu li.menu-top:hover > a {
+    background-color: #191919 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. TEXT COLORS (#999999 Default)
+   -------------------------------------------------------------------------- */
+/* Default State: #999999 */
 #adminmenu a, 
 #adminmenu .wp-menu-name, 
 #adminmenu .wp-submenu a {
-    color: #888888 !important;
+    color: #999999 !important;
     font-weight: 100 !important;
     transition: all 0.2s ease;
 }
 
-/* --- SUBMENU TWEAKS --- */
-#adminmenu .wp-submenu a {
-    /* Tight padding as requested */
-    padding: 5px 0 5px 12px !important; 
-    font-size: 13px !important;
-}
-
-/* SUBMENU ACTIVE STATE: No Background, Just White Text */
-#adminmenu .wp-submenu li.current a,
-#adminmenu .wp-submenu li.current a:hover {
-    background-color: transparent !important; /* Removed BG color */
-    color: #ffffff !important; /* White Text */
-    font-weight: 400 !important;
-}
-
-/* HOVER: Force White Text Everywhere */
+/* HOVER: Force White */
 #adminmenu li.menu-top:hover > a,
 #adminmenu li.menu-top:hover .wp-menu-name,
 #adminmenu .wp-submenu a:hover {
     color: #ffffff !important;
-    background-color: transparent !important;
 }
 
-/* ACTIVE TOP LEVEL: Force White Text */
+/* ACTIVE: Force White */
 #adminmenu li.current > a,
 #adminmenu li.current .wp-menu-name,
 #adminmenu li.wp-has-current-submenu > a,
@@ -124,25 +116,41 @@ html.wp-toolbar { padding-top: 0px !important; }
     font-weight: 400 !important;
 }
 
+/* SUBMENU ACTIVE STATE: Transparent BG, White Text */
+#adminmenu .wp-submenu li.current a,
+#adminmenu .wp-submenu li.current a:hover {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    font-weight: 400 !important;
+}
+
+/* Submenu Padding Fix */
+#adminmenu .wp-submenu a {
+    padding: 5px 0 5px 12px !important; 
+    font-size: 13px !important;
+}
+
 /* --------------------------------------------------------------------------
-   5. ICONS
+   6. ICONS (#999999 -> Accent)
    -------------------------------------------------------------------------- */
+/* Default State: #999999 */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
-    color: #666666 !important;
+    color: #999999 !important;
     font-size: 15px !important;
     padding: 10px 0 !important;
-    opacity: 0.7 !important;
+    opacity: 0.8 !important; /* Slightly higher opacity for lighter grey */
     transition: color 0.2s ease;
 }
 
+/* Default Image State */
 #adminmenu .wp-menu-image img,
 #adminmenu .wp-menu-image svg {
     width: 15px !important;
     height: auto !important;
     padding: 10px 0 !important;
-    fill: #666666 !important;
-    opacity: 0.7 !important;
+    fill: #999999 !important;
+    opacity: 0.8 !important;
 }
 
 /* HOVER & ACTIVE: Accent Color */
@@ -158,7 +166,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   6. DIVIDERS & MOBILE
+   7. DIVIDERS & MOBILE
    -------------------------------------------------------------------------- */
 #adminmenu li.wp-menu-separator {
     background: #333 !important;
