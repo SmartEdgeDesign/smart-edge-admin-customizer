@@ -33,17 +33,16 @@ jQuery(document).ready(function($){
     
     var currentConfig = {};
 
-    // --- INITIALIZATION (With Orphan Logic) ---
+    // --- INITIALIZATION ---
     $.each(roles, function(roleKey, roleData){
         if( savedSettings[roleKey] ) {
             var config = savedSettings[roleKey];
             
-            // DETECT ORPHANS
-            // We want to add new plugins to the list, but NOT ghost separators.
+            // ORPHAN LOGIC: Add new plugins, but SKIP separators
             var savedSlugs = config.map(function(item){ return item.slug; });
             
             var orphans = masterMenu.filter(function(item){
-                // EXCLUDE SEPARATORS from orphan check
+                // EXCLUDE SEPARATORS from orphan check so we don't get duplicates
                 if ( item.type === 'separator' ) return false;
                 return savedSlugs.indexOf(item.slug) === -1;
             });
@@ -100,7 +99,7 @@ jQuery(document).ready(function($){
         }
     }
 
-    // Helper to append a single item (Used by Render loop AND Add Button)
+    // Helper to append a single item
     function appendMenuItem( item ) {
         var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
         var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
@@ -199,19 +198,13 @@ jQuery(document).ready(function($){
     // --- ADD DIVIDER BUTTON ---
     $('#seac_add_divider_btn').click(function(e){
         e.preventDefault();
-        
-        // Create a custom separator object
-        // Slug must be unique so it doesn't conflict
         var uniqueID = 'sep_' + Date.now();
         var newItem = {
             slug: uniqueID,
             type: 'separator',
             hidden: false
         };
-        
         appendMenuItem(newItem);
-        
-        // Scroll to bottom
         var $list = $('#seac_menu_list');
         $list.scrollTop($list[0].scrollHeight);
     });
@@ -220,6 +213,7 @@ jQuery(document).ready(function($){
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
+            // Restore from masterMenu (which is based on the clean global capture)
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             var jsonString = JSON.stringify(currentConfig);
             $('#seac_menu_config_input').val(jsonString);

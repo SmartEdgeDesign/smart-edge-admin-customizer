@@ -4,48 +4,36 @@ if ( ! defined( 'WPINC' ) ) { die; }
 class SEAC_Menu_Manager {
 
     public function __construct() {
-        // MOVED TO ADMIN_INIT:
-        // We run on 'admin_init' (Priority 100) instead of 'admin_menu'.
-        // 'admin_init' fires AFTER 'admin_menu' is completely finished.
-        // This guarantees that Bricks, Elementor, and every other plugin has 
-        // already added their items to the global $menu array before we touch it.
+        // Run on 'admin_init' (Priority 100) to capture the final menu (including Bricks/Elementor)
         add_action( 'admin_init', array( $this, 'manage_menu_ordering' ), 100 );
-        
-        // Security check can run on the same hook, just earlier priority (10)
         add_action( 'admin_init', array( $this, 'block_hidden_pages' ), 10 );
     }
 
     public function manage_menu_ordering() {
-        // Only run in admin context
         if ( ! is_admin() ) return;
 
         global $menu;
 
-        // 1. CAPTURE THE FINAL ORIGINAL MENU
-        // Since we are in admin_init, this $menu includes EVERYTHING.
+        // 1. CAPTURE FINAL ORIGINAL MENU
         if ( ! isset( $GLOBALS['seac_original_menu'] ) ) {
             $GLOBALS['seac_original_menu'] = $menu;
         }
 
-        // 2. CHECK ROLE
         $role = $this->get_current_role();
         if ( ! $role ) return;
 
         $saved_settings = get_option( 'seac_menu_settings', array() );
         
-        // If no settings, stop. Leave default menu alone.
         if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
             return;
         }
 
-        // 3. APPLY CUSTOM ORDER
         $role_config = $saved_settings[$role];
         $new_menu = array();
         
-        // Use our perfect snapshot
         $source_menu = $GLOBALS['seac_original_menu'];
         
-        // Map it
+        // Map original menu
         $original_menu_map = array();
         foreach ( $source_menu as $index => $item ) {
             $key = isset($item[2]) ? $item[2] : "index_$index";
@@ -59,9 +47,16 @@ class SEAC_Menu_Manager {
 
             if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // Separators
+            // Handle Separators
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
-                $new_menu[ $menu_order_index ] = array( '', 'read', "separator_{$menu_order_index}", '', 'wp-menu-separator' );
+                // We add 'seac-custom-divider' so CSS can force it to show at the bottom
+                $new_menu[ $menu_order_index ] = array( 
+                    '', 
+                    'read', 
+                    "separator_{$menu_order_index}", 
+                    '', 
+                    'wp-menu-separator seac-custom-divider' 
+                );
                 $menu_order_index++;
                 continue;
             }
@@ -79,18 +74,20 @@ class SEAC_Menu_Manager {
             }
         }
 
-        // 4. APPEND ORPHANS
-        // If Bricks was in the snapshot but not in your saved config, it adds here.
-        // BUT since we captured it correctly this time, if you click "Reset", 
-        // it will go back to its correct spot in step 3 next time you save.
+        // 4. APPEND ORPHANS (BUT SKIP DEFAULT SEPARATORS)
+        // This prevents the "3 ghost dividers" from appearing at the bottom.
         if ( ! empty( $original_menu_map ) ) {
             foreach ( $original_menu_map as $orphan ) {
+                // SKIP separators
+                if ( isset($orphan[4]) && strpos( $orphan[4], 'wp-menu-separator' ) !== false ) {
+                    continue;
+                }
+
                 $new_menu[ $menu_order_index ] = $orphan;
                 $menu_order_index++;
             }
         }
 
-        // Apply to Global
         $menu = $new_menu;
     }
 
