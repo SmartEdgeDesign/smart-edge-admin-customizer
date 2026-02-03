@@ -22,7 +22,7 @@ class SEAC_Settings_Page {
         wp_enqueue_media();
         wp_enqueue_script( 'jquery-ui-sortable' );
         // Bump version to force refresh
-        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '2.0.0', true );
+        wp_enqueue_script( 'seac-admin-js', SEAC_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery', 'jquery-ui-sortable' ), '2.1.0', true );
         wp_enqueue_style( 'seac-plugin-css', SEAC_PLUGIN_URL . 'assets/css/plugin.css', array(), filemtime( SEAC_PLUGIN_PATH . 'assets/css/plugin.css' ) );
     }
 
@@ -57,7 +57,8 @@ class SEAC_Settings_Page {
         // Create the data array
         $seac_data = array(
             'roles' => get_editable_roles(),
-            'menu'  => $formatted_menu
+            'menu'  => $formatted_menu,
+            'saved_settings' => get_option( 'seac_menu_settings', array() )
         );
         ?>
         
@@ -95,6 +96,7 @@ class SEAC_Settings_Page {
                             <ul id="seac_menu_list" class="seac-sortable-list">
                                 </ul>
                         </div>
+                        <input type="hidden" name="seac_settings[menu_config]" id="seac_menu_config_input">
                     </div>
                 </div>
 
@@ -122,15 +124,14 @@ class SEAC_Settings_Page {
         if( isset( $input['accent_color'] ) )
             $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
 
-        // SAVE MENU CONFIG (The new part)
-        // We get this from $_POST because add_settings_field is tricky with hidden arrays
-        if ( isset( $_POST['seac_settings']['menu_config'] ) ) {
-            // It comes in as a JSON string
-            $json = stripslashes( $_POST['seac_settings']['menu_config'] );
+        // SAVE MENU CONFIG (Fixed Logic)
+        if ( isset( $input['menu_config'] ) && ! empty( $input['menu_config'] ) ) {
+            $json = stripslashes( $input['menu_config'] );
             $decoded = json_decode( $json, true );
             
-            // Save to a separate option key for cleaner data
-            update_option( 'seac_menu_settings', $decoded );
+            if ( is_array( $decoded ) ) {
+                update_option( 'seac_menu_settings', $decoded );
+            }
         }
 
         return $new_input;
