@@ -4,17 +4,15 @@ if ( ! defined( 'WPINC' ) ) { die; }
 class SEAC_Menu_Manager {
 
     public function __construct() {
-        // Run late to override other plugins, but we'll capture the original state first
-        add_action( 'admin_menu', array( $this, 'apply_custom_menu' ), 9999 );
+        // CHANGED PRIORITY: PHP_INT_MAX ensures we run AFTER Bricks and everything else.
+        add_action( 'admin_menu', array( $this, 'apply_custom_menu' ), PHP_INT_MAX );
         add_action( 'admin_init', array( $this, 'block_hidden_pages' ) );
     }
 
     public function apply_custom_menu() {
         global $menu;
 
-        // 1. CAPTURE THE ORIGINAL MENU (The Fix)
-        // We save the state of the menu exactly as WordPress + Plugins built it, 
-        // BEFORE we apply our own custom reordering.
+        // 1. CAPTURE ORIGINAL MENU (Including late plugins like Bricks)
         $GLOBALS['seac_original_menu'] = $menu;
 
         $role = $this->get_current_role();
@@ -26,7 +24,7 @@ class SEAC_Menu_Manager {
         $role_config = $saved_settings[$role];
         $new_menu = array();
         
-        // Map original menu for lookup
+        // Map original menu
         $original_menu_map = array();
         foreach ( $menu as $index => $item ) {
             $key = isset($item[2]) ? $item[2] : "index_$index";
@@ -38,27 +36,22 @@ class SEAC_Menu_Manager {
         foreach ( $role_config as $config_item ) {
             $slug = $config_item['slug'];
 
-            // Skip hidden
-            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) {
-                continue; 
-            }
+            if ( isset($config_item['hidden']) && $config_item['hidden'] == true ) continue; 
 
-            // SEPARATORS (Pass them through if they exist in config)
+            // Handle Separators
             if ( isset($config_item['type']) && $config_item['type'] === 'separator' ) {
-                // We create a generic separator structure for WP
                 $new_menu[ $menu_order_index ] = array( '', 'read', "separator_{$menu_order_index}", '', 'wp-menu-separator' );
                 $menu_order_index++;
                 continue;
             }
 
-            // REBUILD ITEM
+            // Handle Standard Items
             if ( isset( $original_menu_map[$slug] ) ) {
                 $menu_item = $original_menu_map[$slug];
 
                 if ( ! empty( $config_item['rename'] ) ) {
                     $menu_item[0] = $config_item['rename'];
                 }
-
                 if ( ! empty( $config_item['icon'] ) ) {
                     $menu_item[6] = $config_item['icon'];
                 }
@@ -69,7 +62,7 @@ class SEAC_Menu_Manager {
             }
         }
 
-        // APPEND ORPHANS
+        // APPEND ORPHANS (Plugins added since last save, or missed items)
         if ( ! empty( $original_menu_map ) ) {
             foreach ( $original_menu_map as $orphan ) {
                 $new_menu[ $menu_order_index ] = $orphan;
@@ -85,8 +78,6 @@ class SEAC_Menu_Manager {
         
         $role = $this->get_current_role();
         if ( ! $role ) return;
-        
-        // Admins can always access everything
         if ( current_user_can( 'administrator' ) ) return;
 
         $saved_settings = get_option( 'seac_menu_settings', array() );

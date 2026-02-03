@@ -111,7 +111,7 @@
 .seac-submit-area { margin-top: 20px; text-align: left; }
 .seac-submit-area .button-primary { background: #2271b1 !important; border-color: #2271b1 !important; text-transform: none; font-weight: 500; padding: 5px 15px !important; }
 
-
+/* SEPARATOR STYLING (Fixed) */
 .seac-menu-item.seac-is-separator {
     background: #f9f9f9;
     padding: 5px;
@@ -119,6 +119,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative; /* <--- THIS FIXES THE FLOATING EYE ICON */
 }
 
 .seac-menu-item.seac-is-separator .seac-item-handle {
@@ -132,4 +133,6 @@
 .seac-menu-item.seac-is-separator .seac-item-actions {
     position: absolute;
     right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center the eye */
 }
