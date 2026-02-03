@@ -31,10 +31,11 @@ class SEAC_Menu_Manager {
         $role = $this->get_current_role();
         if ( ! $role ) return;
 
-        $saved_settings = get_option( 'seac_menu_settings', array() );
+        $options = get_option( 'seac_settings' );
+        $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
         
         // If no settings, stop. Leave default menu alone.
-        if ( ! isset( $saved_settings[$role] ) || empty( $saved_settings[$role] ) ) {
+        if ( ! isset( $saved_settings[$role] ) ) {
             return;
         }
 
@@ -113,8 +114,9 @@ class SEAC_Menu_Manager {
         if ( ! $role ) return;
         if ( current_user_can( 'administrator' ) ) return;
 
-        $saved_settings = get_option( 'seac_menu_settings', array() );
-        if ( empty( $saved_settings[$role] ) ) return;
+        $options = get_option( 'seac_settings' );
+        $saved_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
+        if ( !isset($saved_settings[$role]) || empty( $saved_settings[$role] ) ) return;
 
         $blocked_slugs = array();
         foreach ( $saved_settings[$role] as $item ) {

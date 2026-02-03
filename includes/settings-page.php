@@ -95,10 +95,12 @@ class SEAC_Settings_Page {
         // --- DATA PREPARATION ---
         // The menu data is now prepared in the `prepare_menu_data` method, which runs on `admin_init`.
         // This ensures we have the final, complete menu list before it gets reordered.
+        $options = get_option( 'seac_settings' );
+        $saved_menu_settings = isset($options['menu_config']) ? $options['menu_config'] : array();
         $seac_data = array(
             'roles' => get_editable_roles(),
             'menu'  => $this->formatted_menu,
-            'saved_settings' => get_option( 'seac_menu_settings', array() )
+            'saved_settings' => $saved_menu_settings
         );
         ?>
         
@@ -163,10 +165,14 @@ class SEAC_Settings_Page {
         $new_input = array();
         if( isset( $input['logo_url'] ) ) $new_input['logo_url'] = sanitize_text_field( $input['logo_url'] );
         if( isset( $input['accent_color'] ) ) $new_input['accent_color'] = sanitize_hex_color( $input['accent_color'] );
-        if ( isset( $input['menu_config'] ) && ! empty( $input['menu_config'] ) ) {
+        
+        // Standardize saving the menu config as part of the main settings array.
+        // This avoids race conditions from using update_option inside a sanitize callback.
+        if ( isset( $input['menu_config'] ) ) {
             $json = stripslashes( $input['menu_config'] );
             $decoded = json_decode( $json, true );
-            if ( is_array( $decoded ) ) update_option( 'seac_menu_settings', $decoded );
+            // Only add to our settings array if it's valid decoded JSON.
+            if ( is_array( $decoded ) ) $new_input['menu_config'] = $decoded;
         }
         return $new_input;
     }
