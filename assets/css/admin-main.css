@@ -1,9 +1,9 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - ARROW & PADDING FIXED
+   SMART EDGE ADMIN - SPLIT SUBMENU FIX
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. GLOBAL UI & ROUNDED CORNERS
+   1. GLOBAL UI
    -------------------------------------------------------------------------- */
 .wp-core-ui .button,
 .wp-core-ui .button-primary,
@@ -50,7 +50,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   3. MENU BACKGROUNDS
+   3. MAIN MENU CONTAINERS
    -------------------------------------------------------------------------- */
 #adminmenu, #adminmenuback, #adminmenuwrap {
     background-color: #0c0c0c !important;
@@ -119,31 +119,37 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   5. SUBMENUS (PADDING & ARROW)
+   5. SUBMENUS (THE SPLIT FIX)
    -------------------------------------------------------------------------- */
-/* Submenu Box - PADDING REMOVED */
-#adminmenu .wp-submenu,
-#adminmenu .wp-has-current-submenu .wp-submenu,
-#adminmenu .wp-submenu.sub-open {
+/* Rule 1: DEFAULT (Flyouts) -> Keep Padding */
+#adminmenu .wp-submenu {
     background-color: #222222 !important;
-    padding: 0 !important; /* REMOVED PADDING */
+    padding: 7px 0 8px !important; /* Standard Padding for flyouts */
 }
 
-/* THE NUCLEAR ARROW FIX: 
-   Target the arrow on EVERY state (Hover, OpenSub, Active) 
-   and force it to match the submenu background (#222222).
-*/
+/* Rule 2: EXPANDED (Inside Main Menu) -> Remove Padding */
+#adminmenu li.wp-has-current-submenu .wp-submenu {
+    padding: 0 !important; /* No padding for active accordion */
+}
+
+/* THE TRIANGLE FIX (Targeting all potential states) */
 #adminmenu li.wp-has-current-submenu .wp-submenu:before,
 #adminmenu li.opensub .wp-submenu:before,
-#adminmenu li.menu-top:hover .wp-submenu:before {
+#adminmenu li.menu-top:hover .wp-submenu:before,
+#adminmenu .wp-submenu:before {
     border-right-color: #222222 !important;
 }
 
-/* Active Submenu Item */
+/* --------------------------------------------------------------------------
+   6. ACTIVE SUBMENU ITEM (BACKGROUND REMOVAL)
+   -------------------------------------------------------------------------- */
+/* This removes the background from the list item AND the link */
+#adminmenu .wp-submenu li.current,
 #adminmenu .wp-submenu li.current a,
 #adminmenu .wp-submenu li.current a:hover {
-    background-color: transparent !important;
-    color: #ffffff !important;
+    background-color: transparent !important; /* Force transparent */
+    background: transparent !important;
+    color: #ffffff !important; /* Keep white text */
     font-weight: 400 !important;
 }
 
@@ -153,7 +159,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   6. ICONS
+   7. ICONS
    -------------------------------------------------------------------------- */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
@@ -188,7 +194,7 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   7. DIVIDERS & MOBILE
+   8. DIVIDERS & MOBILE
    -------------------------------------------------------------------------- */
 #adminmenu li.wp-menu-separator {
     background: #333 !important;
