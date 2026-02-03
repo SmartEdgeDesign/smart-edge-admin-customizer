@@ -51,6 +51,14 @@ jQuery(document).ready(function($){
         $list.append(liHtml);
     });
 
+    // --- REMOVE ITEM BUTTON (for dividers only) ---
+    $(document).on('click', '.seac-remove-item', function(){
+        // Use a confirmation dialog to prevent accidental removal
+        if ( confirm('Are you sure you want to remove this divider?') ) {
+            $(this).closest('li.seac-is-separator').remove();
+        }
+    });
+
     // --- 2. MENU MANAGER ---
     if ( typeof seacData === 'undefined' ) {
         console.error('Smart Edge Admin Customizer: seacData object not found. Menu manager cannot initialize.');
@@ -156,9 +164,6 @@ jQuery(document).ready(function($){
                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
                                 <span class="dashicons ${hiddenIcon}"></span>
                             </button>
-                            <button type="button" class="seac-remove-item" title="Remove Item">
-                                <span class="dashicons dashicons-trash"></span>
-                            </button>
                         </div>
                     </li>
                 `;
@@ -215,12 +220,24 @@ jQuery(document).ready(function($){
         }
     });
 
-    // --- RESET BUTTON LOGIC (UPDATED: INSTANT SAVE) ---
+    $('.seac-settings-wrap form').submit(function(e){
+        saveCurrentTabState();
+        var jsonString = JSON.stringify(currentConfig);
+        $('#seac_menu_config_input').val(jsonString);
+        return true; 
+    });
+
+    // --- RESET BUTTON LOGIC (MOVED & FIXED) ---
     $('#seac_reset_menu_btn').click(function(e){
         e.preventDefault();
         
+        // This button depends on the menu manager data, so we check again.
+        if ( typeof seacData === 'undefined' ) {
+            alert('Menu data is not loaded. Cannot reset.');
+            return;
+        }
+
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
-            
             // 1. Reset Data
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             
@@ -232,12 +249,4 @@ jQuery(document).ready(function($){
             $('.seac-settings-wrap form').submit();
         }
     });
-
-    $('.seac-settings-wrap form').submit(function(e){
-        saveCurrentTabState();
-        var jsonString = JSON.stringify(currentConfig);
-        $('#seac_menu_config_input').val(jsonString);
-        return true; 
-    });
-
 });
