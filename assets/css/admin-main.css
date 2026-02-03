@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMART EDGE ADMIN - ZERO BACKGROUND LATENCY
+   SMART EDGE ADMIN - THE "BACKGROUND SEAL" FIX
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -50,14 +50,36 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   3. MENU BACKGROUNDS
+   3. THE BACKGROUND SEAL (Fixing the Flash)
    -------------------------------------------------------------------------- */
-/* Sidebar Background */
-#adminmenu, #adminmenuback, #adminmenuwrap {
+/* Force the entire container to be black */
+#adminmenu, #adminmenuback, #adminmenuwrap, #adminmenu li.menu-top {
     background-color: #0c0c0c !important;
 }
 
-/* Submenu Container Background */
+/* Force the LIST ITEM to also be black (This covers the "Blue Flash") */
+#adminmenu li.menu-top {
+    transition: none !important; /* Stop the list item from animating */
+}
+
+/* --------------------------------------------------------------------------
+   4. ACTIVE & HOVER STATES
+   -------------------------------------------------------------------------- */
+/* ACTIVE Item (#191919) */
+#adminmenu li.wp-has-current-submenu > a,
+#adminmenu li.current > a,
+#adminmenu li.wp-has-current-submenu, /* Set parent LI too */
+#adminmenu li.current {              /* Set parent LI too */
+    background-color: #191919 !important;
+}
+
+/* HOVER Item (#191919) */
+#adminmenu li.menu-top:hover > a,
+#adminmenu li.menu-top:hover { /* Hovering the LI triggers the color too */
+    background-color: #191919 !important;
+}
+
+/* Submenu Background (#222222) */
 #adminmenu .wp-submenu,
 #adminmenu .wp-has-current-submenu .wp-submenu,
 #adminmenu .wp-submenu.sub-open {
@@ -75,42 +97,16 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /* --------------------------------------------------------------------------
-   4. MAIN MENU ITEMS
-   -------------------------------------------------------------------------- */
-/* ACTIVE Item Background (#191919) */
-#adminmenu li.wp-has-current-submenu > a,
-#adminmenu li.current > a {
-    background-color: #191919 !important;
-}
-
-/* HOVER Item Background (#191919) */
-#adminmenu li.menu-top:hover > a {
-    background-color: #191919 !important;
-}
-
-/* FOCUS/CLICK STATE FIX */
-#adminmenu li.menu-top > a:focus,
-#adminmenu li.menu-top > a:active {
-    background-color: #191919 !important;
-    box-shadow: none !important;
-    outline: none !important;
-}
-
-/* --------------------------------------------------------------------------
    5. TEXT COLORS (#999999 Default)
    -------------------------------------------------------------------------- */
-/* Default State: #999999 */
+/* Default State */
 #adminmenu a, 
 #adminmenu .wp-menu-name, 
 #adminmenu .wp-submenu a {
     color: #999999 !important;
     font-weight: 100 !important;
-    
-    /* THE NUCLEAR FIX: 
-       We explicitly force background-color to take 0 seconds (Instant).
-       We only allow color (text) to fade. 
-    */
-    transition: color 0.2s ease, background-color 0s linear !important;
+    /* We only animate color, never background */
+    transition: color 0.2s ease !important;
 }
 
 /* HOVER: Force White */
@@ -145,18 +141,15 @@ html.wp-toolbar { padding-top: 0px !important; }
 /* --------------------------------------------------------------------------
    6. ICONS (#999999 -> Accent)
    -------------------------------------------------------------------------- */
-/* Default State */
 #adminmenu .wp-menu-image:before,
 .dashicons-before:before {
     color: #999999 !important;
     font-size: 15px !important;
     padding: 10px 0 !important;
     opacity: 0.8 !important;
-    /* Force 0s background transition here too just in case */
-    transition: color 0.2s ease, background-color 0s linear !important;
+    transition: color 0.2s ease !important;
 }
 
-/* Default Image State */
 #adminmenu .wp-menu-image img,
 #adminmenu .wp-menu-image svg {
     width: 15px !important;
