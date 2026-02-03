@@ -245,8 +245,9 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
 
 #adminmenu #collapse-button .collapse-button-icon:after{
     color: #999999 !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
     transition: color 0.2s ease !important;
+    top: 10px;
 }
 
 /* Hover State - Label */
