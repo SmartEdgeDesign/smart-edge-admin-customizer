@@ -203,6 +203,7 @@ body.folded #adminmenuwrap::before {
 }
  .wp-menu-image.svg{
        background-size: 14px 14px !important;
+       filter: brightness(0) saturate(100%) invert(49%);
 }
 
 
