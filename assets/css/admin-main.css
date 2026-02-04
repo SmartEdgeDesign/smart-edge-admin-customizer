@@ -225,7 +225,8 @@ body.folded #adminmenuwrap::before {
        background-size: 13px 13px !important;
 }
 #adminmenu .toplevel_page_elementor-home .wp-menu-image:before {
-    margin-top: -2px;
+    margin-top: -3px !important;
+
 }
 
 /* --------------------------------------------------------------------------
