@@ -239,7 +239,6 @@ jQuery(document).ready(function($){
 
         if( confirm('Are you sure you want to reset the menu for the "' + roles[activeRole].name + '" role to default?') ) {
             // 1. Reset Data: Copy the Master Menu (Admin view) to the current role.
-            // This gives you a fresh start with all items visible.
             currentConfig[activeRole] = JSON.parse(JSON.stringify(masterMenu));
             
             // 2. Update the UI immediately.

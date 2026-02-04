@@ -53,8 +53,15 @@ class SEAC_Menu_Manager {
         foreach ( $source_menu as $index => $item ) {
             // Standardize slug generation
             $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
+            
+            // Map Raw (Important for some encoded URLs)
+            $slug_to_index[$raw_slug] = $index;
+
+            // Map Decoded (Important for others)
             $decoded_slug = html_entity_decode( $raw_slug );
-            $slug_to_index[$decoded_slug] = $index;
+            if ( $decoded_slug !== $raw_slug ) {
+                $slug_to_index[$decoded_slug] = $index;
+            }
 
             // Clean Name for fallback matching (e.g. "Posts" matches "Posts")
             $name = isset($item[0]) ? $item[0] : '';
