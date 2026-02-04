@@ -102,11 +102,16 @@ html.wp-toolbar { padding-top: 0px !important; }
     box-sizing: border-box; 
 }
 
-/* THE COLLAPSE FIX:
-   When the menu is folded (body.folded), hide the logo area entirely.
+/*  When the menu is folded (body.folded) or auto-folded (tablet/mobile), hide the logo area.
 */
-body.folded #adminmenuwrap::before {
+body.folded #adminmenuwrap::before,
+body.auto-fold #adminmenuwrap::before {
     display: none !important;
+}
+
+/* EXCEPTION: Show logo when mobile menu is explicitly open */
+#wpwrap.wp-responsive-open #adminmenuwrap::before {
+    display: block !important;
 }
 
 /* --------------------------------------------------------------------------
