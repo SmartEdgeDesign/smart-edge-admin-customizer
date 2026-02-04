@@ -137,6 +137,13 @@ class SEAC_Menu_Manager {
         // Add any items from the source that weren't in the config or handled above.
         foreach ( $source_menu as $index => $item ) {
             if ( ! isset( $used_indices[$index] ) ) {
+
+                // FIX: Do not append orphan separators.
+                // If a separator wasn't matched to the config, it's likely noise or a duplicate.
+                if ( isset($item[4]) && strpos( $item[4], 'wp-menu-separator' ) !== false ) {
+                    continue;
+                }
+
                 $new_menu[ $menu_order_index ] = $item;
                 $menu_order_index++;
             }
