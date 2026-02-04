@@ -220,31 +220,6 @@ body.folded #adminmenuwrap::before {
     fill: var(--seac-accent-color) !important;
     opacity: 1 !important;
 }
-/* --------------------------------------------------------------------------
-   GLOBAL SVG ICON FIX — ALL PLUGINS
-   -------------------------------------------------------------------------- */
-
-/* Base icon container */
-#adminmenu .wp-menu-image {
-    background-color: currentColor !important;
-}
-
-/* Convert existing SVG background-image into a mask */
-#adminmenu .wp-menu-image.svg {
-    -webkit-mask-image: inherit !important;
-    mask-image: inherit !important;
-
-    -webkit-mask-repeat: no-repeat !important;
-    mask-repeat: no-repeat !important;
-
-    -webkit-mask-position: center !important;
-    mask-position: center !important;
-
-    -webkit-mask-size: 14px 14px !important;
-    mask-size: 14px 14px !important;
-
-    background-image: none !important;
-}
 
 /* --------------------------------------------------------------------------
    7. DIVIDERS & MOBILE
