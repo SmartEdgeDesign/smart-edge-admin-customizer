@@ -85,6 +85,20 @@ jQuery(document).ready(function($){
     $.each(roles, function(roleKey, roleData){
         if( savedSettings[roleKey] ) {
             currentConfig[roleKey] = savedSettings[roleKey];
+
+            // FIX: Merge new items from masterMenu that aren't in saved settings yet.
+            // This ensures newly installed plugins appear in the list automatically.
+            var existingSlugs = [];
+            $.each(currentConfig[roleKey], function(i, item){
+                existingSlugs.push(item.slug);
+            });
+
+            $.each(masterMenu, function(i, masterItem){
+                if ( $.inArray(masterItem.slug, existingSlugs) === -1 ) {
+                    // It's a new item! Add it to the config.
+                    currentConfig[roleKey].push( JSON.parse(JSON.stringify(masterItem)) );
+                }
+            });
         } else {
             currentConfig[roleKey] = JSON.parse(JSON.stringify(masterMenu));
         }
