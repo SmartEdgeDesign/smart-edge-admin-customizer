@@ -190,6 +190,7 @@ body.folded #adminmenuwrap::before {
     padding: 10px 0 !important;
     opacity: 0.8 !important;
     transition: color 0.2s ease !important;
+    mask-size: 14px !important;
 }
 
 #adminmenu .wp-menu-image img,
