@@ -201,11 +201,6 @@ body.folded #adminmenuwrap::before {
     fill: #999999 !important;
     opacity: 0.8 !important;
 }
- .wp-menu-image.svg{
-       background-size: 13px 13px !important;
-       filter: brightness(0) saturate(100%) invert(49%);
-}
-
 
 /* HOVER & ACTIVE & OPEN: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
@@ -219,6 +214,18 @@ body.folded #adminmenuwrap::before {
     color: var(--seac-accent-color) !important;
     fill: var(--seac-accent-color) !important;
     opacity: 1 !important;
+}
+/* plugin specific  */
+
+#adminmenu .wp-menu-image.svg{
+       background-size: 13px 13px !important;
+       filter: brightness(0) saturate(100%) invert(49%);
+}
+#adminmenu [id^=toplevel_page_bricks] .wp-menu-image.svg{
+       background-size: 13px 13px !important;
+}
+#adminmenu .toplevel_page_elementor-home .wp-menu-image:before {
+    margin-top: -2px;
 }
 
 /* --------------------------------------------------------------------------
