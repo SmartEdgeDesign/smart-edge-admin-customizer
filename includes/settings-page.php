@@ -55,6 +55,7 @@ class SEAC_Settings_Page {
             foreach ( $source_menu as $index => $item ) {
 
                 $name = isset($item[0]) ? $item[0] : '';
+                $capability = isset($item[1]) ? $item[1] : 'read';
                 // Generate a unique slug, matching the logic in menu-manager.php
                 $raw_slug = (isset($item[2]) && $item[2] !== '') ? $item[2] : 'seac_item_index_' . $index;
                 $slug = html_entity_decode( $raw_slug );
@@ -85,7 +86,8 @@ class SEAC_Settings_Page {
                     'original_name' => $name, 
                     'slug'          => $slug, 
                     'icon'          => $icon,
-                    'type'          => $type
+                    'type'          => $type,
+                    'capability'    => $capability
                 );
             }
         }

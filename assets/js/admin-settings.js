@@ -71,6 +71,15 @@ jQuery(document).ready(function($){
     var activeRole = 'administrator';
     
     var currentConfig = {};
+    
+    // Build a map of capabilities from the Master Menu
+    // This ensures we know the required permission even if the saved config doesn't have it.
+    var slugCapabilityMap = {};
+    $.each(masterMenu, function(i, item){
+        if(item.slug && item.capability) {
+            slugCapabilityMap[item.slug] = item.capability;
+        }
+    });
 
     // Initialize Config
     $.each(roles, function(roleKey, roleData){
@@ -112,6 +121,20 @@ jQuery(document).ready(function($){
 
         $.each(menuItems, function(index, item){
             
+            // Resolve Capability
+            var cap = item.capability;
+            if (!cap && slugCapabilityMap[item.slug]) {
+                cap = slugCapabilityMap[item.slug];
+            }
+
+            var isNativeDisabled = false;
+            // Check if the current role has the required capability
+            if ( role !== 'administrator' && cap ) {
+                if ( roles[role] && roles[role].capabilities && !roles[role].capabilities[cap] ) {
+                    isNativeDisabled = true;
+                }
+            }
+
             var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
             var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
 
@@ -147,8 +170,11 @@ jQuery(document).ready(function($){
                     iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
                 }
 
+                var disabledClass = isNativeDisabled ? 'seac-native-disabled' : '';
+                var lockLabel = isNativeDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span> No Access</span>' : '';
+
                 var liHtml = `
-                    <li class="seac-menu-item ${hiddenClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item">
+                    <li class="seac-menu-item ${hiddenClass} ${disabledClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item" data-capability="${cap || ''}">
                         <div class="seac-item-handle">
                             <span class="dashicons dashicons-menu"></span>
                         </div>
@@ -158,7 +184,7 @@ jQuery(document).ready(function($){
                         <div class="seac-item-details">
                             <input type="text" class="seac-rename-input" value="${item.rename || item.original_name}" placeholder="Rename item...">
                             <input type="text" class="seac-icon-input" value="${item.icon}" placeholder="dashicons-admin-home">
-                            <span class="seac-original-label">Original: ${item.original_name}</span>
+                            <span class="seac-original-label">Original: ${item.original_name} ${lockLabel}</span>
                         </div>
                         <div class="seac-item-actions">
                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
@@ -187,6 +213,7 @@ jQuery(document).ready(function($){
             newOrder.push({
                 slug: $li.data('slug'),
                 original_name: $li.data('original-name'),
+                capability: $li.data('capability'),
                 type: $li.data('type'),
                 rename: $li.find('.seac-rename-input').val(),
                 icon: $li.find('.seac-icon-input').val(),

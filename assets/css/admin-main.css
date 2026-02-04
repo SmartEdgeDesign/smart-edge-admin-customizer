@@ -228,6 +228,9 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
     #adminmenu { width: auto !important; position: relative !important; top: 0 !important; }
     #wpcontent { margin-left: 0 !important; }
     #wpwrap.wp-responsive-open::-webkit-scrollbar { width:0; }
+    body.folded #adminmenuwrap::before {
+    display: none !important;
+}
 }
 
 /* --------------------------------------------------------------------------

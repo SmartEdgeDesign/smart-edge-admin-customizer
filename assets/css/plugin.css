@@ -54,6 +54,13 @@
 .seac-menu-item.seac-hidden { opacity: 0.6; background: #f0f0f1; }
 .seac-menu-item.seac-hidden .seac-rename-input { text-decoration: line-through; color: #888; }
 
+/* Native Disabled State (No Access) */
+.seac-menu-item.seac-native-disabled {
+    opacity: 0.4;
+    background: #f6f7f7;
+    pointer-events: none; /* Prevents clicking and dragging */
+}
+
 /* Handle */
 .seac-item-handle { cursor: grab; color: #a7aaad; padding-right: 15px; padding-top: 5px; }
 .seac-item-handle:hover { color: #333; }
@@ -87,6 +94,13 @@
     margin-top: 4px; /* Added Spacing */
     display: block;
 }
+
+.seac-lock-badge {
+    color: #d63638;
+    font-weight: 600;
+    margin-left: 5px;
+}
+.seac-lock-badge .dashicons { font-size: 12px; width: 12px; height: 12px; vertical-align: middle; }
 
 /* Actions */
 .seac-item-actions { padding-left: 15px; padding-top: 2px; }
