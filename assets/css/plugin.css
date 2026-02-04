@@ -46,6 +46,7 @@
 .seac-menu-item {
     display: flex; align-items: flex-start; /* Changed to start for multi-line inputs */
     background: #fff; border: 1px solid #dcdcde; border-radius: 4px;
+    flex-wrap: wrap; /* Allow submenu to wrap to next line */
     margin-bottom: 8px; padding: 12px; transition: all 0.2s;
 }
 .seac-menu-item:hover { border-color: #2271b1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -150,3 +151,23 @@
     top: 50%;
     transform: translateY(-50%); /* Vertically center the eye */
 }
+
+/* SUBMENU STYLES */
+.seac-submenu-list {
+    width: 100%;
+    margin: 10px 0 0 0;
+    padding-left: 40px; /* Indent */
+    border-top: 1px dashed #eee;
+}
+
+.seac-submenu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f1;
+    background: #fafafa;
+}
+.seac-submenu-item:last-child { border-bottom: none; }
+.seac-sub-details { font-size: 13px; color: #50575e; }
+.seac-submenu-item.seac-hidden { opacity: 0.6; text-decoration: line-through; }

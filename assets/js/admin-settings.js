@@ -91,6 +91,22 @@ jQuery(document).ready(function($){
             var existingSlugs = [];
             $.each(currentConfig[roleKey], function(i, item){
                 existingSlugs.push(item.slug);
+                
+                // Merge sub-items if parent exists
+                var masterItem = null;
+                $.each(masterMenu, function(m, mItem){ if(mItem.slug === item.slug) masterItem = mItem; });
+                
+                if ( masterItem && masterItem.children ) {
+                    if ( !item.children ) item.children = [];
+                    var existingSubSlugs = [];
+                    $.each(item.children, function(c, child){ existingSubSlugs.push(child.slug); });
+
+                    $.each(masterItem.children, function(c, child){
+                        if ( $.inArray(child.slug, existingSubSlugs) === -1 ) {
+                            item.children.push( JSON.parse(JSON.stringify(child)) );
+                        }
+                    });
+                }
             });
 
             $.each(masterMenu, function(i, masterItem){
@@ -194,6 +210,39 @@ jQuery(document).ready(function($){
                 var disabledClass = isNativeDisabled ? 'seac-native-disabled' : '';
                 var lockLabel = isNativeDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span> No Access</span>' : '';
 
+                // --- SUBMENU HTML ---
+                var subMenuHtml = '';
+                if ( item.children && item.children.length > 0 ) {
+                    subMenuHtml += '<ul class="seac-submenu-list">';
+                    $.each(item.children, function(ci, child){
+                        var childHiddenClass = (child.hidden === true) ? 'seac-hidden' : '';
+                        var childHiddenIcon = (child.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
+                        
+                        // Capability check for child
+                        var childCap = child.capability;
+                        var childIsDisabled = false;
+                        if ( role !== 'administrator' && childCap ) {
+                             if ( roles[role] && roles[role].capabilities && !roles[role].capabilities[childCap] ) {
+                                 childIsDisabled = true;
+                             }
+                        }
+                        var childDisabledClass = childIsDisabled ? 'seac-native-disabled' : '';
+                        var childLock = childIsDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span></span>' : '';
+
+                        subMenuHtml += `
+                            <li class="seac-submenu-item ${childHiddenClass} ${childDisabledClass}" data-slug="${child.slug}" data-original-name="${child.original_name}" data-capability="${child.capability}">
+                                <div class="seac-sub-details">
+                                    <span class="seac-sub-name">${child.original_name} ${childLock}</span>
+                                </div>
+                                <div class="seac-sub-actions">
+                                    <button type="button" class="seac-visibility-toggle" title="Toggle Visibility"><span class="dashicons ${childHiddenIcon}"></span></button>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    subMenuHtml += '</ul>';
+                }
+
                 var liHtml = `
                     <li class="seac-menu-item ${hiddenClass} ${disabledClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item" data-capability="${cap || ''}">
                         <div class="seac-item-handle">
@@ -212,6 +261,7 @@ jQuery(document).ready(function($){
                                 <span class="dashicons ${hiddenIcon}"></span>
                             </button>
                         </div>
+                        ${subMenuHtml}
                     </li>
                 `;
                 $list.append(liHtml);
@@ -231,6 +281,19 @@ jQuery(document).ready(function($){
         var newOrder = [];
         $('#seac_menu_list li').each(function(){
             var $li = $(this);
+            if ( $li.hasClass('seac-submenu-item') ) return; // Skip sub-items in main loop
+
+            var children = [];
+            $li.find('.seac-submenu-list .seac-submenu-item').each(function(){
+                var $sub = $(this);
+                children.push({
+                    slug: $sub.data('slug'),
+                    original_name: $sub.data('original-name'),
+                    capability: $sub.data('capability'),
+                    hidden: $sub.hasClass('seac-hidden')
+                });
+            });
+
             newOrder.push({
                 slug: $li.data('slug'),
                 original_name: $li.data('original-name'),
@@ -238,7 +301,8 @@ jQuery(document).ready(function($){
                 type: $li.data('type'),
                 rename: $li.find('.seac-rename-input').val(),
                 icon: $li.find('.seac-icon-input').val(),
-                hidden: $li.hasClass('seac-hidden')
+                hidden: $li.hasClass('seac-hidden'),
+                children: children
             });
         });
         currentConfig[activeRole] = newOrder;

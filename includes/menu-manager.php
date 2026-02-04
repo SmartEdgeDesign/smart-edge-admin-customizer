@@ -130,6 +130,60 @@ class SEAC_Menu_Manager {
                 $new_menu[ $menu_order_index ] = $menu_item;
                 $menu_order_index++;
                 $used_indices[$found_index] = true;
+
+                // --- SUBMENU HANDLING ---
+                if ( isset( $config_item['children'] ) && is_array( $config_item['children'] ) ) {
+                    global $submenu;
+                    // The parent slug in $submenu keys is usually the raw slug from the source menu
+                    // We need to find the correct key in $submenu.
+                    // $menu_item[2] is the slug used by WP for the submenu key.
+                    $parent_key = $menu_item[2];
+
+                    if ( isset( $submenu[$parent_key] ) ) {
+                        $parent_subs = $submenu[$parent_key];
+                        $new_subs = array();
+                        
+                        // Map existing subs for lookup
+                        $sub_map = array();
+                        foreach ( $parent_subs as $si => $s_item ) {
+                             $s_slug = isset($s_item[2]) ? $s_item[2] : '';
+                             $s_slug_decoded = html_entity_decode($s_slug);
+                             $sub_map[$s_slug] = $s_item;
+                             if ($s_slug !== $s_slug_decoded) $sub_map[$s_slug_decoded] = $s_item;
+                        }
+                        
+                        $used_sub_slugs = array();
+                        
+                        foreach ( $config_item['children'] as $child_conf ) {
+                            $c_slug = $child_conf['slug'];
+                            
+                            // If hidden, mark used but don't add to new_subs
+                            if ( isset($child_conf['hidden']) && $child_conf['hidden'] == true ) {
+                                $used_sub_slugs[$c_slug] = true;
+                                continue;
+                            }
+                            
+                            // Keep visible items
+                            if ( isset($sub_map[$c_slug]) ) {
+                                $new_subs[] = $sub_map[$c_slug];
+                                $used_sub_slugs[$c_slug] = true;
+                            }
+                        }
+                        
+                        // Append orphans (new sub items not in config)
+                        foreach ( $parent_subs as $s_item ) {
+                             $s_slug = isset($s_item[2]) ? $s_item[2] : '';
+                             $s_slug_decoded = html_entity_decode($s_slug);
+                             
+                             if ( ! isset($used_sub_slugs[$s_slug]) && ! isset($used_sub_slugs[$s_slug_decoded]) ) {
+                                 $new_subs[] = $s_item;
+                             }
+                        }
+                        
+                        // Update global submenu
+                        $submenu[$parent_key] = $new_subs;
+                    }
+                }
             }
         }
 

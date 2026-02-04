@@ -45,10 +45,12 @@ class SEAC_Settings_Page {
         if ( ! isset( $GLOBALS['seac_original_menu'] ) ) {
             // This can happen if the menu manager didn't run, or on a different admin page.
             // Fallback to the live menu for safety.
-            global $menu;
+            global $menu, $submenu;
             $source_menu = $menu;
         } else {
             $source_menu = $GLOBALS['seac_original_menu'];
+            // We also need the original submenu if possible, but global $submenu is usually fine here
+            global $submenu;
         }
         
         if ( !empty($source_menu) && is_array($source_menu) ) {
@@ -82,12 +84,36 @@ class SEAC_Settings_Page {
 
                 if( $icon == 'div' ) $icon = 'dashicons-admin-generic';
 
+                // --- SUBMENU HANDLING ---
+                $children = array();
+                if ( isset( $submenu[$raw_slug] ) ) {
+                    foreach ( $submenu[$raw_slug] as $sub_index => $sub_item ) {
+                        $sub_name = isset($sub_item[0]) ? $sub_item[0] : '';
+                        $sub_name = preg_replace( '/<span.*<\/span>/', '', $sub_name );
+                        $sub_name = strip_tags( $sub_name );
+                        $sub_name = trim( $sub_name );
+                        
+                        $sub_slug = isset($sub_item[2]) ? $sub_item[2] : '';
+                        $sub_slug = html_entity_decode( $sub_slug );
+                        
+                        $sub_cap = isset($sub_item[1]) ? $sub_item[1] : 'read';
+
+                        $children[] = array(
+                            'original_name' => $sub_name,
+                            'slug'          => $sub_slug,
+                            'capability'    => $sub_cap,
+                            'hidden'        => false
+                        );
+                    }
+                }
+
                 $this->formatted_menu[] = array(
                     'original_name' => $name, 
                     'slug'          => $slug, 
                     'icon'          => $icon,
                     'type'          => $type,
-                    'capability'    => $capability
+                    'capability'    => $capability,
+                    'children'      => $children
                 );
             }
         }
