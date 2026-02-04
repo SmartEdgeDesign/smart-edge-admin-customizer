@@ -207,11 +207,10 @@ jQuery(document).ready(function($){
                     iconHtml = '<span class="dashicons dashicons-admin-generic"></span>';
                 }
 
-                var disabledClass = isNativeDisabled ? 'seac-native-disabled' : '';
-                var lockLabel = isNativeDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span> No Access</span>' : '';
-
-                // --- SUBMENU HTML ---
+                // MOVED UP: Submenu logic to determine if parent should be enabled
                 var subMenuHtml = '';
+                var hasAccessibleChild = false;
+
                 if ( item.children && item.children.length > 0 ) {
                     subMenuHtml += '<ul class="seac-submenu-list">';
                     $.each(item.children, function(ci, child){
@@ -226,6 +225,11 @@ jQuery(document).ready(function($){
                                  childIsDisabled = true;
                              }
                         }
+                        
+                        if ( !childIsDisabled ) {
+                            hasAccessibleChild = true;
+                        }
+
                         var childDisabledClass = childIsDisabled ? 'seac-native-disabled' : '';
                         var childLock = childIsDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span></span>' : '';
 
@@ -242,6 +246,14 @@ jQuery(document).ready(function($){
                     });
                     subMenuHtml += '</ul>';
                 }
+
+                // FIX: If parent is disabled but has accessible children, enable parent
+                if ( isNativeDisabled && hasAccessibleChild ) {
+                    isNativeDisabled = false;
+                }
+
+                var disabledClass = isNativeDisabled ? 'seac-native-disabled' : '';
+                var lockLabel = isNativeDisabled ? '<span class="seac-lock-badge"><span class="dashicons dashicons-lock"></span> No Access</span>' : '';
 
                 var liHtml = `
                     <li class="seac-menu-item ${hiddenClass} ${disabledClass}" data-slug="${item.slug}" data-original-name="${item.original_name}" data-type="item" data-capability="${cap || ''}">
