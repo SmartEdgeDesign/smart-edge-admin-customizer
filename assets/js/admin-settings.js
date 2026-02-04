@@ -135,6 +135,13 @@ jQuery(document).ready(function($){
                 }
             }
 
+            // FIX: Allow "Users" menu for roles with 'read' capability (Profile access)
+            if ( item.slug === 'users.php' && role !== 'administrator' ) {
+                 if ( roles[role] && roles[role].capabilities && roles[role].capabilities['read'] ) {
+                     isNativeDisabled = false;
+                 }
+            }
+
             var hiddenClass = (item.hidden === true) ? 'seac-hidden' : '';
             var hiddenIcon = (item.hidden === true) ? 'dashicons-hidden' : 'dashicons-visibility';
 

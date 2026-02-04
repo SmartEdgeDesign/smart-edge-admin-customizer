@@ -57,6 +57,12 @@ class SEAC_Menu_Manager {
             // Map Raw (Important for some encoded URLs)
             $slug_to_index[$raw_slug] = $index;
 
+            // Map Basename (Fixes issues where slug is a full URL but config is relative)
+            $base_slug = basename($raw_slug);
+            if ( $base_slug !== $raw_slug && ! empty($base_slug) ) {
+                $slug_to_index[$base_slug] = $index;
+            }
+
             // Map Decoded (Important for others)
             $decoded_slug = html_entity_decode( $raw_slug );
             if ( $decoded_slug !== $raw_slug ) {
