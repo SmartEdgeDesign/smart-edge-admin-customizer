@@ -255,6 +255,6 @@ a.DividerBoth { border-top: solid 1px #333 !important; border-bottom: solid 1px 
 }
 
 /* Hover State - Icon (Matches other menu items) */
-#adminmenu #collapse-menu:hover .collapse-button-icon:before {
+#adminmenu #collapse-menu:hover .collapse-button-icon:after {
     color: var(--seac-accent-color) !important;
 }
