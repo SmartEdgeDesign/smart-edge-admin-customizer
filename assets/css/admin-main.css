@@ -201,9 +201,7 @@ body.folded #adminmenuwrap::before {
     fill: #999999 !important;
     opacity: 0.8 !important;
 }
-#adminmenu .wp-menu-image.svg{
-       background-size: 16px 16px !important
-}
+
 
 /* HOVER & ACTIVE & OPEN: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
@@ -218,6 +216,48 @@ body.folded #adminmenuwrap::before {
     fill: var(--seac-accent-color) !important;
     opacity: 1 !important;
 }
+/* --------------------------------------------------------------------------
+   6A. GLOBAL SVG NORMALISATION (ALL PLUGINS)
+   -------------------------------------------------------------------------- */
+
+/* Ensure icon container behaves consistently */
+#adminmenu .wp-menu-image {
+    background-color: currentColor !important;
+}
+
+/* Normalise ALL SVG background icons (base64 + external) */
+#adminmenu .wp-menu-image.svg {
+    background-image: none !important;
+
+    mask-repeat: no-repeat !important;
+    -webkit-mask-repeat: no-repeat !important;
+
+    mask-position: center !important;
+    -webkit-mask-position: center !important;
+
+    mask-size: 14px 14px !important;
+    -webkit-mask-size: 14px 14px !important;
+}
+
+/* Apply original SVG as mask */
+#adminmenu .wp-menu-image.svg {
+    mask-image: var(--adminmenu-icon) !important;
+    -webkit-mask-image: var(--adminmenu-icon) !important;
+}
+
+/* Default SVG icon colour */
+#adminmenu {
+    color: #999999;
+}
+
+/* Hover / Active / Open states */
+#adminmenu li:hover,
+#adminmenu li.opensub,
+#adminmenu li.current,
+#adminmenu li.wp-has-current-submenu {
+    color: var(--seac-accent-color);
+}
+
 
 /* --------------------------------------------------------------------------
    7. DIVIDERS & MOBILE
