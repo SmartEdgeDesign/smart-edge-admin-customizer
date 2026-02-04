@@ -206,18 +206,6 @@ body.folded #adminmenuwrap::before {
 }
 
 
-.wp-menu-image.svg {
-    /* 1. Force the background image to act as a mask */
-    -webkit-mask: var(--bg-img) no-repeat center / contain;
-    mask: var(--bg-img) no-repeat center / contain;
-
-    /* 2. Apply your variable color */
-    background-color: var(--seac-accent-color) !important;
-
-    /* 3. Hide the original underlying image */
-    background-image: none !important;
-}
-
 /* HOVER & ACTIVE & OPEN: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
 #adminmenu li:hover .wp-menu-image img,
