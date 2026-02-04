@@ -295,6 +295,19 @@ jQuery(document).ready(function($){
                 forcePlaceholderSize: true
             });
         }
+        // --- ADD THIS PART HERE ---
+// This finds all icons (images or divs) and sets the --bg-img variable
+$list.find('.seac-item-icon img, .wp-menu-image.svg').each(function() {
+    const $el = jQuery(this);
+    // If it's an <img>, get the src. If it's a div, get the background-image.
+    const url = $el.is('img') ? `url("${$el.attr('src')}")` : $el.css('background-image');
+    
+    if (url && url !== 'none') {
+        // Set the variable on the parent container so we can mask it
+        $el.closest('.seac-item-icon').css('--bg-img', url);
+        $el.closest('.seac-item-icon').addClass('has-svg-icon');
+    }
+});
     }
 
     function saveCurrentTabState() {
@@ -390,10 +403,5 @@ jQuery(document).ready(function($){
             $('.seac-settings-wrap form').submit();
         }
     });
-    document.querySelectorAll('.wp-menu-image.svg').forEach(el => {
-    // Get the background-image URL from the inline style
-    const bg = getComputedStyle(el).backgroundImage;
-    // Set it as a CSS Variable so our CSS can use it as a mask
-    el.style.setProperty('--bg-img', bg);
-});
+    
 });
