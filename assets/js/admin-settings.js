@@ -68,7 +68,9 @@ jQuery(document).ready(function($){
     var roles = seacData.roles;
     var masterMenu = seacData.menu;
     var savedSettings = seacData.saved_settings || {};
-    var activeRole = 'administrator';
+    
+    // FIX: Restore active role from local storage if available, otherwise default to administrator
+    var activeRole = (localStorage.getItem('seac_active_role') && roles[localStorage.getItem('seac_active_role')]) ? localStorage.getItem('seac_active_role') : 'administrator';
     
     var currentConfig = {};
     
@@ -111,6 +113,9 @@ jQuery(document).ready(function($){
 
             $.each(masterMenu, function(i, masterItem){
                 if ( $.inArray(masterItem.slug, existingSlugs) === -1 ) {
+                    // FIX: Don't auto-add separators. They are structural and cause duplication if slugs change.
+                    if ( masterItem.type === 'separator' ) return;
+
                     // It's a new item! Add it to the config.
                     currentConfig[roleKey].push( JSON.parse(JSON.stringify(masterItem)) );
                 }
@@ -210,8 +215,10 @@ jQuery(document).ready(function($){
                 // MOVED UP: Submenu logic to determine if parent should be enabled
                 var subMenuHtml = '';
                 var hasAccessibleChild = false;
+                var subMenuToggle = '';
 
                 if ( item.children && item.children.length > 0 ) {
+                    subMenuToggle = '<button type="button" class="seac-submenu-toggle" title="Toggle Submenu"><span class="dashicons dashicons-arrow-down-alt2"></span></button>';
                     subMenuHtml += '<ul class="seac-submenu-list">';
                     $.each(item.children, function(ci, child){
                         var childHiddenClass = (child.hidden === true) ? 'seac-hidden' : '';
@@ -269,6 +276,7 @@ jQuery(document).ready(function($){
                             <span class="seac-original-label">Original: ${item.original_name} ${lockLabel}</span>
                         </div>
                         <div class="seac-item-actions">
+                            ${subMenuToggle}
                             <button type="button" class="seac-visibility-toggle" title="Toggle Visibility">
                                 <span class="dashicons ${hiddenIcon}"></span>
                             </button>
@@ -327,6 +335,7 @@ jQuery(document).ready(function($){
         $('.seac-role-tab').removeClass('active');
         $(this).addClass('active');
         activeRole = $(this).data('role');
+        localStorage.setItem('seac_active_role', activeRole); // Save active role
         renderMenuList(activeRole);
     });
 
@@ -342,6 +351,15 @@ jQuery(document).ready(function($){
             $li.addClass('seac-hidden');
             $icon.removeClass('dashicons-visibility').addClass('dashicons-hidden');
         }
+    });
+
+    // --- SUBMENU TOGGLE ---
+    $(document).on('click', '.seac-submenu-toggle', function(){
+        var $btn = $(this);
+        var $li = $btn.closest('li');
+        var $sub = $li.find('.seac-submenu-list');
+        $sub.slideToggle(200);
+        $btn.toggleClass('open');
     });
 
     $('.seac-settings-wrap form').submit(function(e){

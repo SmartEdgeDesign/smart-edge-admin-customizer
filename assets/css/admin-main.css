@@ -103,9 +103,9 @@ html.wp-toolbar { padding-top: 0px !important; }
 }
 
 /*  When the menu is folded (body.folded) or auto-folded (tablet/mobile), hide the logo area.
+    FIX: Removed body.auto-fold to ensure logo stays visible on smaller desktop screens.
 */
-body.folded #adminmenuwrap::before,
-body.auto-fold #adminmenuwrap::before {
+body.folded #adminmenuwrap::before {
     display: none !important;
 }
 

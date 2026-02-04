@@ -111,6 +111,11 @@
 }
 .seac-visibility-toggle:hover { background: #f0f0f1; color: #2271b1; }
 
+.seac-submenu-toggle { background: transparent; border: none; cursor: pointer; color: #646970; padding: 5px; border-radius: 4px; margin-right: 2px; }
+.seac-submenu-toggle:hover { background: #f0f0f1; color: #2271b1; }
+.seac-submenu-toggle .dashicons { transition: transform 0.2s; font-size: 18px; width: 18px; height: 18px; }
+.seac-submenu-toggle.open .dashicons { transform: rotate(180deg); }
+
 .seac-sortable-placeholder {
     background: #f6f7f7; border: 1px dashed #2271b1; height: 60px;
     margin-bottom: 8px; border-radius: 4px;
@@ -158,6 +163,7 @@
     margin: 10px 0 0 0;
     padding-left: 40px; /* Indent */
     border-top: 1px dashed #eee;
+    display: none; /* Hidden by default */
 }
 
 .seac-submenu-item {
