@@ -201,6 +201,9 @@ body.folded #adminmenuwrap::before {
     fill: #999999 !important;
     opacity: 0.8 !important;
 }
+#adminmenu div.wp-menu-image.svg{
+        background-size: 14px auto !important;
+}
 
 /* HOVER & ACTIVE & OPEN: Accent Color */
 #adminmenu li:hover .wp-menu-image:before,
