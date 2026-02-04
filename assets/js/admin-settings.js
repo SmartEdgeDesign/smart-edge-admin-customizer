@@ -390,4 +390,10 @@ jQuery(document).ready(function($){
             $('.seac-settings-wrap form').submit();
         }
     });
+    document.querySelectorAll('.wp-menu-image.svg').forEach(el => {
+    // Get the background-image URL from the inline style
+    const bg = getComputedStyle(el).backgroundImage;
+    // Set it as a CSS Variable so our CSS can use it as a mask
+    el.style.setProperty('--bg-img', bg);
+});
 });

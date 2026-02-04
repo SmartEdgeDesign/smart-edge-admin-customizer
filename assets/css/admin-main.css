@@ -205,22 +205,16 @@ body.folded #adminmenuwrap::before {
        background-size: 14px 14px !important;
 }
 
-#adminmenu .wp-menu-image.svg {
-    /* 1. Use the existing background-image as the mask source */
-    -webkit-mask-image: inherit;
-    mask-image: inherit;
-    
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-position: center;
-    mask-position: center;
 
-    /* 2. Set your desired color here */
-    background-color: #ff5733 !important; 
+.wp-menu-image.svg {
+    /* 1. Force the background image to act as a mask */
+    -webkit-mask: var(--bg-img) no-repeat center / contain;
+    mask: var(--bg-img) no-repeat center / contain;
 
-    /* 3. Tell the browser to stop showing the original image as a background */
+    /* 2. Apply your variable color */
+    background-color: var(--seac-accent-color) !important;
+
+    /* 3. Hide the original underlying image */
     background-image: none !important;
 }
 
